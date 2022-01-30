@@ -12,9 +12,16 @@ public class Association extends Node {
      */
     public Association(String name) {
         super(name);
+        this.parties = new HashMap<>();
     }
 
+    public void addParty(Entity entity, Cardinalities cardinalities){
+        parties.put(entity, cardinalities);
+    }
 
-    Map<Entity, Cardinality> parties;
+    /**
+     *
+     */
+    Map<Entity, Cardinalities> parties;
 
 }

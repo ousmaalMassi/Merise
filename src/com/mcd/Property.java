@@ -8,13 +8,17 @@ import java.util.*;
 public class Property {
 
     /**
-     * Default constructor
+     * 
      */
-    public Property() {
+    public Property(String name, Types type, int length, List<Constraints> constraints) {
+        this.name = name;
+        this.type = type;
+        this.length = length;
+        this.constraints = constraints;
     }
 
     /**
-     * 
+     *
      */
     public String name;
 
@@ -31,7 +35,7 @@ public class Property {
     /**
      * 
      */
-    public Constraints constraints;
+    public List<Constraints> constraints;
 
 
 
