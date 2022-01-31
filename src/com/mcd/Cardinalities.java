@@ -6,7 +6,8 @@ public enum Cardinalities {
     ONE_ONE("1, 1"),
     ONE_MANY("1, n");
 
-    String card;
+    private final String card;
+    public static final Cardinalities DEFAULT_CARDINALITY = Cardinalities.ONE_MANY;
 
     Cardinalities(String card) {
         this.card = card;

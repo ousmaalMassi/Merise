@@ -64,4 +64,15 @@ public class Property {
         AUTO_INCREMENTS
     }
 
+    @Override
+    public String toString(){
+        return String.format("""
+                    {
+                        "name" : "%s",
+                        "type" : "%s",
+                        "length" : %s,
+                        "constraints" : %s
+                    }
+                """, this.name,  this.type, this.length, this.constraints);
+    }
 }

@@ -15,13 +15,24 @@ public class Association extends Node {
         this.parties = new HashMap<>();
     }
 
-    public void addParty(Entity entity, Cardinalities cardinalities){
+    public void addParty(String entity, Cardinalities cardinalities){
         parties.put(entity, cardinalities);
     }
 
     /**
      *
      */
-    Map<Entity, Cardinalities> parties;
+    Map<String, Cardinalities> parties;
 
+
+    @Override
+    public String toString(){
+        return String.format("""
+                    {
+                        "name" : "%s",
+                        "propertyList" : %s,
+                        "parties" : %s
+                    }
+                """, this.name,  this.propertyList, this.parties);
+    }
 }

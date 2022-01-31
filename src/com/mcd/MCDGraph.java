@@ -1,7 +1,5 @@
 package com.mcd;
 
-import com.mcd.Node;
-
 import java.util.*;
 
 /**
@@ -31,15 +29,30 @@ public class MCDGraph {
     /**
      * 
      */
-    public void delNode(Node node) {
+    public void removeNode(Node node) {
         this.nodeList.remove(node);
     }
 
     /**
      * 
      */
-    public void associate() {
-        // TODO implement here
+    public void associate(Association association, Entity entity) {
+        association.addParty(entity.name, Cardinalities.DEFAULT_CARDINALITY);
     }
 
+    @Override
+    public String toString(){
+        return String.format("""
+                    {
+                        "nodeList" : %s,
+                    }
+                """, this.nodeList);
+    }
+
+    public void search(String string){
+        System.out.println(this.nodeList.stream()
+                .filter(node -> string.equals(node.getName()))
+                .findAny()
+                .orElse(null));
+    }
 }
