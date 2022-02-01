@@ -12,6 +12,9 @@ public class MCDPanel extends JPanel {
         this.showExampleGraph();
     }
 
+    /**
+     *
+     */
     public void showExampleGraph() {
         MCDGraph graph = new MCDGraph();
 
@@ -46,6 +49,19 @@ public class MCDPanel extends JPanel {
 
         // graph.search("Article");
 
-        //repaint();
+
+        this.toMLD(graph);
+    }
+
+    /**
+     *
+     */
+    public void toMLD(MCDGraph mcdGraph){
+        for (Node node : mcdGraph.getNodeList()) {
+            if (node instanceof Entity entity)
+            System.out.println(entity.getIdProperty());
+        }
+
+        //System.out.println(mcdGraph.getNodeList());
     }
 }

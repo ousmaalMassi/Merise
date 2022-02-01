@@ -10,15 +10,14 @@ public class Merise extends JFrame {
 
     public Merise() {
         initComponents();
-        setTitle("merice_v2_pfe");
-        setSize(1500, 1000);
+        setTitle("Merice_v2_pfe");
+        setSize(192, 108);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setVisible(false);
+        setVisible(true);
     }
 
     private void initComponents() {
         mcdPanel = new MCDPanel();
-        System.out.println("Merise");
     }
 }

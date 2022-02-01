@@ -64,6 +64,38 @@ public class Property {
         AUTO_INCREMENTS
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Types getType() {
+        return type;
+    }
+
+    public void setType(Types type) {
+        this.type = type;
+    }
+
+    public int getLength() {
+        return length;
+    }
+
+    public void setLength(int length) {
+        this.length = length;
+    }
+
+    public List<Constraints> getConstraints() {
+        return constraints;
+    }
+
+    public void setConstraints(List<Constraints> constraints) {
+        this.constraints = constraints;
+    }
+
     @Override
     public String toString(){
         return String.format("""
