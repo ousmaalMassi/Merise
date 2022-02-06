@@ -43,8 +43,8 @@ public class MCDGraph {
     }
 
     /**
-     * @param association, and entity to associate with
-     * @param entity
+     * @param association that associate a list of entities
+     * @param entity to associate with
      */
     public void associate(Association association, Entity entity) {
         association.addLinks(entity.name, Cardinalities.DEFAULT_CARDINALITY);
@@ -52,12 +52,12 @@ public class MCDGraph {
 
 
     /**
-     * @param string
+     * @param name of the entity
      * @return entity
      */
-    public Entity search(String string){
+    public Entity search(String name){
         return (Entity) this.nodeList.stream()
-                .filter(node -> node.getName().equals(string))
+                .filter(node -> node.getName().equals(name))
                 .findAny()
                 .orElse(null);
     }

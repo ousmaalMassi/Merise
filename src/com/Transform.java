@@ -7,9 +7,9 @@ import com.mld.Table;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Transaform {
+public class Transform {
 
-    public Transaform() {
+    public Transform() {
     }
 
     public void toMLD(MCDGraph mcdGraph){
@@ -49,7 +49,7 @@ public class Transaform {
     }
 
     /**
-     * @param node
+     * @param node to convert to table
      * @return MLD table
      */
     private Table createMLDTable(Node node) {
