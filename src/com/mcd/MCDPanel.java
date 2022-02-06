@@ -9,7 +9,7 @@ public class MCDPanel extends JPanel {
 
     public MCDPanel() {
         this.mcdGraph = new MCDGraph();
-        this.showExampleGraph();
+        //this.showExampleGraph();
     }
 
     /**
@@ -38,8 +38,8 @@ public class MCDPanel extends JPanel {
 
         association.setPropertyList(List.of(new Property("quantity", Property.Types.INT, 11, List.of(Property.Constraints.NOT_NULL))));
 
-        association.addParty(entity1.name, Cardinalities.ONE_MANY);
-        association.addParty(entity2.name, Cardinalities.ONE_ONE);
+        association.addLinks(entity1.getName(), Cardinalities.ONE_MANY);
+        association.addLinks(entity2.getName(), Cardinalities.ZERO_MANY);
 
         graph.addNode(entity1);
         graph.addNode(entity2);
@@ -48,20 +48,6 @@ public class MCDPanel extends JPanel {
         // System.out.println(graph.toString());
 
         // graph.search("Article");
-
-
-        this.toMLD(graph);
     }
 
-    /**
-     *
-     */
-    public void toMLD(MCDGraph mcdGraph){
-        for (Node node : mcdGraph.getNodeList()) {
-            if (node instanceof Entity entity)
-            System.out.println(entity.getIdProperty());
-        }
-
-        //System.out.println(mcdGraph.getNodeList());
-    }
 }

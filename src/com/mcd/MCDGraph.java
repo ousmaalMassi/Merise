@@ -8,6 +8,12 @@ import java.util.*;
 public class MCDGraph {
 
     /**
+     *
+     */
+    private final List<Node> nodeList;
+
+
+    /**
      * Default constructor
      */
     public MCDGraph() {
@@ -23,12 +29,7 @@ public class MCDGraph {
     }
 
     /**
-     *
-     */
-    private final List<Node> nodeList;
-
-    /**
-     *
+     * @param node to add in the list
      */
     public void addNode(Node node) {
         this.nodeList.add(node);
@@ -42,11 +43,25 @@ public class MCDGraph {
     }
 
     /**
-     *
+     * @param association, and entity to associate with
+     * @param entity
      */
     public void associate(Association association, Entity entity) {
-        association.addParty(entity.name, Cardinalities.DEFAULT_CARDINALITY);
+        association.addLinks(entity.name, Cardinalities.DEFAULT_CARDINALITY);
     }
+
+
+    /**
+     * @param string
+     * @return entity
+     */
+    public Entity search(String string){
+        return (Entity) this.nodeList.stream()
+                .filter(node -> node.getName().equals(string))
+                .findAny()
+                .orElse(null);
+    }
+
 
     @Override
     public String toString(){
@@ -57,10 +72,4 @@ public class MCDGraph {
                 """, this.nodeList);
     }
 
-    public Node search(String string){
-        return this.nodeList.stream()
-                .filter(node -> string.equals(node.getName()))
-                .findAny()
-                .orElse(null);
-    }
 }

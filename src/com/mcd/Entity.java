@@ -6,13 +6,16 @@ package com.mcd;
 public class Entity extends Node {
 
     /**
-     * Default constructor
+     * @param name of the entity
      */
     public Entity(String name) {
         super(name);
     }
 
-    public Property getIdProperty(){
+    /**
+     * @return property
+     */
+    public Property getPrimaryKey(){
         for (Property property : this.getPropertyList())
             if (property.getConstraints().contains(Property.Constraints.PRIMARY_KEY))
                 return property;
