@@ -12,4 +12,17 @@ public enum Cardinalities {
     Cardinalities(String card) {
         this.card = card;
     }
+
+    @Override
+    public String toString() {
+        return this.card;
+    }
+
+    public String toJSON() {
+        return String.format("""
+                Cardinalities{
+                    card: %s
+                }
+                """, this.card);
+    }
 }

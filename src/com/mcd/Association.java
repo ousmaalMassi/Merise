@@ -1,6 +1,9 @@
 package com.mcd;
 
-import java.util.*;
+import com.Node;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 
@@ -10,7 +13,7 @@ public class Association extends Node {
     /**
      *
      */
-    private Map<String, Cardinalities> links;
+    private Map<Entity, Cardinalities> links;
 
 
     /**
@@ -25,22 +28,26 @@ public class Association extends Node {
     /**
      *
      */
-    public void addLinks(String entity, Cardinalities cardinalities){
+    public void addLink(Entity entity, Cardinalities cardinalities){
         links.put(entity, cardinalities);
+    }
+
+    public void removeLink(Entity entity){
+        links.remove(entity);
     }
 
 
     /**
      * @return List of Links
      */
-    public Map<String, Cardinalities> getLinks() {
+    public Map<Entity, Cardinalities> getLinks() {
         return links;
     }
 
     /**
-     * @param links
+     * @param links between Entities and Cardinalities
      */
-    public void setLinks(Map<String, Cardinalities> links) {
+    public void setLinks(Map<Entity, Cardinalities> links) {
         this.links = links;
     }
 

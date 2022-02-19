@@ -3,51 +3,61 @@ package com.mcd;
 import javax.swing.*;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class MCDPanel extends JPanel {
     MCDGraph mcdGraph;
 
     public MCDPanel() {
-        this.mcdGraph = new MCDGraph();
-        //this.showExampleGraph();
+        this.mcdGraph = this.showExampleGraph();
+        //System.out.println(mcdGraph);
     }
 
     /**
      *
      */
-    public void showExampleGraph() {
+    public MCDGraph showExampleGraph() {
         MCDGraph graph = new MCDGraph();
 
         Entity entity1 = new Entity("Client");
+        entity1.setPropertyList(
+                Stream.of(
+                        new Property("id", Property.Types.INT, 11, Arrays.asList(Property.Constraints.PRIMARY_KEY, Property.Constraints.AUTO_INCREMENTS)),
+                        new Property("nom", Property.Types.INT, 11, List.of(Property.Constraints.NOT_NULL)),
+                        new Property("prenom", Property.Types.INT, 11, List.of(Property.Constraints.NOT_NULL)),
+                        new Property("adresse", Property.Types.INT, 11, List.of(Property.Constraints.NOT_NULL))
+                ).collect(Collectors.toList())
+        );
+
         Entity entity2 = new Entity("Article");
+        entity2.setPropertyList(
+                Stream.of(
+                        new Property("id_article", Property.Types.INT, 11, Arrays.asList(Property.Constraints.PRIMARY_KEY, Property.Constraints.AUTO_INCREMENTS)),
+                        new Property("prix_achat", Property.Types.INT, 11, List.of(Property.Constraints.NOT_NULL)),
+                        new Property("prix_vente", Property.Types.VARCHAR, 30, List.of(Property.Constraints.NOT_NULL)),
+                        new Property("designation", Property.Types.INT, 11, List.of(Property.Constraints.NOT_NULL))
+                ).collect(Collectors.toList())
+        );
+
         Association association = new Association("Commander");
+        /*association.setPropertyList(
+                Stream.of(
+                        new Property("quantity", Property.Types.INT, 11, List.of(Property.Constraints.NOT_NULL))
+                ).collect(Collectors.toList())
+        );*/
 
-        entity1.setPropertyList(Arrays.asList(
-                new Property("id", Property.Types.INT, 11, Arrays.asList(Property.Constraints.PRIMARY_KEY, Property.Constraints.AUTO_INCREMENTS)),
-                new Property("nom", Property.Types.INT, 11, List.of(Property.Constraints.NOT_NULL)),
-                new Property("prenom", Property.Types.INT, 11, List.of(Property.Constraints.NOT_NULL)),
-                new Property("adresse", Property.Types.INT, 11, List.of(Property.Constraints.NOT_NULL))
-        ));
+        association.addLink(entity1, Cardinalities.ONE_MANY);
+        association.addLink(entity2, Cardinalities.ONE_MANY);
 
-        entity2.setPropertyList(Arrays.asList(
-                new Property("id_article", Property.Types.INT, 11, Arrays.asList(Property.Constraints.PRIMARY_KEY, Property.Constraints.AUTO_INCREMENTS)),
-                new Property("prix_achat", Property.Types.INT, 11, List.of(Property.Constraints.NOT_NULL)),
-                new Property("prix_vente", Property.Types.VARCHAR, 30, List.of(Property.Constraints.NOT_NULL)),
-                new Property("designation", Property.Types.INT, 11, List.of(Property.Constraints.NOT_NULL))
-        ));
-
-        association.setPropertyList(List.of(new Property("quantity", Property.Types.INT, 11, List.of(Property.Constraints.NOT_NULL))));
-
-        association.addLinks(entity1.getName(), Cardinalities.ONE_MANY);
-        association.addLinks(entity2.getName(), Cardinalities.ZERO_MANY);
-
-        graph.addNode(entity1);
-        graph.addNode(entity2);
+        // graph.addNode(entity1);
+        // graph.addNode(entity2);
         graph.addNode(association);
 
-        // System.out.println(graph.toString());
-
-        // graph.search("Article");
+        return graph;
     }
 
+    public MCDGraph getMcdGraph() {
+        return mcdGraph;
+    }
 }

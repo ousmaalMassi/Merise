@@ -1,8 +1,10 @@
 package com.mld;
 
-import com.mcd.Property;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -17,7 +19,7 @@ public class MLDGraph {
     /**
      *
      */
-    private Map<String, Property> foreignKeys;
+    private Map<String, String> foreignKeys;
 
     /**
      * Default constructor
@@ -50,28 +52,39 @@ public class MLDGraph {
         this.nodeList.remove(node);
     }
 
-    public Map<String, Property> getForeignKeys() {
+    public Map<String, String> getForeignKeys() {
         return foreignKeys;
     }
 
-    public void setForeignKeys(Map<String, Property> foreignKeys) {
+    public void setForeignKeys(Map<String, String> foreignKeys) {
         this.foreignKeys = foreignKeys;
     }
 
     /**
      *
-     */
+
     public void associate(Table table1, Table table2) {
         table1.addLink(table2);
-    }
+    }*/
 
     @Override
     public String toString(){
         return String.format("""
                     {
                         "nodeList" : %s,
+                        "foreignKeys" : %s,
                     }
-                """, this.nodeList);
+                """, this.nodeList, this.foreignKeys);
+    }
+
+
+    public String toJSON(){
+        return String.format("""
+                    {
+                        "nodeList" : %s,
+                        "foreignKeys" : %s,
+                    }
+                """, this.nodeList, this.foreignKeys);
     }
 
     public Table search(String string){

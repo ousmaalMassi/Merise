@@ -1,31 +1,32 @@
-package com.mcd;
+package com;
 
-import java.util.*;
+import com.mcd.Property;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
  */
 public class Node {
 
-
+    /**
+     *
+     */
+    protected String name;
 
     /**
-     * Default constructor
+     *
+     */
+    protected List<Property> propertyList;
+
+    /**
+     * constructor
      */
     public Node(String name) {
         this.name = name;
         this.propertyList = new ArrayList<>();
     }
-
-    /**
-     * 
-     */
-    protected String name;
-
-    /**
-     * 
-     */
-    protected List<Property> propertyList;
 
     /**
      *

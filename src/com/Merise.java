@@ -7,6 +7,7 @@ import javax.swing.*;
 public class Merise extends JFrame {
 
     MCDPanel mcdPanel;
+    Transform transform;
 
     public Merise() {
         initComponents();
@@ -19,5 +20,7 @@ public class Merise extends JFrame {
 
     private void initComponents() {
         mcdPanel = new MCDPanel();
+        transform = new Transform();
+        System.out.println(transform.toMLD(mcdPanel.getMcdGraph()));
     }
 }

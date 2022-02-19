@@ -1,5 +1,7 @@
 package com.mcd;
 
+import com.Node;
+
 import java.util.*;
 
 /**
@@ -46,8 +48,26 @@ public class MCDGraph {
      * @param association that associate a list of entities
      * @param entity to associate with
      */
-    public void associate(Association association, Entity entity) {
-        association.addLinks(entity.name, Cardinalities.DEFAULT_CARDINALITY);
+    public void link(Association association, Entity entity) {
+        this.nodeList.remove(entity);
+        association.addLink(entity, Cardinalities.DEFAULT_CARDINALITY);
+    }
+
+    /**
+     * @param association that associate a list of entities
+     * @param entity to associate with
+     */
+    public void unlink(Association association, Entity entity) {
+        this.nodeList.add(entity);
+        association.removeLink(entity);
+    }
+
+    /**
+     * @param node object
+     * @return entity
+     */
+    public Entity getNode(Node node){
+        return (Entity) nodeList.get(nodeList.indexOf(node));
     }
 
 
@@ -55,7 +75,7 @@ public class MCDGraph {
      * @param name of the entity
      * @return entity
      */
-    public Entity search(String name){
+    public Entity getEntityByName(String name){
         return (Entity) this.nodeList.stream()
                 .filter(node -> node.getName().equals(name))
                 .findAny()
