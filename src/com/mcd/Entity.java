@@ -17,7 +17,7 @@ public class Entity extends Node {
     /**
      * @return property
      */
-    public Property getPrimaryKey(){
+    public Property getId(){
         for (Property property : this.getPropertyList())
             if (property.getConstraints().contains(Property.Constraints.PRIMARY_KEY))
                 return property;

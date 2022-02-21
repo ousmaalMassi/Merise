@@ -48,7 +48,7 @@ public class MCDPanel extends JPanel {
         );*/
 
         association.addLink(entity1, Cardinalities.ONE_MANY);
-        association.addLink(entity2, Cardinalities.ONE_MANY);
+        association.addLink(entity2, Cardinalities.ONE_ONE);
 
         // graph.addNode(entity1);
         // graph.addNode(entity2);

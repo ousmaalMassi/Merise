@@ -38,6 +38,10 @@ public class Property {
         this.constraints = constraints;
     }
 
+    public Property() {
+
+    }
+
     /**
      * 
      */

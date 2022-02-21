@@ -1,13 +1,11 @@
 package com;
 
-import com.mcd.Association;
-import com.mcd.Cardinalities;
-import com.mcd.Entity;
-import com.mcd.MCDGraph;
+import com.mcd.*;
 import com.mld.MLDGraph;
 import com.mld.Table;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class Transform {
@@ -52,7 +50,7 @@ public class Transform {
                     else if (links.get(entities.get(0)).toString().endsWith("1") && links.get(entities.get(1)).toString().endsWith("1")){
                         Table tableA = createMLDTable(entities.get(0));
                         Table tableB = createMLDTable(entities.get(1));
-                        tableB.addProperty(entities.get(0).getPrimaryKey());
+                        tableB.addProperty(createForeignKey(entities.get(0).getId()));
                         mldGraph.getNodeList().add(tableA);
                         mldGraph.getNodeList().add(tableB);
                         mldGraph.getForeignKeys().put(tableA.getName(), tableB.getName());
@@ -61,11 +59,11 @@ public class Transform {
                         Table tableA = createMLDTable(entities.get(0));
                         Table tableB = createMLDTable(entities.get(1));
                         if (links.get(entities.get(0)).toString().endsWith("n")) {
-                            tableB.addProperty(entities.get(0).getPrimaryKey());
+                            tableB.addProperty(createForeignKey(entities.get(0).getId()));
                             mldGraph.getForeignKeys().put(tableB.getName(), tableA.getName());
                         }
                         else {
-                            tableA.addProperty(entities.get(1).getPrimaryKey());
+                            tableA.addProperty(createForeignKey(entities.get(1).getId()));
                             mldGraph.getForeignKeys().put(tableA.getName(), tableB.getName());
                         }
                         mldGraph.getNodeList().add(tableA);
@@ -83,14 +81,23 @@ public class Transform {
     }
 
     private void createTableFromAssociation(Association association) {
-        Table associationtable = createMLDTable(association);
+        Table associationTable = createMLDTable(association);
         association.getLinks().forEach((entity, cardinality) -> {
-            Table entityTable = createMLDTable(entity);
-            mldGraph.getForeignKeys().put(entityTable.getName(), association.getName());
-            associationtable.addProperty(entity.getPrimaryKey());
-            mldGraph.getNodeList().add(entityTable);
+            mldGraph.getNodeList().add(createMLDTable(entity));
+            mldGraph.getForeignKeys().put(entity.getName(), associationTable.getName());
+            associationTable.addProperty(createForeignKey(entity.getId()));
         });
-        mldGraph.getNodeList().add(associationtable);
+        mldGraph.getNodeList().add(associationTable);
+    }
+
+
+    private Property createForeignKey(Property pkProp) {
+        Property fkProp = new Property();
+        fkProp.setName(pkProp.getName());
+        fkProp.setType(pkProp.getType());
+        fkProp.setLength(pkProp.getLength());
+        fkProp.setConstraints(List.of(Property.Constraints.FOREIGN_KEY));
+        return fkProp;
     }
 
     /**
