@@ -5,6 +5,7 @@ import com.mld.MLDGraph;
 import com.mld.Table;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,54 +26,35 @@ public class Transform {
                 // régle 3 et 5
                 if (!association.getPropertyList().isEmpty() || association.getLinks().size() > 2){
                     createTableFromAssociation(association);
-                    System.out.println("régle 3 et 5");
                 }
                 else {
                     // Si la relation n'est pas porteuse de propriétés
                     Map<Entity, Cardinalities> links = association.getLinks();
                     ArrayList<Entity> entities = new ArrayList<>(association.getLinks().keySet());
-                    // 
+                    Table tableA = createMLDTable(entities.get(0));
+                    Table tableB = createMLDTable(entities.get(1));
+
                     if (links.get(entities.get(0)).toString().endsWith("n") && links.get(entities.get(1)).toString().endsWith("n")){
                         createTableFromAssociation(association);
-                        /*
-                        Table tableA = createMLDTable(entities.get(0));
-                        Table tableB = createMLDTable(entities.get(1));
-                        Table tableAssoc = createMLDTable(association);
-                        tableAssoc.addProperty(entities.get(0).getPrimaryKey());
-                        tableAssoc.addProperty(entities.get(1).getPrimaryKey());
-                        mldGraph.getNodeList().add(tableA);
-                        mldGraph.getNodeList().add(tableB);
-                        mldGraph.getNodeList().add(tableAssoc);
-                        mldGraph.getForeignKeys().put(tableA, tableAssoc.getName());
-                        mldGraph.getForeignKeys().put(tableB, tableAssoc.getName());
-                        */
                     }
                     else if (links.get(entities.get(0)).toString().endsWith("1") && links.get(entities.get(1)).toString().endsWith("1")){
-                        Table tableA = createMLDTable(entities.get(0));
-                        Table tableB = createMLDTable(entities.get(1));
-                        tableB.addProperty(createForeignKey(entities.get(0).getId()));
-                        mldGraph.getNodeList().add(tableA);
-                        mldGraph.getNodeList().add(tableB);
-                        mldGraph.getForeignKeys().put(tableA.getName(), tableB.getName());
+                        mldGraph.getTables().put(tableB, this.addForeignKey(tableA, tableB, entities.get(0).getId()));
+                        mldGraph.getTables().put(tableA, null);
                     }
                     else{
-                        Table tableA = createMLDTable(entities.get(0));
-                        Table tableB = createMLDTable(entities.get(1));
                         if (links.get(entities.get(0)).toString().endsWith("n")) {
-                            tableB.addProperty(createForeignKey(entities.get(0).getId()));
-                            mldGraph.getForeignKeys().put(tableB.getName(), tableA.getName());
+                            mldGraph.getTables().put(tableB, this.addForeignKey(tableA, tableB, entities.get(0).getId()));
+                            mldGraph.getTables().put(tableA, null);
                         }
                         else {
-                            tableA.addProperty(createForeignKey(entities.get(1).getId()));
-                            mldGraph.getForeignKeys().put(tableA.getName(), tableB.getName());
+                            mldGraph.getTables().put(tableA, this.addForeignKey(tableB, tableA, entities.get(1).getId()));
+                            mldGraph.getTables().put(tableB, null);
                         }
-                        mldGraph.getNodeList().add(tableA);
-                        mldGraph.getNodeList().add(tableB);
                     }
                 }
             }
             else{
-                mldGraph.getNodeList().add(createMLDTable(node));
+                mldGraph.getTables().put(createMLDTable(node), null);
                 System.out.println("last else");
             }
         });
@@ -80,14 +62,21 @@ public class Transform {
         return mldGraph;
     }
 
+    private HashMap<String, String> addForeignKey(Table tableA, Table tableB, Property id) {
+        tableB.addProperty(createForeignKey(id));
+        return new HashMap<>()
+                {{ put(tableA.getPrimaryKey().getName(), tableA.getName()); }};
+    }
+
     private void createTableFromAssociation(Association association) {
+        Map<String, String> fkConstraints = new HashMap<>();
         Table associationTable = createMLDTable(association);
         association.getLinks().forEach((entity, cardinality) -> {
-            mldGraph.getNodeList().add(createMLDTable(entity));
-            mldGraph.getForeignKeys().put(entity.getName(), associationTable.getName());
+            fkConstraints.put(entity.getId().getName(), entity.getName());
             associationTable.addProperty(createForeignKey(entity.getId()));
+            mldGraph.getTables().put(createMLDTable(entity), null);
         });
-        mldGraph.getNodeList().add(associationTable);
+        mldGraph.getTables().put(associationTable, fkConstraints);
     }
 
 
