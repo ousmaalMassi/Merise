@@ -1,6 +1,7 @@
 package com;
 
 import com.mcd.MCDPanel;
+import com.mld.MLDGraph;
 
 import javax.swing.*;
 
@@ -21,6 +22,8 @@ public class Merise extends JFrame {
     private void initComponents() {
         mcdPanel = new MCDPanel();
         transform = new Transform();
-        System.out.println(transform.toMLD(mcdPanel.getMcdGraph()));
+        //System.out.println(transform.toMLD(mcdPanel.getMcdGraph()));
+        MLDGraph mldGraph = transform.mcdToMld(mcdPanel.getMcdGraph());
+        System.out.println(transform.mldToMpd(mldGraph));
     }
 }

@@ -59,12 +59,23 @@ public class Property {
      * 
      */
     public enum Constraints {
-        PRIMARY_KEY,
-        FOREIGN_KEY,
-        NULL,
-        NOT_NULL,
-        UNIQUE,
-        AUTO_INCREMENTS
+        PRIMARY_KEY("PRIMARY KEY"),
+        NULL("NULL"),
+        NOT_NULL("NOT NULL"),
+        UNIQUE("UNIQUE"),
+        AUTO_INCREMENT("AUTO_INCREMENT");
+
+        private final String constraint;
+
+        Constraints(String constraint) {
+            this.constraint = constraint;
+        }
+
+
+        @Override
+        public String toString() {
+            return this.constraint;
+        }
     }
 
     public String getName() {

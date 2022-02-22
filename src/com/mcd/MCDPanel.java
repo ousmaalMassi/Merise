@@ -11,7 +11,6 @@ public class MCDPanel extends JPanel {
 
     public MCDPanel() {
         this.mcdGraph = this.showExampleGraph();
-        //System.out.println(mcdGraph);
     }
 
     /**
@@ -23,7 +22,7 @@ public class MCDPanel extends JPanel {
         Entity entity1 = new Entity("Client");
         entity1.setPropertyList(
                 Stream.of(
-                        new Property("id", Property.Types.INT, 11, Arrays.asList(Property.Constraints.PRIMARY_KEY, Property.Constraints.AUTO_INCREMENTS)),
+                        new Property("id", Property.Types.INT, 11, Arrays.asList(Property.Constraints.PRIMARY_KEY, Property.Constraints.AUTO_INCREMENT)),
                         new Property("nom", Property.Types.INT, 11, List.of(Property.Constraints.NOT_NULL)),
                         new Property("prenom", Property.Types.INT, 11, List.of(Property.Constraints.NOT_NULL)),
                         new Property("adresse", Property.Types.INT, 11, List.of(Property.Constraints.NOT_NULL))
@@ -33,7 +32,7 @@ public class MCDPanel extends JPanel {
         Entity entity2 = new Entity("Article");
         entity2.setPropertyList(
                 Stream.of(
-                        new Property("id_article", Property.Types.INT, 11, Arrays.asList(Property.Constraints.PRIMARY_KEY, Property.Constraints.AUTO_INCREMENTS)),
+                        new Property("id_article", Property.Types.INT, 11, Arrays.asList(Property.Constraints.PRIMARY_KEY, Property.Constraints.AUTO_INCREMENT)),
                         new Property("prix_achat", Property.Types.INT, 11, List.of(Property.Constraints.NOT_NULL)),
                         new Property("prix_vente", Property.Types.VARCHAR, 30, List.of(Property.Constraints.NOT_NULL)),
                         new Property("designation", Property.Types.INT, 11, List.of(Property.Constraints.NOT_NULL))
@@ -48,10 +47,8 @@ public class MCDPanel extends JPanel {
         );*/
 
         association.addLink(entity1, Cardinalities.ONE_MANY);
-        association.addLink(entity2, Cardinalities.ONE_ONE);
+        association.addLink(entity2, Cardinalities.ONE_MANY);
 
-        // graph.addNode(entity1);
-        // graph.addNode(entity2);
         graph.addNode(association);
 
         return graph;
