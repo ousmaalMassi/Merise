@@ -3,6 +3,7 @@ package com.mld;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -18,7 +19,7 @@ public class MLDGraph {
      * Default constructor
      */
     public MLDGraph() {
-        tables = new HashMap<>();
+        tables = new LinkedHashMap<>();
     }
 
 
@@ -32,8 +33,8 @@ public class MLDGraph {
 
     /**
      *
-
-    public void associate(Table table1, Table table2) {
+     */
+    /*public void associate(Table table1, Table table2) {
         table1.addLink(table2);
     }*/
 

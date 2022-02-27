@@ -1,9 +1,14 @@
 package com;
 
 import com.mcd.MCDPanel;
+import com.mcd.Property;
 import com.mld.MLDGraph;
 
 import javax.swing.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 public class Merise extends JFrame {
 
@@ -20,10 +25,22 @@ public class Merise extends JFrame {
     }
 
     private void initComponents() {
+        long currentTimeMillis = System.currentTimeMillis();
         mcdPanel = new MCDPanel();
         transform = new Transform();
         //System.out.println(transform.toMLD(mcdPanel.getMcdGraph()));
         MLDGraph mldGraph = transform.mcdToMld(mcdPanel.getMcdGraph());
         System.out.println(transform.mldToMpd(mldGraph));
+        System.out.println(System.currentTimeMillis() - currentTimeMillis+" ms");
+
+        
+        /*DataDictionary dataDictionary = new DataDictionary();
+        List<Property> propertyList = new ArrayList<>();
+        propertyList.add(new Property("id", Property.Types.INT, 11, Arrays.asList(Property.Constraints.PRIMARY_KEY, Property.Constraints.AUTO_INCREMENT)));
+        propertyList.add(new Property("nom", Property.Types.INT, 11, List.of(Property.Constraints.NOT_NULL)));
+        dataDictionary.setDictionary(new HashMap<>(){{ put("test", propertyList); }});
+        dataDictionary.addData("test", new Property("nom", Property.Types.INT, 11, List.of(Property.Constraints.NOT_NULL)));
+        dataDictionary.removeData("test", "nom");
+        System.out.println(dataDictionary);*/
     }
 }

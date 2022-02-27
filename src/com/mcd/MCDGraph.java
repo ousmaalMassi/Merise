@@ -63,15 +63,6 @@ public class MCDGraph {
     }
 
     /**
-     * @param node object
-     * @return entity
-     */
-    public Entity getNode(Node node){
-        return (Entity) nodeList.get(nodeList.indexOf(node));
-    }
-
-
-    /**
      * @param name of the entity
      * @return entity
      */
@@ -81,7 +72,6 @@ public class MCDGraph {
                 .findAny()
                 .orElse(null);
     }
-
 
     @Override
     public String toString(){
