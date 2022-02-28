@@ -1,37 +1,35 @@
 package com;
 
 import com.mcd.MCDPanel;
-import com.mcd.Property;
 import com.mld.MLDGraph;
 
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
-public class Merise extends JFrame {
+public class Merise /*extends JFrame */{
 
     MCDPanel mcdPanel;
     Transform transform;
 
     public Merise() {
         initComponents();
-        setTitle("Merice_v2_pfe");
+        /*setTitle("Merice_v2_pfe");
         setSize(192, 108);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setVisible(true);
+        setVisible(true);*/
     }
 
     private void initComponents() {
         long currentTimeMillis = System.currentTimeMillis();
         mcdPanel = new MCDPanel();
         transform = new Transform();
-        //System.out.println(transform.toMLD(mcdPanel.getMcdGraph()));
         MLDGraph mldGraph = transform.mcdToMld(mcdPanel.getMcdGraph());
-        System.out.println(transform.mldToMpd(mldGraph));
-        System.out.println(System.currentTimeMillis() - currentTimeMillis+" ms");
+        //System.out.println(mldGraph);
+        System.out.println(transform.mpdToSQL(mldGraph));
+        //System.out.println(System.currentTimeMillis() - currentTimeMillis+" ms");
 
         
         /*DataDictionary dataDictionary = new DataDictionary();

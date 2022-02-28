@@ -3,6 +3,8 @@ package com.mld;
 import com.Node;
 import com.mcd.Property;
 
+import java.util.List;
+
 public class Table extends Node {
     public Table(String name) {
         super(name);
@@ -17,6 +19,11 @@ public class Table extends Node {
 
     @Override
     public String toString(){
-        return this.name+" "+getPropertyList();
+        List<Property> propertyList = this.getPropertyList();
+        StringBuilder propertiesName = new StringBuilder();
+        propertyList.forEach(property ->
+                        propertiesName.append(property.getName()).append(", ")
+                );
+        return this.name+" : "+propertiesName+"\n";
     }
 }

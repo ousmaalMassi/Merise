@@ -22,7 +22,6 @@ public class MLDGraph {
         tables = new LinkedHashMap<>();
     }
 
-
     public Map<Table, Map<String, String>>getTables() {
         return tables;
     }
@@ -40,11 +39,11 @@ public class MLDGraph {
 
     @Override
     public String toString(){
-        return String.format("""
-                    {
-                        "tables" : %s,
-                    }
-                """, this.tables);
+        StringBuilder stringBuilder = new StringBuilder();
+        this.tables.forEach((table, fk) ->
+                stringBuilder.append(table)
+                );
+        return stringBuilder.toString();
     }
 
 

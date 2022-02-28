@@ -97,56 +97,44 @@ public class Transform {
         return table;
     }
 
-    public String mldToMpd(MLDGraph mldGraph) {
+    public String mpdToSQL(MLDGraph mldGraph) {
         StringBuilder stringBuilder = new StringBuilder();
-        mldGraph.getTables().forEach((table, foreignKeys) -> {
-            stringBuilder
-                    .append("DROP TABLE IF EXISTS `")
-                    .append(table.getName()).append("`;\n")
-                    .append("CREATE TABLE `")
-                    .append(table.getName()).append("` (\n")
-                    .append(this.createColumn(table.getPropertyList()))
-                    .append(this.createForeignKeyColumn(foreignKeys))
-                    .append(") ").append("ENGINE=InnoDB;").append("\n\n");
-        });
+        mldGraph.getTables().forEach((table, foreignKeys) -> stringBuilder
+                .append("DROP TABLE IF EXISTS `")
+                .append(table.getName()).append("`;\n")
+                .append("CREATE TABLE `")
+                .append(table.getName()).append("` (\n")
+                .append(this.createColumn(table.getPropertyList(), foreignKeys))
+                .append(") ").append("ENGINE=InnoDB;").append("\n\n"));
         return stringBuilder.toString();
     }
 
-    private StringBuilder createColumn(List<Property> properties) {
-        StringBuilder stringBuilder = new StringBuilder();
-        properties.forEach(property -> {
-            stringBuilder
-                    .append("`")
-                    .append(property.getName()).append("` ")
-                    .append(property.getType()).append(" (")
-                    .append(property.getLength()).append(") ")
-                    .append(this.createConstraints(property.getConstraints()))
-                    .append("\n");
-        });
-        return stringBuilder;
+    private String createColumn(List<Property> properties, Map<String, String> foreignKeys) {
+        List<String> list = new ArrayList<>();
+        properties.forEach(property -> list.add(
+                "`" + property.getName() + "`" +
+                " " + property.getType().toString() +
+                " (" + property.getLength() + ")" +
+                " " + this.createConstraints(property.getConstraints())
+        ));
+        if (foreignKeys != null)
+            list.add(this.createForeignKeyColumn(foreignKeys));
+        return String.join(",\n", list);
     }
 
-    private StringBuilder createConstraints(List<Property.Constraints> constraints) {
+    private String createConstraints(List<Property.Constraints> constraints) {
         StringBuilder constraintLine = new StringBuilder();
         constraints.forEach(
-                constraint -> constraintLine.append(" ").append(constraint.toString())
+                constraint -> constraintLine.append(constraint.toString())
         );
-        return constraintLine;
+        return constraintLine.toString();
     }
 
-    private StringBuilder createForeignKeyColumn(Map<String, String> foreignKeys) {
-        StringBuilder stringBuilder = new StringBuilder();
-        if (foreignKeys != null)
-            foreignKeys.forEach((prop, tableRef) -> stringBuilder
-                    .append(",")
-                    .append("\n")
-                    .append("FOREIGN KEY (`")
-                    .append(prop)
-                    .append("`) REFERENCES ")
-                    .append(tableRef)
-                    .append("(`")
-                    .append(prop)
-                    .append("`)\n"));
-        return stringBuilder;
+    private String createForeignKeyColumn(Map<String, String> foreignKeys) {
+        List<String> list = new ArrayList<>();
+            foreignKeys.forEach((prop, tableRef) -> list.add(
+                    "FOREIGN KEY (`" + prop + "`) REFERENCES " + tableRef + "(`" + prop + "`)")
+            );
+        return String.join(",\n", list);
     }
 }
