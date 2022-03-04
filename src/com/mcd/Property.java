@@ -7,30 +7,16 @@ import java.util.List;
  */
 public class Property {
 
-    /**
-     *
-     */
+    public String code;
+
     public String name;
 
-    /**
-     *
-     */
     public Types type;
 
-    /**
-     *
-     */
     public int length;
 
-    /**
-     *
-     */
     public List<Constraints> constraints;
 
-
-    /**
-     * 
-     */
     public Property(String name, Types type, int length, List<Constraints> constraints) {
         this.name = name;
         this.type = type;
@@ -45,7 +31,7 @@ public class Property {
     /**
      * 
      */
-    public enum Types {
+    /*public enum Types {
         INT,
         BIGINT,
         FLOAT,
@@ -53,11 +39,16 @@ public class Property {
         VARCHAR,
         TEXT,
         DATE
+    }*/
+
+    public enum Types {
+        ALPHABETICAL,
+        ALPHANUMERIC,
+        DIGITAL,
+        DATE,
+        LOGIC
     }
 
-    /**
-     * 
-     */
     public enum Constraints {
         PRIMARY_KEY("PRIMARY KEY"),
         NULL("NULL"),
@@ -66,16 +57,21 @@ public class Property {
         AUTO_INCREMENT("AUTO_INCREMENT");
 
         private final String constraint;
-
         Constraints(String constraint) {
             this.constraint = constraint;
         }
-
-
         @Override
         public String toString() {
             return this.constraint;
         }
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getName() {
@@ -115,11 +111,12 @@ public class Property {
         return String.format("""
                         
                             {
+                                "code" : "%s",
                                 "name" : "%s",
                                 "type" : "%s",
                                 "length" : %s,
                                 "constraints" : %s
                             }
-                """, this.name,  this.type, this.length, this.constraints);
+                """, this.code, this.name,  this.type, this.length, this.constraints);
     }
 }

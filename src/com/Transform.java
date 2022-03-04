@@ -3,87 +3,64 @@ package com;
 import com.mcd.*;
 import com.mld.MLDGraph;
 import com.mld.Table;
+import com.mpd.MPDGraph;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Transform {
 
-    MLDGraph mldGraph;
+    private final MLDGraph mldGraph;
+    private final MPDGraph mpdGraph;
 
     public Transform() {
         mldGraph = new MLDGraph();
+        mpdGraph = new MPDGraph();
     }
 
     public MLDGraph mcdToMld(MCDGraph mcdGraph) {
 
-        mcdGraph.getNodeList().forEach(node -> {
-            if (node instanceof Association association) {
-                // Toute relation porteuse de propriétés se transformera en entité et absorbera comme clé étrangère les
-                //identifiants des entités qui lui sont liées.
+        mcdGraph.getEntities().forEach(entity -> mldGraph.getTables().add(createMLDTable(entity)));
 
-                // régle 3 et 5
-                if (!association.getPropertyList().isEmpty() || association.getLinks().size() > 2) {
+        mcdGraph.getAssociation().forEach(association -> {
+            if (!association.getPropertyList().isEmpty() || association.getLinks().size() > 2) {
+                createTableFromAssociation(association);
+            } else {
+                Map<String, Cardinalities> links = association.getLinks();
+                List<String> entities = new ArrayList<>(association.getLinks().keySet());
+                Table tableA = mldGraph.search(entities.get(0));
+                Table tableB = mldGraph.search(entities.get(1));
+
+                if (links.get(entities.get(0)).toString().endsWith("n") && links.get(entities.get(1)).toString().endsWith("n")) {
                     createTableFromAssociation(association);
+                } else if (links.get(entities.get(0)).toString().endsWith("1") && links.get(entities.get(1)).toString().endsWith("1")) {
+                    tableB.addForeignKey(tableA);
                 } else {
-                    // Si la relation n'est pas porteuse de propriétés
-                    Map<Entity, Cardinalities> links = association.getLinks();
-                    ArrayList<Entity> entities = new ArrayList<>(association.getLinks().keySet());
-                    Table tableA = createMLDTable(entities.get(0));
-                    Table tableB = createMLDTable(entities.get(1));
-
-                    if (links.get(entities.get(0)).toString().endsWith("n") && links.get(entities.get(1)).toString().endsWith("n")) {
-                        createTableFromAssociation(association);
-                    } else if (links.get(entities.get(0)).toString().endsWith("1") && links.get(entities.get(1)).toString().endsWith("1")) {
-                        mldGraph.getTables().put(tableA, null);
-                        mldGraph.getTables().put(tableB, this.addForeignKey(tableA, tableB, entities.get(0).getId()));
+                    if (links.get(entities.get(0)).toString().endsWith("n")) {
+                        tableB.addForeignKey(tableA);
                     } else {
-                        if (links.get(entities.get(0)).toString().endsWith("n")) {
-                            mldGraph.getTables().put(tableA, null);
-                            mldGraph.getTables().put(tableB, this.addForeignKey(tableA, tableB, entities.get(0).getId()));
-                        } else {
-                            mldGraph.getTables().put(tableB, null);
-                            mldGraph.getTables().put(tableA, this.addForeignKey(tableB, tableA, entities.get(1).getId()));
-                        }
+                        tableA.addForeignKey(tableB);
                     }
                 }
-            } else {
-                mldGraph.getTables().put(createMLDTable(node), null);
-                System.out.println("last else");
             }
         });
 
         return mldGraph;
     }
 
-    private Map<String, String> addForeignKey(Table tableA, Table tableB, Property id) {
-        tableB.addProperty(createForeignKey(id));
-        return new HashMap<>() {{
-            put(tableA.getPrimaryKey().getName(), tableA.getName());
-        }};
-    }
-
     private void createTableFromAssociation(Association association) {
-        Map<String, String> fkConstraints = new HashMap<>();
         Table associationTable = createMLDTable(association);
-
-        association.getLinks().forEach((entity, cardinality) -> {
-            fkConstraints.put(entity.getId().getName(), entity.getName());
-            associationTable.addProperty(createForeignKey(entity.getId()));
-            mldGraph.getTables().put(createMLDTable(entity), null);
-        });
-        mldGraph.getTables().put(associationTable, fkConstraints);
+        association.getLinks().forEach((entityName, cardinality) -> associationTable.addForeignKey(mldGraph.search(entityName)));
+        mldGraph.getTables().add(associationTable);
     }
 
-
-    private Property createForeignKey(Property pkProp) {
+    private Property duplicateProperty(Property pkProp) {
         Property fkProp = new Property();
         fkProp.setName(pkProp.getName());
         fkProp.setType(pkProp.getType());
         fkProp.setLength(pkProp.getLength());
-        fkProp.setConstraints(List.of());
+        fkProp.setConstraints(List.of(Property.Constraints.PRIMARY_KEY));
         return fkProp;
     }
 
@@ -97,43 +74,48 @@ public class Transform {
         return table;
     }
 
+    public MPDGraph mldToMpd(MLDGraph mldGraph) {
+        mldGraph.getTables().forEach(System.out::println);
+        //table.addProperty(duplicateProperty(refTable.getPrimaryKey()));
+        return mpdGraph;
+    }
+
     public String mpdToSQL(MLDGraph mldGraph) {
         StringBuilder stringBuilder = new StringBuilder();
-        mldGraph.getTables().forEach((table, foreignKeys) -> stringBuilder
-                .append("DROP TABLE IF EXISTS `")
-                .append(table.getName()).append("`;\n")
-                .append("CREATE TABLE `")
-                .append(table.getName()).append("` (\n")
-                .append(this.createColumn(table.getPropertyList(), foreignKeys))
-                .append(") ").append("ENGINE=InnoDB;").append("\n\n"));
+        mldGraph.getTables().forEach(table -> stringBuilder
+                .append("DROP TABLE IF EXISTS `").append(table.getName()).append("`;\n")
+                .append("CREATE TABLE `").append(table.getName()).append("` (\n")
+                .append(this.createColumn(table))
+                .append(") ").append("ENGINE=InnoDB;").append("\n\n")
+        );
         return stringBuilder.toString();
     }
 
-    private String createColumn(List<Property> properties, Map<String, String> foreignKeys) {
+    private String createColumn(Table table) {
         List<String> list = new ArrayList<>();
-        properties.forEach(property -> list.add(
-                "`" + property.getName() + "`" +
+        table.getPropertyList().forEach(property -> list.add(
+                "`" + property.getCode() + "`" +
                 " " + property.getType().toString() +
                 " (" + property.getLength() + ")" +
                 " " + this.createConstraints(property.getConstraints())
         ));
-        if (foreignKeys != null)
-            list.add(this.createForeignKeyColumn(foreignKeys));
+        if (!table.getForeignKeys().isEmpty())
+            list.add(this.createForeignKeyColumn(table.getForeignKeys()));
         return String.join(",\n", list);
     }
 
     private String createConstraints(List<Property.Constraints> constraints) {
-        StringBuilder constraintLine = new StringBuilder();
+        List<String> list = new ArrayList<>();
         constraints.forEach(
-                constraint -> constraintLine.append(constraint.toString())
+                constraint -> list.add(constraint.toString())
         );
-        return constraintLine.toString();
+        return String.join(" ", list);
     }
 
-    private String createForeignKeyColumn(Map<String, String> foreignKeys) {
+    private String createForeignKeyColumn(Map<String, Table> foreignKeys) {
         List<String> list = new ArrayList<>();
             foreignKeys.forEach((prop, tableRef) -> list.add(
-                    "FOREIGN KEY (`" + prop + "`) REFERENCES " + tableRef + "(`" + prop + "`)")
+                    "FOREIGN KEY (`" + prop + "`) REFERENCES " + tableRef.getName() + "(`" + prop + "`)")
             );
         return String.join(",\n", list);
     }

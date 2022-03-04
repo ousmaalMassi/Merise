@@ -1,5 +1,6 @@
 package com;
 
+import com.exception.DuplicateProperty;
 import com.mcd.Property;
 
 import java.util.ArrayList;
@@ -46,7 +47,29 @@ public class Node {
      * 
      */
     public void addProperty(Property property) {
-        this.propertyList.add(property);
+        try {
+            this.normalize(property);
+            this.propertyList.add(property);
+        } catch (DuplicateProperty e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void normalize(Property property) throws DuplicateProperty {
+        String code = property.getName().replaceAll(" ", "_").replaceAll("'", "_");
+        if (this.search(code) == null) {
+            property.setCode(code);
+        }
+        else {
+            throw new DuplicateProperty("Duplicate Property Name: '"+code+"' Property");
+        }
+    }
+
+    public Property search(String string){
+        return this.propertyList.stream()
+                .filter(property -> property.getName().equals(string))
+                .findAny()
+                .orElse(null);
     }
 
     /**
@@ -67,7 +90,7 @@ public class Node {
      *
      */
     public void setPropertyList(List<Property> propertyList) {
-        this.propertyList = propertyList;
+        propertyList.forEach(this::addProperty);
     }
 
     @Override
@@ -80,3 +103,4 @@ public class Node {
                 """, this.name,  this.propertyList);
     }
 }
+

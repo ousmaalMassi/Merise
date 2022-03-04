@@ -1,5 +1,6 @@
 package com;
 
+import com.mcd.MCDGraph;
 import com.mcd.MCDPanel;
 import com.mld.MLDGraph;
 
@@ -26,9 +27,11 @@ public class Merise /*extends JFrame */{
         long currentTimeMillis = System.currentTimeMillis();
         mcdPanel = new MCDPanel();
         transform = new Transform();
-        MLDGraph mldGraph = transform.mcdToMld(mcdPanel.getMcdGraph());
-        //System.out.println(mldGraph);
-        System.out.println(transform.mpdToSQL(mldGraph));
+        MCDGraph mcdGraph = mcdPanel.getMcdGraph();
+        MLDGraph mldGraph = transform.mcdToMld(mcdGraph);
+        System.out.println(mldGraph);
+        System.out.println(mcdGraph);
+        //System.out.println(transform.mpdToSQL(mldGraph));
         //System.out.println(System.currentTimeMillis() - currentTimeMillis+" ms");
 
         

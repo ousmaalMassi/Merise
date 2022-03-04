@@ -1,5 +1,7 @@
 package com.mcd;
 
+import com.exception.DuplicateNode;
+
 import javax.swing.*;
 import java.util.Arrays;
 import java.util.List;
@@ -22,20 +24,20 @@ public class MCDPanel extends JPanel {
         Entity entity1 = new Entity("Client");
         entity1.setPropertyList(
                 Stream.of(
-                        new Property("id", Property.Types.INT, 11, Arrays.asList(Property.Constraints.PRIMARY_KEY, Property.Constraints.AUTO_INCREMENT)),
-                        new Property("nom", Property.Types.INT, 11, List.of(Property.Constraints.NOT_NULL)),
-                        new Property("prenom", Property.Types.INT, 11, List.of(Property.Constraints.NOT_NULL)),
-                        new Property("adresse", Property.Types.INT, 11, List.of(Property.Constraints.NOT_NULL))
+                        new Property("id", Property.Types.DIGITAL, 11, Arrays.asList(Property.Constraints.PRIMARY_KEY, Property.Constraints.AUTO_INCREMENT)),
+                        new Property("nom", Property.Types.ALPHABETICAL, 11, List.of(Property.Constraints.NOT_NULL)),
+                        new Property("prénom", Property.Types.ALPHABETICAL, 11, List.of(Property.Constraints.NOT_NULL)),
+                        new Property("adresse", Property.Types.ALPHANUMERIC, 11, List.of(Property.Constraints.NOT_NULL))
                 ).collect(Collectors.toList())
         );
 
         Entity entity2 = new Entity("Article");
         entity2.setPropertyList(
                 Stream.of(
-                        new Property("id_article", Property.Types.INT, 11, Arrays.asList(Property.Constraints.PRIMARY_KEY, Property.Constraints.AUTO_INCREMENT)),
-                        new Property("prix_achat", Property.Types.INT, 11, List.of(Property.Constraints.NOT_NULL)),
-                        new Property("prix_vente", Property.Types.VARCHAR, 30, List.of(Property.Constraints.NOT_NULL)),
-                        new Property("designation", Property.Types.INT, 11, List.of(Property.Constraints.NOT_NULL))
+                        new Property("id article", Property.Types.DIGITAL, 11, Arrays.asList(Property.Constraints.PRIMARY_KEY, Property.Constraints.AUTO_INCREMENT)),
+                        new Property("prix d'achat", Property.Types.ALPHANUMERIC, 11, List.of(Property.Constraints.NOT_NULL)),
+                        new Property("prix de vente", Property.Types.ALPHANUMERIC, 30, List.of(Property.Constraints.NOT_NULL)),
+                        new Property("designation", Property.Types.ALPHABETICAL, 11, List.of(Property.Constraints.NOT_NULL))
                 ).collect(Collectors.toList())
         );
 
@@ -46,10 +48,26 @@ public class MCDPanel extends JPanel {
                 ).collect(Collectors.toList())
         );*/
 
-        association.addLink(entity1, Cardinalities.ONE_MANY);
-        association.addLink(entity2, Cardinalities.ONE_MANY);
+        try {
+            graph.addEntities(entity1);
+            graph.addEntities(entity2);
+            graph.addAssociation(association);
+        } catch (DuplicateNode e) {
+            e.printStackTrace();
+        }
 
-        graph.addNode(association);
+        association.getLinks().put(entity1.getName(), Cardinalities.ONE_MANY);
+        association.getLinks().put(entity2.getName(), Cardinalities.ONE_MANY);
+
+        /*Entity entity3 = new Entity("Client");
+        entity3.setPropertyList(
+                Stream.of(
+                        new Property("identifier", Property.Types.DIGITAL, 11, Arrays.asList(Property.Constraints.PRIMARY_KEY, Property.Constraints.AUTO_INCREMENT)),
+                        new Property("name", Property.Types.ALPHABETICAL, 11, List.of(Property.Constraints.NOT_NULL)),
+                        new Property("phone", Property.Types.ALPHABETICAL, 11, List.of(Property.Constraints.NOT_NULL)),
+                        new Property("email", Property.Types.ALPHANUMERIC, 11, List.of(Property.Constraints.NOT_NULL))
+                ).collect(Collectors.toList())
+        );*/
 
         return graph;
     }
