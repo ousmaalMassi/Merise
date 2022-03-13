@@ -29,9 +29,9 @@ public class Merise /*extends JFrame */{
         transform = new Transform();
         MCDGraph mcdGraph = mcdPanel.getMcdGraph();
         MLDGraph mldGraph = transform.mcdToMld(mcdGraph);
-        System.out.println(mldGraph);
-        System.out.println(mcdGraph);
-        //System.out.println(transform.mpdToSQL(mldGraph));
+        //System.out.println(mldGraph);
+        //System.out.println(mcdGraph);
+        System.out.println(transform.mpdToSQL(mldGraph));
         //System.out.println(System.currentTimeMillis() - currentTimeMillis+" ms");
 
         

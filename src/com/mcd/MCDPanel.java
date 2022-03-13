@@ -24,7 +24,7 @@ public class MCDPanel extends JPanel {
         Entity entity1 = new Entity("Client");
         entity1.setPropertyList(
                 Stream.of(
-                        new Property("id", Property.Types.DIGITAL, 11, Arrays.asList(Property.Constraints.PRIMARY_KEY, Property.Constraints.AUTO_INCREMENT)),
+                        new Property("id", Property.Types.DIGITAL, 11, List.of(Property.Constraints.AUTO_INCREMENT)),
                         new Property("nom", Property.Types.ALPHABETICAL, 11, List.of(Property.Constraints.NOT_NULL)),
                         new Property("prénom", Property.Types.ALPHABETICAL, 11, List.of(Property.Constraints.NOT_NULL)),
                         new Property("adresse", Property.Types.ALPHANUMERIC, 11, List.of(Property.Constraints.NOT_NULL))
@@ -34,7 +34,7 @@ public class MCDPanel extends JPanel {
         Entity entity2 = new Entity("Article");
         entity2.setPropertyList(
                 Stream.of(
-                        new Property("id article", Property.Types.DIGITAL, 11, Arrays.asList(Property.Constraints.PRIMARY_KEY, Property.Constraints.AUTO_INCREMENT)),
+                        new Property("id article", Property.Types.DIGITAL, 11, List.of(Property.Constraints.AUTO_INCREMENT)),
                         new Property("prix d'achat", Property.Types.ALPHANUMERIC, 11, List.of(Property.Constraints.NOT_NULL)),
                         new Property("prix de vente", Property.Types.ALPHANUMERIC, 30, List.of(Property.Constraints.NOT_NULL)),
                         new Property("designation", Property.Types.ALPHABETICAL, 11, List.of(Property.Constraints.NOT_NULL))

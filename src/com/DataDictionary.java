@@ -45,6 +45,6 @@ public class DataDictionary {
     public String toString() {
         return "DataDictionary{" +
                 "dictionary=" + dictionary +
-                '}';
+                "}";
     }
 }

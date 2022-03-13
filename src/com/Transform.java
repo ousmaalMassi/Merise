@@ -13,10 +13,12 @@ public class Transform {
 
     private final MLDGraph mldGraph;
     private final MPDGraph mpdGraph;
+    private final List<String> foreignKeyConstraint;
 
     public Transform() {
         mldGraph = new MLDGraph();
         mpdGraph = new MPDGraph();
+        foreignKeyConstraint = new ArrayList<>();
     }
 
     public MLDGraph mcdToMld(MCDGraph mcdGraph) {
@@ -57,7 +59,7 @@ public class Transform {
 
     private Property duplicateProperty(Property pkProp) {
         Property fkProp = new Property();
-        fkProp.setName(pkProp.getName());
+        fkProp.setName(pkProp.getCode());
         fkProp.setType(pkProp.getType());
         fkProp.setLength(pkProp.getLength());
         fkProp.setConstraints(List.of(Property.Constraints.PRIMARY_KEY));
@@ -81,6 +83,7 @@ public class Transform {
     }
 
     public String mpdToSQL(MLDGraph mldGraph) {
+        //TODO specify the targeted DBMS
         StringBuilder stringBuilder = new StringBuilder();
         mldGraph.getTables().forEach(table -> stringBuilder
                 .append("DROP TABLE IF EXISTS `").append(table.getName()).append("`;\n")
@@ -88,6 +91,7 @@ public class Transform {
                 .append(this.createColumn(table))
                 .append(") ").append("ENGINE=InnoDB;").append("\n\n")
         );
+        stringBuilder.append(String.join(",\n", this.foreignKeyConstraint));
         return stringBuilder.toString();
     }
 
@@ -99,9 +103,15 @@ public class Transform {
                 " (" + property.getLength() + ")" +
                 " " + this.createConstraints(property.getConstraints())
         ));
+        list.add(this.createPrimaryKey(table.getName(), table.getPrimaryKey()));
         if (!table.getForeignKeys().isEmpty())
-            list.add(this.createForeignKeyColumn(table.getForeignKeys()));
+            this.foreignKeyConstraint.add(this.createForeignKeyColumn(table.getName(), table.getForeignKeys()));
         return String.join(",\n", list);
+    }
+
+    private String createPrimaryKey(String tableName, Property primaryKey) {
+        //TODO remove AutoIncrements constraint from Association table and primaryKey can contain multiple properties
+        return "CONSTRAINT PK_"+tableName+" ADD PRIMARY KEY ("+primaryKey.getCode()+")";
     }
 
     private String createConstraints(List<Property.Constraints> constraints) {
@@ -112,10 +122,10 @@ public class Transform {
         return String.join(" ", list);
     }
 
-    private String createForeignKeyColumn(Map<String, Table> foreignKeys) {
+    private String createForeignKeyColumn(String tableName, Map<String, Table> foreignKeys) {
         List<String> list = new ArrayList<>();
             foreignKeys.forEach((prop, tableRef) -> list.add(
-                    "FOREIGN KEY (`" + prop + "`) REFERENCES " + tableRef.getName() + "(`" + prop + "`)")
+                    "ALTER TABLE " + tableName + " FOREIGN KEY (`" + prop + "`) REFERENCES " + tableRef.getName() + "(`" + prop + "`)")
             );
         return String.join(",\n", list);
     }

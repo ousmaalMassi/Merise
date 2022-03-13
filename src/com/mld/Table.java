@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Table extends Node {
-    List<Property> primaryKeys;
+    List<String> primaryKeys;
     Map<String, Table> foreignKeys;
 
     public Table(String name) {
@@ -18,27 +18,31 @@ public class Table extends Node {
         this.foreignKeys = new HashMap<>();
     }
 
-    public Property getPrimaryKey(){
+    /*public Property getPrimaryKey(){
         for (Property property : this.getPropertyList())
             if (property.getConstraints().contains(Property.Constraints.PRIMARY_KEY))
                 return property;
         return null;
+    }*/
+
+    public Property getPrimaryKey(){
+        return this.propertyList.get(0);
     }
 
     public void addPrimaryKey(Property property){
         if (!primaryKeys.contains(property))
-            primaryKeys.add(property);
+            primaryKeys.add(property.getCode());
     }
 
     public void removePrimaryKey(Property property){
-        primaryKeys.remove(property);
+        primaryKeys.remove(property.getCode());
     }
 
     public void addForeignKey(Table table){
         Property property = table.getPrimaryKey();
-        if (!foreignKeys.containsKey(property.getName())) {
+        if (!foreignKeys.containsKey(property.getCode())) {
             this.addProperty(property);
-            foreignKeys.put(property.getName(), table);
+            foreignKeys.put(property.getCode(), table);
         }
     }
 
@@ -54,7 +58,7 @@ public class Table extends Node {
     public String toString(){
         List<Property> propertyList = this.getPropertyList();
         List<String> list = new ArrayList<>();
-        propertyList.forEach(property -> list.add(property.getName()));
+        propertyList.forEach(property -> list.add(property.getCode()));
         return this.name+" : "+String.join(", ", list)+"\n";
     }
 }
