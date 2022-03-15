@@ -2,13 +2,15 @@ package com;
 
 import com.mcd.Property;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class DataDictionary {
     private List<Property> dictionary;
 
-    public DataDictionary() {}
+    public DataDictionary() {
+        this.dictionary = new ArrayList<>();
+    }
 
     public DataDictionary(List<Property> dictionary) {
         this.dictionary = dictionary;
@@ -22,8 +24,9 @@ public class DataDictionary {
         this.dictionary = dictionary;
     }
 
-    public void addData(Property property) {
+    public DataDictionary addData(Property property) {
         this.dictionary.add(property);
+        return this;
     }
 
     public void removeData(Property property) {
