@@ -4,41 +4,41 @@ import com.mcd.Property;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class DataDictionary {
-    private Map<String, List<Property>> dictionary;
+    private List<Property> dictionary;
 
     public DataDictionary() {}
 
-    public DataDictionary(Map<String, List<Property>> dictionary) {
+    public DataDictionary(List<Property> dictionary) {
         this.dictionary = dictionary;
     }
 
-
-    public Map<String, List<Property>> getDictionary() {
+    public List<Property> getDictionary() {
         return dictionary;
     }
 
-    public void addData(String name, Property property) {
-        List<Property> propertyList = this.dictionary.get(name);
-        propertyList.add(property);
-        this.dictionary.put(name, propertyList);
+    public void setDictionary(List<Property> dictionary) {
+        this.dictionary = dictionary;
     }
 
-    public void removeData(String name, String propertyName) {
-        List<Property> propertyList = this.dictionary.get(name);
-        Property property = propertyList.stream()
-                .filter(p -> p.getName().equals(propertyName))
+    public void addData(Property property) {
+        this.dictionary.add(property);
+    }
+
+    public void removeData(Property property) {
+        this.dictionary.remove(property);
+    }
+
+    /**
+     * @param propertyCode is the code of the code or name of the property we're looking for
+     * @return Property
+     */
+    public Property searchProperty(String propertyCode){
+        return this.dictionary.stream()
+                .filter(p -> p.getCode().equals(propertyCode))
                 .findAny()
                 .orElse(null);
-        if (property != null)
-            propertyList.remove(property);
-        this.dictionary.put(name, propertyList);
-    }
-
-    public void setDictionary(Map<String, List<Property>> dictionary) {
-        this.dictionary = dictionary;
     }
 
     @Override
