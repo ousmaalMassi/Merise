@@ -56,7 +56,7 @@ public class Node {
     }
 
     private void normalize(Property property) throws DuplicateProperty {
-        String code = property.getName().replaceAll(" ", "_").replaceAll("'", "_");
+        String code = property.getCode();
         if (this.search(code) == null) {
             property.setCode(code);
         }

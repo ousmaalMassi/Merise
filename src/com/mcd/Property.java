@@ -18,6 +18,7 @@ public class Property {
     public List<Constraints> constraints;
 
     public Property(String name, Types type, int length, List<Constraints> constraints) {
+        this.code = this.normalize(name);
         this.name = name;
         this.type = type;
         this.length = length;
@@ -80,6 +81,7 @@ public class Property {
 
     public void setName(String name) {
         this.name = name;
+        this.code = this.normalize(name);
     }
 
     public Types getType() {
@@ -104,6 +106,10 @@ public class Property {
 
     public void setConstraints(List<Constraints> constraints) {
         this.constraints = constraints;
+    }
+
+    private String normalize(String name) {
+        return name.replaceAll(" ", "_").replaceAll("'", "_");
     }
 
     @Override
