@@ -3,46 +3,66 @@ package com;
 import com.gdf.DFNode;
 import com.gdf.GDFGraph;
 import com.mcd.MCDGraph;
-import com.mcd.MCDPanel;
+import com.MeriseGUI.MCDPanel;
 import com.mcd.Property;
 import com.mld.MLDGraph;
 
 import javax.swing.*;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.util.List;
 
-public class Merise /*extends JFrame */{
+public class Merise extends JFrame {
 
-    MCDPanel mcdPanel;
-    Transform transform;
+    private JMenuBar jMenuBar;
+    private MCDPanel mcdPanel;
+    private Transform transform;
+    private JButton btnNew;
+    private JButton btnSave;
+    private JButton btnSaveAs;
+    private JButton btnExit;
+    private JButton btnGenerate;
+    private JButton btnGrid;
+    private JToolBar toolBar;
+
 
     public Merise() {
         initComponents();
-        /*setTitle("Merice_v2_pfe");
-        setSize(192, 108);
+        setTitle("Merice_v2_pfe");
+        setSize(1200, 800);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setVisible(true);*/
+        setVisible(true);
+
     }
 
     private void initComponents() {
-        long currentTimeMillis = System.currentTimeMillis();
+        createToolBar();
+        addBtnListeners();
+
+
         mcdPanel = new MCDPanel();
-        transform = new Transform();
-        MCDGraph mcdGraph = mcdPanel.getMcdGraph();
-        MLDGraph mldGraph = transform.mcdToMld(mcdGraph);
+        JTabbedPane jTabbedPane = new JTabbedPane();
+        jTabbedPane.add("mcd", mcdPanel);
+
+        add(jTabbedPane, BorderLayout.CENTER);
+//        add(jpn, BorderLayout.WEST);
+        add(toolBar, BorderLayout.NORTH );
+//        setJMenuBar(jMenuBar);
+
+
+
+
+
+//        long currentTimeMillis = System.currentTimeMillis();
+//        mcdPanel = new MCDPanel();
+//        transform = new Transform();
+//        MCDGraph mcdGraph = mcdPanel.getMcdGraph();
+//        MLDGraph mldGraph = transform.mcdToMld(mcdGraph);
         //System.out.println(mldGraph);
         //System.out.println(mcdGraph);
         //System.out.println(transform.mpdToSQL(mldGraph));
         //System.out.println(System.currentTimeMillis() - currentTimeMillis+" ms");
-
-        /*List<String> s = new ArrayList<>();
-        s.add("Massi");
-        s.add("sami");
-        System.out.println(s);
-        s.remove("Massi");
-        System.out.println(s);*/
 
         /*DataDictionary dataDictionary = new DataDictionary();
         List<Property> propertyList = new ArrayList<>();
@@ -53,10 +73,11 @@ public class Merise /*extends JFrame */{
         dataDictionary.removeData("test", "nom");
         System.out.println(dataDictionary);*/
 
-        DataDictionary dataDictionary = new DataDictionary();
+        /*DataDictionary dataDictionary = new DataDictionary();
         GDFGraph gdfGraph = new GDFGraph();
 
-        dataDictionary.addData(new Property("id", Property.Types.DIGITAL, 11, List.of(Property.Constraints.AUTO_INCREMENT)))
+        dataDictionary
+                .addData(new Property("id", Property.Types.DIGITAL, 11, List.of(Property.Constraints.AUTO_INCREMENT)))
                 .addData(new Property("nom", Property.Types.ALPHABETICAL, 11, List.of(Property.Constraints.NOT_NULL)))
                 .addData(new Property("prénom", Property.Types.ALPHABETICAL, 11, List.of(Property.Constraints.NOT_NULL)))
                 .addData(new Property("adresse", Property.Types.ALPHANUMERIC, 11, List.of(Property.Constraints.NOT_NULL)))
@@ -74,10 +95,59 @@ public class Merise /*extends JFrame */{
         dfNode.addTarget(adresse.getName());
 
         //DFNode dfNode = new DFNode(id.getName());
-        //TODO recursive declaration, DFNade or Property directly
+        //TODO recursive declaration, DFNode or Property directly
 
         gdfGraph.addDfNodes(dfNode);
 
-        System.out.println(gdfGraph);
+        System.out.println(gdfGraph);*/
+
+        pack();
+    }
+
+    private void createToolBar() {
+        toolBar = new JToolBar();
+        btnNew = initToolBarBtn("new_file", "nouveau fichier (CTRL+N)", true);
+        btnSave = initToolBarBtn("open_folder", "Ouvrir un nouveau projet (CTRL+O)", true);
+        btnSaveAs = initToolBarBtn("save_as", "Enregistrer sous (CTRL+SHIFT+S)", true);
+        btnGenerate = initToolBarBtn("generate", "Générer l'MLD & l'MPD (F6)", true);
+        btnExit = initToolBarBtn("exit", "Exit (ALT+F4)", true);
+        btnGrid = initToolBarBtn("grid", "Grille (CTRL+G)", false);
+
+        //toolBar.setBackground(Color.DARK_GRAY);
+        toolBar.setOrientation(SwingConstants.HORIZONTAL);
+    }
+
+    private JButton initToolBarBtn(String icon, String toolTip, Boolean separator) {
+        JButton btn = new JButton( new ImageIcon( "icons/"+icon+".png") );
+        btn.setFocusable(false);
+        btn.setToolTipText( toolTip );
+        toolBar.add(btn);
+        if(separator)
+            toolBar.addSeparator();
+        return btn;
+    }
+
+    private void addBtnListeners() {
+        btnGrid.addActionListener((ActionEvent e) -> {
+        });
+        btnNew.addActionListener((ActionEvent e) -> {
+            //gridEnabled = !gridEnabled;
+        });
+        btnSave.addActionListener((ActionEvent e) -> {
+            //gridEnabled = !gridEnabled;
+        });
+        btnSaveAs.addActionListener((ActionEvent e) -> {
+            //gridEnabled = !gridEnabled;
+        });
+        btnGenerate.addActionListener((ActionEvent e) -> {
+            transform = new Transform();
+            MCDGraph mcdGraph = mcdPanel.getMcdGraph();
+            MLDGraph mldGraph = transform.mcdToMld(mcdGraph);
+            System.out.println(mldGraph);
+            System.out.println(mcdGraph);
+            System.out.println(transform.mpdToSQL(mldGraph));
+        });
+        btnExit.addActionListener((ActionEvent e) -> this.dispose());
+
     }
 }

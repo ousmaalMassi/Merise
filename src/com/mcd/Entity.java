@@ -1,11 +1,11 @@
 package com.mcd;
 
-import com.Node;
+import com.MeriseObject;
 
 /**
  * 
  */
-public class Entity extends Node {
+public class Entity extends MeriseObject {
 
     /**
      * @param name of the entity

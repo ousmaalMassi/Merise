@@ -1,9 +1,9 @@
 package com.mpd;
 
-import com.Node;
+import com.MeriseObject;
 import com.mcd.Property;
 
-public class Table extends Node {
+public class Table extends MeriseObject {
     public Table(String name) {
         super(name);
     }

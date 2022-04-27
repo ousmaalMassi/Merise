@@ -1,6 +1,6 @@
 package com.mcd;
 
-import com.Node;
+import com.MeriseObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * 
  */
-public class Association extends Node {
+public class Association extends MeriseObject {
 
     private Map<String, Cardinalities> links;
 
@@ -36,12 +36,10 @@ public class Association extends Node {
 
     @Override
     public String toString(){
-        return String.format("""
-                    {
-                        "name" : "%s",
-                        "propertyList" : %s,
-                        "parties" : %s
-                    }
-                """, this.name,  this.propertyList, this.links);
+        return """
+                  
+                  |____ name : %s,
+                  |____ propertyList : %s
+                  |____ links : %s""".formatted(this.name,  this.propertyList, this.links);
     }
 }

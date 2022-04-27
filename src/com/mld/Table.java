@@ -1,6 +1,6 @@
 package com.mld;
 
-import com.Node;
+import com.MeriseObject;
 import com.mcd.Property;
 
 import java.util.ArrayList;
@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Table extends Node {
+public class Table extends MeriseObject {
     List<String> primaryKeys;
     Map<String, Table> foreignKeys;
 

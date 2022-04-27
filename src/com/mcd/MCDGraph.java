@@ -1,6 +1,6 @@
 package com.mcd;
 
-import com.exception.DuplicateNode;
+import com.exception.DuplicateMeriseObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,42 +31,40 @@ public class MCDGraph {
     /**
      * @return association list
      */
-    public List<Association> getAssociation() {
+    public List<Association> getAssociations() {
         return associations;
     }
 
     /**
      * @param entity to add in the list
      */
-    public void addEntities(Entity entity) throws DuplicateNode {
+    public void addEntity(Entity entity) throws DuplicateMeriseObject {
         if (this.containsEntity(entity.getName()) == null) {
             this.entities.add(entity);
-        }
-        else {
-            throw new DuplicateNode("Duplicate Entity: '"+entity.getName()+"' Entity");
+        } else {
+            throw new DuplicateMeriseObject("Duplicate Entity: '" + entity.getName() + "' Entity");
         }
     }
 
     /**
      * @param association to add in the list
      */
-    public void addAssociation(Association association) throws DuplicateNode {
+    public void addAssociation(Association association) throws DuplicateMeriseObject {
         if (this.containsAssociation(association.getName()) == null) {
             this.associations.add(association);
-        }
-        else {
-            throw new DuplicateNode("Duplicate Entity: '"+association.getName()+"' Entity");
+        } else {
+            throw new DuplicateMeriseObject("Duplicate Association in: '" + association.getName() + "' Association");
         }
     }
 
-    public Entity containsEntity(String string){
+    public Entity containsEntity(String string) {
         return this.entities.stream()
                 .filter(entity -> entity.getName().equals(string))
                 .findAny()
                 .orElse(null);
     }
 
-    public Association containsAssociation(String string){
+    public Association containsAssociation(String string) {
         return this.associations.stream()
                 .filter(association -> association.getName().equals(string))
                 .findAny()
@@ -76,7 +74,7 @@ public class MCDGraph {
     public void removeEntity(Entity entity) {
         this.entities.remove(entity);
         this.associations.forEach(association ->
-            association.getLinks().remove(entity.getName())
+                association.getLinks().remove(entity.getName())
         );
     }
 
@@ -86,26 +84,26 @@ public class MCDGraph {
 
     /**
      * @param association that associate a list of entities
-     * @param entityName to associate with
+     * @param entity      to associate with
      */
-    public void link(Association association, String entityName) {
+    public void link(Entity entity, Association association) {
+        String entityName = entity.getName();
         association.getLinks().put(entityName, Cardinalities.DEFAULT_CARDINALITY);
     }
 
     /**
      * @param association that associate a list of entities
-     * @param entityName to associate with
+     * @param entityName  to associate with
      */
     public void unlink(Association association, String entityName) {
         association.getLinks().remove(entityName);
     }
 
     @Override
-    public String toString(){
-        return String.format("""
-                    {
-                        "entityList" : %s,
-                    }
-                """, this.entities);
+    public String toString() {
+        return """
+                   __ entityList : %s,
+                  |
+                  |__ associationList : %s""".formatted(this.entities, this.associations);
     }
 }

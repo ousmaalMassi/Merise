@@ -25,7 +25,7 @@ public class Transform {
 
         mcdGraph.getEntities().forEach(entity -> mldGraph.getTables().add(createMLDTable(entity)));
 
-        mcdGraph.getAssociation().forEach(association -> {
+        mcdGraph.getAssociations().forEach(association -> {
             if (!association.getPropertyList().isEmpty() || association.getLinks().size() > 2) {
                 createTableFromAssociation(association);
             } else {
@@ -70,7 +70,7 @@ public class Transform {
      * @param node to convert to table
      * @return MLD table
      */
-    private Table createMLDTable(Node node) {
+    private Table createMLDTable(MeriseObject node) {
         Table table = new Table(node.getName());
         table.setPropertyList(node.getPropertyList());
         return table;

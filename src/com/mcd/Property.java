@@ -112,7 +112,7 @@ public class Property {
         return name.replaceAll(" ", "_").replaceAll("'", "_");
     }
 
-    @Override
+    /*@Override
     public String toString(){
         return String.format("""
                         
@@ -124,5 +124,16 @@ public class Property {
                                 "constraints" : %s
                             }
                 """, this.code, this.name,  this.type, this.length, this.constraints);
+    }*/
+
+    @Override
+    public String toString(){
+        return """
+                  
+                  |________ code : %s,
+                  |________ name : %s,
+                  |________ type : %s,
+                  |________ length : %s,
+                  |________ constraints : %s""".formatted(this.code, this.name,  this.type, this.length, this.constraints);
     }
 }
