@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="MERISEv2:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/MERISEv2_jar</output-path>
+    <root id="archive" name="MERISEv2.jar">
+      <element id="module-output" name="MERISEv2" />
+    </root>
+  </artifact>
+</component>
