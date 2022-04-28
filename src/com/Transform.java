@@ -12,12 +12,11 @@ import java.util.Map;
 public class Transform {
 
     private final MLDGraph mldGraph;
-    private final MPDGraph mpdGraph;
     private final List<String> foreignKeyConstraint;
 
     public Transform() {
         mldGraph = new MLDGraph();
-        mpdGraph = new MPDGraph();
+        MPDGraph mpdGraph = new MPDGraph();
         foreignKeyConstraint = new ArrayList<>();
     }
 
@@ -76,13 +75,13 @@ public class Transform {
         return table;
     }
 
-    public MPDGraph mldToMpd(MLDGraph mldGraph) {
-        mldGraph.getTables().forEach(System.out::println);
-        //table.addProperty(duplicateProperty(refTable.getPrimaryKey()));
-        return mpdGraph;
-    }
+//    public MPDGraph mldToMpd(MLDGraph mldGraph) {
+//        mldGraph.getTables().forEach(System.out::println);
+//        //table.addProperty(duplicateProperty(refTable.getPrimaryKey()));
+//        return mpdGraph;
+//    }
 
-    public String mpdToSQL(MLDGraph mldGraph) {
+    public String mldToMpd(MLDGraph mldGraph) {
         //TODO specify the targeted DBMS
         StringBuilder stringBuilder = new StringBuilder();
         mldGraph.getTables().forEach(table -> stringBuilder

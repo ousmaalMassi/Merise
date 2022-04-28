@@ -1,8 +1,8 @@
 package com.mpd;
 
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -11,33 +11,38 @@ public class MPDGraph {
     /**
      *
      */
-    private Map<Table, Map<String, String>> tables;
+    private List<Table> tables;
 
     /**
      * Default constructor
      */
     public MPDGraph() {
-        tables = new LinkedHashMap<>();
+        tables = new ArrayList<>();
     }
 
-
-    public Map<Table, Map<String, String>>getTables() {
+    public List<Table> getTables() {
         return tables;
     }
 
-    public void setTables(Map<Table, Map<String, String>>tables) {
+    public void setTables(List<Table> tables) {
         this.tables = tables;
     }
 
     /**
      *
      */
-    /*public void associate(GraphicalMPDTable table1, GraphicalMPDTable table2) {
-        table1.addLink(table2);
-    }*/
+    public void associate(Table table1, Table table2) {
+        //table1.addLink(table2);
+    }
 
     @Override
-    public String toString(){
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        this.tables.forEach(stringBuilder::append);
+        return stringBuilder.toString();
+    }
+
+    public String toJSON() {
         return String.format("""
                     {
                         "tables" : %s,
@@ -45,19 +50,11 @@ public class MPDGraph {
                 """, this.tables);
     }
 
-
-    public String toJSON(){
-        return String.format("""
-                    {
-                        "tables" : %s,
-                    }
-                """, this.tables);
-    }
-
-    /*public GraphicalMPDTable search(String string){
-        return this.nodeList.stream()
-                .filter(node -> node.getName().equals(string))
+    public Table search(String name){
+        return this.tables
+                .stream()
+                .filter(table -> table.getName().equals(name))
                 .findAny()
                 .orElse(null);
-    }*/
+    }
 }

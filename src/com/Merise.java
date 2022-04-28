@@ -144,7 +144,7 @@ public class Merise extends JFrame {
             MLDGraph mldGraph = transform.mcdToMld(mcdGraph);
             System.out.println(mldGraph);
             System.out.println(mcdGraph);
-            System.out.println(transform.mpdToSQL(mldGraph));
+            System.out.println(transform.mldToMpd(mldGraph));
             mldPanel.setMldGraph(mldGraph);
         });
         btnExit.addActionListener((ActionEvent e) -> this.dispose());
