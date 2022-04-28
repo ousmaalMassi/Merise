@@ -1,6 +1,6 @@
-package com.MeriseGUI;
+package com.MeriseGUI.mcd;
 
-import com.MeriseGUI.mcd.GraphicalMCDLink;
+import com.MeriseGUI.GraphicalLink;
 import com.MeriseObject;
 import com.exception.DuplicateMeriseObject;
 import com.mcd.*;
@@ -10,13 +10,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.LinkedList;
 
-public class GraphDrawer {
+public class MCDGraphDrawer {
 
-    private List<MCDNodeView> nodes;
+    private List<GraphicalMCDNode> nodes;
     private List<GraphicalLink> edges;
     private MCDGraph mcdGraph;
 
-    public GraphDrawer() {
+    public MCDGraphDrawer() {
         this.nodes = new LinkedList<>();
         this.edges = new LinkedList<>();
     }
@@ -44,7 +44,7 @@ public class GraphDrawer {
         System.out.println(mcdGraph);
     }
 
-    public void addAttribute(MCDNodeView mcdNodeView) {
+    public void addAttribute(GraphicalMCDNode mcdNodeView) {
 
         long currentTimeMillis = System.currentTimeMillis();
         MeriseObject meriseObject;
@@ -61,7 +61,7 @@ public class GraphDrawer {
         System.out.println(System.currentTimeMillis() - currentTimeMillis+" ms");
     }
 
-    public void remove(MCDNodeView mcdNodeView) {
+    public void remove(GraphicalMCDNode mcdNodeView) {
         if (mcdNodeView == null)
             return;
         if (mcdNodeView instanceof EntityView)
@@ -89,7 +89,7 @@ public class GraphDrawer {
         System.out.println(mcdGraph);
     }
 
-    public MCDNodeView contains(int x, int y) {
+    public GraphicalMCDNode contains(int x, int y) {
         return this.nodes.stream().filter(node -> node.contains(x, y))
                 .findAny()
                 .orElse(null);

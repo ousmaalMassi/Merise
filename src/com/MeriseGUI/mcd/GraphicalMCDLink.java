@@ -1,8 +1,6 @@
 package com.MeriseGUI.mcd;
 
 import com.MeriseGUI.GraphicalLink;
-import com.MeriseGUI.AssociationView;
-import com.MeriseGUI.EntityView;
 
 import java.awt.*;
 

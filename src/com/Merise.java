@@ -1,21 +1,19 @@
 package com;
 
-import com.gdf.DFNode;
-import com.gdf.GDFGraph;
+import com.MeriseGUI.mld.MLDPanel;
 import com.mcd.MCDGraph;
-import com.MeriseGUI.MCDPanel;
-import com.mcd.Property;
+import com.MeriseGUI.mcd.MCDPanel;
 import com.mld.MLDGraph;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.List;
 
 public class Merise extends JFrame {
 
     private JMenuBar jMenuBar;
     private MCDPanel mcdPanel;
+    private MLDPanel mldPanel;
     private Transform transform;
     private JButton btnNew;
     private JButton btnSave;
@@ -42,9 +40,10 @@ public class Merise extends JFrame {
 
 
         mcdPanel = new MCDPanel();
+        mldPanel = new MLDPanel();
         JTabbedPane jTabbedPane = new JTabbedPane();
         jTabbedPane.add("mcd", mcdPanel);
-
+        jTabbedPane.add("mld", mldPanel);
         add(jTabbedPane, BorderLayout.CENTER);
 //        add(jpn, BorderLayout.WEST);
         add(toolBar, BorderLayout.NORTH );
@@ -146,6 +145,7 @@ public class Merise extends JFrame {
             System.out.println(mldGraph);
             System.out.println(mcdGraph);
             System.out.println(transform.mpdToSQL(mldGraph));
+            mldPanel.setMldGraph(mldGraph);
         });
         btnExit.addActionListener((ActionEvent e) -> this.dispose());
 

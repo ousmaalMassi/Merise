@@ -1,10 +1,10 @@
-package com.MeriseGUI;
+package com.MeriseGUI.mcd;
 
 import java.awt.*;
 import java.io.Serial;
 
 
-public class EntityView extends MCDNodeView {
+public class EntityView extends GraphicalMCDNode {
 
     @Serial
     private static final long serialVersionUID = 5396347452110584370L;

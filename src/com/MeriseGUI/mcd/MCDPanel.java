@@ -1,4 +1,4 @@
-package com.MeriseGUI;
+package com.MeriseGUI.mcd;
 
 import com.exception.DuplicateMeriseObject;
 import com.mcd.*;
@@ -15,18 +15,18 @@ import java.util.stream.Stream;
 public class MCDPanel extends JPanel implements MouseListener, MouseMotionListener {
     private final MCDGraph mcdGraph;
     private JPopupMenu nodePopupMenu;
-    private final GraphDrawer graphDrawer;
+    private final MCDGraphDrawer graphDrawer;
     private AssociationView associationToLink;
     private EntityView entityToLink;
     private boolean creatingLink;
-    private MCDNodeView nodeUnderCursor;
+    private GraphicalMCDNode nodeUnderCursor;
 
     public MCDPanel() {
         createPopupMenu();
         setBackground(Color.GRAY);
         addMouseListener(this);
         addMouseMotionListener(this);
-        this.graphDrawer = new GraphDrawer();
+        this.graphDrawer = new MCDGraphDrawer();
         this.mcdGraph = new MCDGraph();
         this.graphDrawer.setMcdGraph(this.mcdGraph);
         creatingLink = false;

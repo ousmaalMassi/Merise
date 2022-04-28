@@ -32,7 +32,7 @@ public class MPDGraph {
     /**
      *
      */
-    /*public void associate(Table table1, Table table2) {
+    /*public void associate(GraphicalMPDTable table1, GraphicalMPDTable table2) {
         table1.addLink(table2);
     }*/
 
@@ -54,7 +54,7 @@ public class MPDGraph {
                 """, this.tables);
     }
 
-    /*public Table search(String string){
+    /*public GraphicalMPDTable search(String string){
         return this.nodeList.stream()
                 .filter(node -> node.getName().equals(string))
                 .findAny()
