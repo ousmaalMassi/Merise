@@ -1,6 +1,8 @@
 package com;
 
+import com.MeriseGUI.flow.FlowPanel;
 import com.MeriseGUI.mld.MLDPanel;
+import com.MeriseGUI.mpd.MPDPanel;
 import com.mcd.MCDGraph;
 import com.MeriseGUI.mcd.MCDPanel;
 import com.mld.MLDGraph;
@@ -26,7 +28,7 @@ public class Merise extends JFrame {
 
     public Merise() {
         initComponents();
-        setTitle("Merice_v2_pfe");
+        setTitle("Merise_v2_pfe");
         setSize(1200, 800);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -38,12 +40,15 @@ public class Merise extends JFrame {
         createToolBar();
         addBtnListeners();
 
-
+        FlowPanel flowPanel = new FlowPanel();
         mcdPanel = new MCDPanel();
         mldPanel = new MLDPanel();
+        MPDPanel mpdPanel = new MPDPanel();
         JTabbedPane jTabbedPane = new JTabbedPane();
+        jTabbedPane.add("flow", flowPanel);
         jTabbedPane.add("mcd", mcdPanel);
         jTabbedPane.add("mld", mldPanel);
+        jTabbedPane.add("mpd", mpdPanel);
         add(jTabbedPane, BorderLayout.CENTER);
 //        add(jpn, BorderLayout.WEST);
         add(toolBar, BorderLayout.NORTH );
@@ -142,10 +147,11 @@ public class Merise extends JFrame {
             transform = new Transform();
             MCDGraph mcdGraph = mcdPanel.getMcdGraph();
             MLDGraph mldGraph = transform.mcdToMld(mcdGraph);
-            System.out.println(mldGraph);
-            System.out.println(mcdGraph);
-            System.out.println(transform.mldToMpd(mldGraph));
+            //MPDGraph mpdGraph = transform.mldToMpd(mldGraph);
+//            System.out.println(mldGraph);
+//            System.out.println(mcdGraph);
             mldPanel.setMldGraph(mldGraph);
+            //mpdPanel.setMpdGraph(mpdGraph);
         });
         btnExit.addActionListener((ActionEvent e) -> this.dispose());
 

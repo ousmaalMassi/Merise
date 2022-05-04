@@ -16,8 +16,8 @@ public class GraphicalLink {
     protected static BasicStroke UNSELECTED_STROKE = new BasicStroke(1.2f);
     protected static BasicStroke SELECTED_STROKE = new BasicStroke(2);
 
-    protected Node nodeA;
-    protected Node nodeB;
+    protected GraphicalNode nodeA;
+    protected GraphicalNode nodeB;
     private Color strokeColor;
     private Stroke strokeWidth;
     private boolean selected;
@@ -30,7 +30,7 @@ public class GraphicalLink {
     public int xb;
     public int yb;
 
-    public GraphicalLink(Node nodeA, Node nodeB) {
+    public GraphicalLink(GraphicalNode nodeA, GraphicalNode nodeB) {
         this.nodeA = nodeA;
         this.nodeB = nodeB;
         
@@ -51,11 +51,11 @@ public class GraphicalLink {
         return Math.abs(A*mx - B*my + nodeB.getX()*nodeA.getY() - nodeB.getY()*nodeA.getX())/Math.sqrt(A*A+B*B) <= 5;
     }
 
-    public Node getNodeA() {
+    public GraphicalNode getNodeA() {
         return this.nodeA;
     }
 
-    public Node getNodeB() {
+    public GraphicalNode getNodeB() {
         return this.nodeB;
     }
 

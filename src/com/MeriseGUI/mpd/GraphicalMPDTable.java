@@ -1,12 +1,14 @@
 package com.MeriseGUI.mpd;
 
-import com.MeriseGUI.Node;
+import com.MeriseGUI.GraphicalNode;
 
 import java.awt.*;
+import java.io.Serial;
 
 
-public class GraphicalMPDTable extends Node {
+public class GraphicalMPDTable extends GraphicalNode {
 
+    @Serial
     private static final long serialVersionUID = 5396347452110584370L;
 
     public GraphicalMPDTable(int x, int y, String text) {

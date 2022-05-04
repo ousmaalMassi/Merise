@@ -6,7 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class MPDPanel extends JPanel {
-    private final MPDGraph mpdGraph;
+    private MPDGraph mpdGraph;
     MPDGraphDrawer graphDrawer;
     public MPDPanel() {
         mpdGraph = new MPDGraph();
@@ -24,5 +24,9 @@ public class MPDPanel extends JPanel {
         if (graphDrawer != null)
             graphDrawer.draw(g2d);
     }
-    
+
+    public void setMpdGraph(MPDGraph mpdGraph) {
+        this.mpdGraph = mpdGraph;
+
+    }
 }

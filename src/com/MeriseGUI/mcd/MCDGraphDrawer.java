@@ -12,8 +12,8 @@ import java.util.LinkedList;
 
 public class MCDGraphDrawer {
 
-    private List<GraphicalMCDNode> nodes;
-    private List<GraphicalLink> edges;
+    private final List<GraphicalMCDNode> nodes;
+    private final List<GraphicalLink> edges;
     private MCDGraph mcdGraph;
 
     public MCDGraphDrawer() {
@@ -72,6 +72,17 @@ public class MCDGraphDrawer {
         System.out.println(mcdGraph);
     }
 
+    public void rename(GraphicalMCDNode mcdNodeView) {
+        if (mcdNodeView == null)
+            return;
+        if (mcdNodeView instanceof EntityView)
+            mcdGraph.removeEntity(mcdGraph.containsEntity(mcdNodeView.getName()));
+        else
+            mcdGraph.removeAssociation(mcdGraph.containsAssociation(mcdNodeView.getName()));
+        this.nodes.remove(mcdNodeView);
+        System.out.println(mcdGraph);
+    }
+
     public void update(EntityView entityGUI) {
     }
 
@@ -107,4 +118,5 @@ public class MCDGraphDrawer {
 
         System.out.println(mcdGraph);
     }
+
 }

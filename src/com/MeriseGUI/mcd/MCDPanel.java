@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 
 public class MCDPanel extends JPanel implements MouseListener, MouseMotionListener {
     private final MCDGraph mcdGraph;
+    private JPopupMenu panelPopupMenu;
     private JPopupMenu nodePopupMenu;
     private final MCDGraphDrawer graphDrawer;
     private AssociationView associationToLink;
@@ -22,7 +23,8 @@ public class MCDPanel extends JPanel implements MouseListener, MouseMotionListen
     private GraphicalMCDNode nodeUnderCursor;
 
     public MCDPanel() {
-        createPopupMenu();
+        createPanelPopupMenu();
+        createMCDObjectPopupMenu();
         setBackground(Color.GRAY);
         addMouseListener(this);
         addMouseMotionListener(this);
@@ -31,6 +33,7 @@ public class MCDPanel extends JPanel implements MouseListener, MouseMotionListen
         this.graphDrawer.setMcdGraph(this.mcdGraph);
         creatingLink = false;
     }
+
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -44,50 +47,54 @@ public class MCDPanel extends JPanel implements MouseListener, MouseMotionListen
             graphDrawer.draw(g2d);
     }
 
-    private void createPopupMenu() {
+    private void createMCDObjectPopupMenu() {
         this.nodePopupMenu = new JPopupMenu();
 
+        JMenuItem renameNodeMenuItem = new JMenuItem("Renommer");
+        this.nodePopupMenu.add(renameNodeMenuItem);
+        renameNodeMenuItem.addActionListener((action) -> {
+            graphDrawer.rename(nodeUnderCursor);
+            repaint();
+        });
+
+        JMenuItem removeNodeMenuItem = new JMenuItem("Supprimer");
+        this.nodePopupMenu.add(removeNodeMenuItem);
+        removeNodeMenuItem.addActionListener((action) -> {
+            graphDrawer.remove(nodeUnderCursor);
+            repaint();
+        });
+
+        this.nodePopupMenu.addSeparator();
+        /**/
+        JMenuItem editAttributeMenuItem = new JMenuItem("Editer un attribut");
+        this.nodePopupMenu.add(editAttributeMenuItem);
+        editAttributeMenuItem.addActionListener((action) -> {
+            graphDrawer.addAttribute(nodeUnderCursor);
+            repaint();
+        });
+    }
+
+    private void createPanelPopupMenu() {
+        this.panelPopupMenu = new JPopupMenu();
+
         JMenuItem addEntityMenuItem = new JMenuItem("Ajouter une Entité");
-        this.nodePopupMenu.add(addEntityMenuItem);
+        this.panelPopupMenu.add(addEntityMenuItem);
         addEntityMenuItem.addActionListener((action) -> {
             graphDrawer.addEntity(createEntity());
             repaint();
         });
 
         JMenuItem addAssociationMenuItem = new JMenuItem("Ajouter une Association");
-        this.nodePopupMenu.add(addAssociationMenuItem);
+        this.panelPopupMenu.add(addAssociationMenuItem);
         addAssociationMenuItem.addActionListener((action) -> {
             graphDrawer.addAssociation(createAssociation());
             repaint();
         });
 
-        JMenuItem renameNodeMenuItem = new JMenuItem("Remove une Entité");
-        this.nodePopupMenu.add(renameNodeMenuItem);
-        renameNodeMenuItem.addActionListener((action) -> {
-            graphDrawer.remove(nodeUnderCursor);
-            repaint();
-        });
-
-        this.nodePopupMenu.addSeparator();
-
         JMenuItem addLinkMenuItem = new JMenuItem("Ajouter un lien");
-        this.nodePopupMenu.add(addLinkMenuItem);
+        this.panelPopupMenu.add(addLinkMenuItem);
         addLinkMenuItem.addActionListener((action) -> this.creatingLink = true);
 
-        this.nodePopupMenu.addSeparator();
-        /**/
-        JMenuItem addAttributeMenuItem = new JMenuItem("Ajouter un attribut");
-        this.nodePopupMenu.add(addAttributeMenuItem);
-        addAttributeMenuItem.addActionListener((action) -> {
-            graphDrawer.addAttribute(nodeUnderCursor);
-            repaint();
-        });
-/*
-        JMenuItem renameAttributeMenuItem = new JMenuItem("Ajouter un attribut");
-        this.nodePopupMenu.add(renameAttributeMenuItem);
-        renameAttributeMenuItem.addActionListener((action) -> {
-            System.out.println("JMenuItem renameAttributeMenuItem");
-        });*/
     }
 
     private EntityView createEntity() {
@@ -167,8 +174,11 @@ public class MCDPanel extends JPanel implements MouseListener, MouseMotionListen
     public void mouseClicked(MouseEvent e) {
         nodeUnderCursor = graphDrawer.contains(e.getX(), e.getY());
 
-        if (e.getButton() == MouseEvent.BUTTON3) {
+        if (e.getButton() == MouseEvent.BUTTON3 && nodeUnderCursor != null) {
             this.nodePopupMenu.show(e.getComponent(), e.getX(), e.getY());
+        }
+        else if (e.getButton() == MouseEvent.BUTTON3) {
+            this.panelPopupMenu.show(e.getComponent(), e.getX(), e.getY());
         }
 
         if (creatingLink) {

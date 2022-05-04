@@ -3,7 +3,7 @@ package com.MeriseGUI;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
-public class TestNode extends Node{
+public class TestNode extends GraphicalNode {
 
     public TestNode(int x, int y, String name) {
         super(x, y, name);

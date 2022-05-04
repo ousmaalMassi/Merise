@@ -5,7 +5,7 @@
  */
 package com.MeriseGUI.mcd;
 
-import com.MeriseGUI.Node;
+import com.MeriseGUI.GraphicalNode;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author rpc
  */
-public class GraphicalMCDNode extends Node {
+public class GraphicalMCDNode extends GraphicalNode {
     protected List<String> attributes;
 
     protected int arc;
