@@ -69,7 +69,7 @@ public class MCDPanel extends JPanel implements MouseListener, MouseMotionListen
         JMenuItem editAttributeMenuItem = new JMenuItem("Editer un attribut");
         this.nodePopupMenu.add(editAttributeMenuItem);
         editAttributeMenuItem.addActionListener((action) -> {
-            graphDrawer.addAttribute(nodeUnderCursor);
+            graphDrawer.addProperty(nodeUnderCursor);
             repaint();
         });
     }

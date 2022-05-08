@@ -44,7 +44,7 @@ public class MCDGraphDrawer {
         System.out.println(mcdGraph);
     }
 
-    public void addAttribute(GraphicalMCDNode mcdNodeView) {
+    public void addProperty(GraphicalMCDNode mcdNodeView) {
 
         long currentTimeMillis = System.currentTimeMillis();
         MeriseObject meriseObject;
@@ -75,15 +75,7 @@ public class MCDGraphDrawer {
     public void rename(GraphicalMCDNode mcdNodeView) {
         if (mcdNodeView == null)
             return;
-        if (mcdNodeView instanceof EntityView)
-            mcdGraph.removeEntity(mcdGraph.containsEntity(mcdNodeView.getName()));
-        else
-            mcdGraph.removeAssociation(mcdGraph.containsAssociation(mcdNodeView.getName()));
-        this.nodes.remove(mcdNodeView);
         System.out.println(mcdGraph);
-    }
-
-    public void update(EntityView entityGUI) {
     }
 
     public void addAssociation(AssociationView associationView) {

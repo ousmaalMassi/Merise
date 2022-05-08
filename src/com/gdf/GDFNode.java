@@ -3,12 +3,12 @@ package com.gdf;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DFNode {
+public class GDFNode {
 
     private String name;
     private List<String> targets;
 
-    public DFNode(String name) {
+    public GDFNode(String name) {
         this.name = name;
         this.targets = new ArrayList<>();
     }
