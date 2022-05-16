@@ -44,7 +44,7 @@ public class MCDGraphDrawer {
         System.out.println(mcdGraph);
     }
 
-    public void addProperty(GraphicalMCDNode mcdNodeView) {
+    public void addProperty(GraphicalMCDNode mcdNodeView, String name) {
 
         long currentTimeMillis = System.currentTimeMillis();
         MeriseObject meriseObject;
@@ -53,7 +53,7 @@ public class MCDGraphDrawer {
         else
             meriseObject = mcdGraph.containsAssociation(mcdNodeView.getName());
 
-        Property property =  new Property("identifier", Property.Types.DIGITAL, 11, Arrays.asList(Property.Constraints.PRIMARY_KEY, Property.Constraints.AUTO_INCREMENT));
+        Property property =  new Property(name, Property.Types.DIGITAL, 11, Arrays.asList(Property.Constraints.PRIMARY_KEY, Property.Constraints.AUTO_INCREMENT));
         meriseObject.addProperty(property);
 
         mcdNodeView.getAttributes().add(property.name);

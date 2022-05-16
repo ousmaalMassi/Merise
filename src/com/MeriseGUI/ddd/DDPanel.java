@@ -5,6 +5,8 @@
  */
 package com.MeriseGUI.ddd;
 
+import com.mcd.Property;
+
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -27,14 +29,7 @@ public class DDPanel extends JPanel implements KeyListener {
     private Object[][] data;
     private GroupLayout layout;
 
-
-    /**
-     * Creates new form dddTable
-     *
-     * @param x
-     * @param panelName
-     */
-    public DDPanel(Object x, String panelName) {
+    public DDPanel() {
         initComponents();
         addKeyListener(this);
         showExemple();
@@ -51,7 +46,7 @@ public class DDPanel extends JPanel implements KeyListener {
 
         data = new Object[][]{createEmptyDataRow()};
         ArrayList<ArrayList> dataDictionnary = new ArrayList<>();
-        String[] comboData = new String[]{"BIGINT_AUTO_INCREMENT", "BIGINT", "INT", "VARCHAR", "TEXT", "DATE"};
+        Property.Types[] comboData = new Property.Types[]{Property.Types.DIGITAL, Property.Types.ALPHABETICAL, Property.Types.ALPHANUMERIC, Property.Types.DATE, Property.Types.LOGIC};
         combo = new JComboBox(comboData);
         String[] title = new String[]{"Nom", "Identifiant", "Type", "Taille", "Entité", "utilisé", "suppression"};
         ddModel = new DDModel(data, title);
@@ -154,9 +149,7 @@ public class DDPanel extends JPanel implements KeyListener {
                 boolean isFocus,
                 int row, int col
         ) {
-            //On écrit dans le bouton avec la valeur de la cellule
             setText((value != null) ? value.toString() : "");
-            //on retourne notre bouton
             return this;
         }
     }
@@ -213,15 +206,10 @@ public class DDPanel extends JPanel implements KeyListener {
         }
 
         /**
-         * Retourne la classe de la donnée de la colonne
-         *
          * @param col
          */
         @Override
         public Class getColumnClass(int col) {
-            //On retourne le type de la cellule à la colonne demandée
-            //On se moque de la ligne puisque les données sur chaque ligne sont les mêmes
-            //On choisit donc la première ligne
             return this.data[0][col].getClass();
         }
 
@@ -237,8 +225,6 @@ public class DDPanel extends JPanel implements KeyListener {
             }
             data = temp;
             temp = null;
-            //Cette méthode permet d'avertir le tableau que les données ont été modifiées
-            //Ce qui permet une mise à jours complète du tableau
             this.fireTableDataChanged();
         }
 
@@ -255,8 +241,6 @@ public class DDPanel extends JPanel implements KeyListener {
                 this.data[indice++] = value;
             this.data[indice] = data;
             temp = null;
-            //Cette méthode permet d'avertir le tableau que les données ont été modifiées
-            //Ce qui permet une mise à jours complète du tableau
             this.fireTableDataChanged();
         }
 
@@ -279,20 +263,13 @@ public class DDPanel extends JPanel implements KeyListener {
         }
     }
 
-    void PrintDataTable() {
-        Object[][] tableData = ddModel.getTableData();
-        for (Object[] tableRow : tableData) {
-            for (Object tableColumn : tableRow) {
-                System.out.println(tableColumn);
-            }
-        }
-    }
-
     public static ArrayList getAttributeList() {
-        int nRow = ddModel.getRowCount() - 1;
+        int nRow = ddModel.getRowCount();
         ArrayList<String> attrList = new ArrayList<>();
         for (int i = 0; i < nRow; i++) {
             attrList.add(ddModel.getValueAt(i, 0).toString());
+//            Property property = new Property("id article", Property.Types.DIGITAL, 11, List.of(Property.Constraints.AUTO_INCREMENT));
+//            attrList.add(ddModel.getValueAt(i, 0).toString());
         }
         attrList.removeIf(item -> item.equals(""));
         return attrList;
@@ -307,6 +284,16 @@ public class DDPanel extends JPanel implements KeyListener {
         }
         return tableData;
     }
+
+    void PrintDataTable() {
+        Object[][] tableData = ddModel.getTableData();
+        for (Object[] tableRow : tableData) {
+            for (Object tableColumn : tableRow) {
+                System.out.println(tableColumn);
+            }
+        }
+    }
+
 }
 
 

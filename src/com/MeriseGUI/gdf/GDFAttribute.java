@@ -33,20 +33,15 @@ public class GDFAttribute extends GraphicalNode{
     
     @Override
     public void draw(Graphics2D g) {
-        //Font defFont = g2d.getFont();
-        //g2d.setFont(new Font(Font.SANS_SERIF, 0, 17));
-        
         FontMetrics fm = g.getFontMetrics();
-        width = fm.stringWidth(name) + totalPadding;
+        width = fm.stringWidth(name);
         height = width/10 + fm.getHeight();
 
         shiftedX = x - width/2;
         shiftedY = y - height/2;
-        int textX = shiftedX + totalPadding/2;
+        int textX = shiftedX;
         int textY = shiftedY + height/2 + fm.getHeight()/4;
 
-        g.setColor(Color.white);
-        g.fillOval(shiftedX, shiftedY, width, height);
         g.setColor(Color.black);
         g.drawString(name, textX, textY);
     }
@@ -54,7 +49,7 @@ public class GDFAttribute extends GraphicalNode{
     @Override
      public boolean contains(double x, double y) {
         if (width <= 0 || height <= 0) return false;
-        return (Math.pow((x-shiftedX)/width-0.5, 2) + Math.pow((y-shiftedY)/height-0.5, 2)) < 0.25;
+        return (Math.pow((x-shiftedX)/width-0.5, 2) + Math.pow((y-shiftedY)/height-0.5, 2)) < 1;
     }
      
     @Override

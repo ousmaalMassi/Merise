@@ -1,6 +1,7 @@
 package com.MeriseGUI.mpd;
 
 import java.awt.*;
+import java.util.LinkedList;
 import java.util.List;
 
 public class MPDGraphDrawer {
@@ -10,6 +11,8 @@ public class MPDGraphDrawer {
 
 
     public MPDGraphDrawer() {
+        this.graphicalMPDTables = new LinkedList<>();
+        this.graphicalMPDLinks = new LinkedList<>();
     }
 
     public void draw(Graphics2D graphics2D) {

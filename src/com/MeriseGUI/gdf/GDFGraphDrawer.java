@@ -32,12 +32,9 @@ public class GDFGraphDrawer {
     }
 
     public void addAttribute(GDFAttribute gdfAttribute) {
-        int attributeNo = gdfGraph.getDfNodes().size();
-        String attributeName = "attr "+attributeNo;
-        GDFNode gdfNode = new GDFNode(attributeName);
-        gdfAttribute.setName(attributeName);
-            gdfGraph.addDfNodes(gdfNode);
-            this.nodes.add(gdfAttribute);
+        GDFNode gdfNode = new GDFNode(gdfAttribute.getName());
+        gdfGraph.addDfNodes(gdfNode);
+        this.nodes.add(gdfAttribute);
         System.out.println(gdfGraph);
     }
 

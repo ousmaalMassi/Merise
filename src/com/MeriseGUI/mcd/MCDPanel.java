@@ -1,5 +1,6 @@
 package com.MeriseGUI.mcd;
 
+import com.MeriseGUI.ddd.DDPanel;
 import com.exception.DuplicateMeriseObject;
 import com.mcd.*;
 
@@ -69,7 +70,12 @@ public class MCDPanel extends JPanel implements MouseListener, MouseMotionListen
         JMenuItem editAttributeMenuItem = new JMenuItem("Editer un attribut");
         this.nodePopupMenu.add(editAttributeMenuItem);
         editAttributeMenuItem.addActionListener((action) -> {
-            graphDrawer.addProperty(nodeUnderCursor);
+            JList<Object> jList = new JList<>(DDPanel.getAttributeList().toArray());
+            JOptionPane.showMessageDialog(this, new JScrollPane(jList));
+            List<Object> selectedValuesList = jList.getSelectedValuesList();
+            for (int i = 0; i < selectedValuesList.size(); i++) {
+                graphDrawer.addProperty(nodeUnderCursor, selectedValuesList.get(i).toString());
+            }
             repaint();
         });
     }

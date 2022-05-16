@@ -1,5 +1,7 @@
 package com.MeriseGUI.gdf;
 
+import com.MeriseGUI.ddd.DDPanel;
+import com.MeriseGUI.mcd.EntityView;
 import com.exception.DuplicateMeriseObject;
 import com.gdf.GDFGraph;
 import com.mcd.*;
@@ -64,15 +66,6 @@ public class GDFPanel extends JPanel implements MouseListener, MouseMotionListen
             graphDrawer.remove(nodeUnderCursor);
             repaint();
         });
-
-        this.nodePopupMenu.addSeparator();
-        /**/
-        JMenuItem editAttributeMenuItem = new JMenuItem("Editer un attribut");
-        this.nodePopupMenu.add(editAttributeMenuItem);
-        editAttributeMenuItem.addActionListener((action) -> {
-            graphDrawer.addAttribute(nodeUnderCursor);
-            repaint();
-        });
     }
 
     private void createPanelPopupMenu() {
@@ -81,7 +74,14 @@ public class GDFPanel extends JPanel implements MouseListener, MouseMotionListen
         JMenuItem addEntityMenuItem = new JMenuItem("Ajouter un nœud");
         this.panelPopupMenu.add(addEntityMenuItem);
         addEntityMenuItem.addActionListener((action) -> {
-            graphDrawer.addAttribute(createAttribute());
+            double MousePositionX = this.getMousePosition().getX();
+            double MousePositionY = this.getMousePosition().getY();
+            JList<Object> jList = new JList<>(DDPanel.getAttributeList().toArray());
+            JOptionPane.showMessageDialog(this, new JScrollPane(jList));
+            List<Object> selectedValuesList = jList.getSelectedValuesList();
+            for (int i = 0; i < selectedValuesList.size(); i++) {
+                graphDrawer.addAttribute(createAttribute(MousePositionX, MousePositionY, selectedValuesList.get(i).toString()));
+            }
             repaint();
         });
 
@@ -91,10 +91,10 @@ public class GDFPanel extends JPanel implements MouseListener, MouseMotionListen
 
     }
 
-    private GDFAttribute createAttribute() {
-        int x = (int) this.getMousePosition().getX();
-        int y = (int) this.getMousePosition().getY();
-        return new GDFAttribute(x, y, "");
+    private GDFAttribute createAttribute(double MousePositionX, double MousePositionY, String name) {
+        int x = (int) MousePositionX;
+        int y = (int) MousePositionY;
+        return new GDFAttribute(x, y, name);
     }
 
     public GDFGraph getGraph() {
@@ -113,6 +113,12 @@ public class GDFPanel extends JPanel implements MouseListener, MouseMotionListen
         }
 
         if (creatingLink) {
+            if (gdfAttribute1 == null) {
+                gdfAttribute1 = nodeUnderCursor;
+            }
+            else if (gdfAttribute2 == null) {
+                gdfAttribute2 = nodeUnderCursor;
+            }
             if (gdfAttribute2 != null && gdfAttribute1 != null) {
                 graphDrawer.addLink(gdfAttribute2, gdfAttribute1);
                 repaint();

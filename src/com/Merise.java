@@ -1,6 +1,8 @@
 package com;
 
+import com.MeriseGUI.ddd.DDPanel;
 import com.MeriseGUI.flow.FlowPanel;
+import com.MeriseGUI.gdf.GDFPanel;
 import com.MeriseGUI.mld.MLDPanel;
 import com.MeriseGUI.mpd.MPDPanel;
 import com.MeriseGUI.rules.ManagementRulesPanel;
@@ -42,13 +44,18 @@ public class Merise extends JFrame {
         addBtnListeners();
 
         ManagementRulesPanel managementRulesPanel = new ManagementRulesPanel();
+        DDPanel ddPanel = new DDPanel();
+        GDFPanel gdfGraph = new GDFPanel();
         FlowPanel flowPanel = new FlowPanel();
         mcdPanel = new MCDPanel();
         mldPanel = new MLDPanel();
         MPDPanel mpdPanel = new MPDPanel();
+
         JTabbedPane jTabbedPane = new JTabbedPane();
-        jTabbedPane.add("Régles de gestion", managementRulesPanel);
         jTabbedPane.add("flow", flowPanel);
+        jTabbedPane.add("Régles de gestion", managementRulesPanel);
+        jTabbedPane.add("Dictionnaire de données", ddPanel);
+        jTabbedPane.add("gdf", gdfGraph);
         jTabbedPane.add("mcd", mcdPanel);
         jTabbedPane.add("mld", mldPanel);
         jTabbedPane.add("mpd", mpdPanel);
