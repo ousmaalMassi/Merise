@@ -2,8 +2,9 @@ package com;
 
 import com.mcd.*;
 import com.mld.MLDGraph;
-import com.mld.Table;
+import com.mld.MLDTable;
 import com.mpd.MPDGraph;
+import com.mpd.MPDTable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,11 +13,12 @@ import java.util.Map;
 public class Transform {
 
     private final MLDGraph mldGraph;
+    private final MPDGraph mpdGraph;
     private final List<String> foreignKeyConstraint;
 
     public Transform() {
         mldGraph = new MLDGraph();
-        MPDGraph mpdGraph = new MPDGraph();
+        mpdGraph = new MPDGraph();
         foreignKeyConstraint = new ArrayList<>();
     }
 
@@ -30,8 +32,8 @@ public class Transform {
             } else {
                 Map<String, Cardinalities> links = association.getLinks();
                 List<String> entities = new ArrayList<>(association.getLinks().keySet());
-                Table tableA = mldGraph.search(entities.get(0));
-                Table tableB = mldGraph.search(entities.get(1));
+                MLDTable tableA = mldGraph.search(entities.get(0));
+                MLDTable tableB = mldGraph.search(entities.get(1));
 
                 if (links.get(entities.get(0)).toString().endsWith("n") && links.get(entities.get(1)).toString().endsWith("n")) {
                     createTableFromAssociation(association);
@@ -51,7 +53,7 @@ public class Transform {
     }
 
     private void createTableFromAssociation(Association association) {
-        Table associationTable = createMLDTable(association);
+        MLDTable associationTable = createMLDTable(association);
         association.getLinks().forEach((entityName, cardinality) -> associationTable.addForeignKey(mldGraph.search(entityName)));
         mldGraph.getTables().add(associationTable);
     }
@@ -69,19 +71,29 @@ public class Transform {
      * @param node to convert to table
      * @return MLD table
      */
-    private Table createMLDTable(MeriseObject node) {
-        Table table = new Table(node.getName());
+    private MLDTable createMLDTable(MeriseObject node) {
+        MLDTable table = new MLDTable(node.getName());
         table.setPropertyList(node.getPropertyList());
         return table;
     }
 
-//    public MPDGraph mldToMpd(MLDGraph mldGraph) {
-//        mldGraph.getTables().forEach(System.out::println);
-//        //table.addProperty(duplicateProperty(refTable.getPrimaryKey()));
-//        return mpdGraph;
-//    }
+    public MPDGraph mldToMpd(MLDGraph mldGraph) {
+//        this.mldGraph.getTables().forEach(mldTable -> {
+//            MPDTable mpdTable = new MPDTable(mldTable.getName());
+//            mpdTable.addPrimaryKey(mldTable.getPrimaryKey());
+//            mpdTable.getPropertyList().forEach(property -> mpdTable.addProperty(property));
+//            mldTable.getForeignKeys().forEach((s, mldTable1) -> );
+//            this.mpdGraph.getTables().add(mpdTable);
+//
+//        });
+//        return this.mpdGraph;
+        this.mldGraph.getTables().forEach(mldTable -> {
+            this.mpdGraph.getTables().add(mldTable);
+        });
+        return this.mpdGraph;
+    }
 
-    public String mldToMpd(MLDGraph mldGraph) {
+    public String mpdToSQL(MLDGraph mldGraph) {
         //TODO specify the targeted DBMS
         StringBuilder stringBuilder = new StringBuilder();
         mldGraph.getTables().forEach(table -> stringBuilder
@@ -94,7 +106,7 @@ public class Transform {
         return stringBuilder.toString();
     }
 
-    private String createColumn(Table table) {
+    private String createColumn(MLDTable table) {
         List<String> list = new ArrayList<>();
         table.getPropertyList().forEach(property -> list.add(
                 "`" + property.getCode() + "`" +
@@ -121,7 +133,7 @@ public class Transform {
         return String.join(" ", list);
     }
 
-    private String createForeignKeyColumn(String tableName, Map<String, Table> foreignKeys) {
+    private String createForeignKeyColumn(String tableName, Map<String, MLDTable> foreignKeys) {
         List<String> list = new ArrayList<>();
             foreignKeys.forEach((prop, tableRef) -> list.add(
                     "ALTER TABLE " + tableName + " FOREIGN KEY (`" + prop + "`) REFERENCES " + tableRef.getName() + "(`" + prop + "`)")

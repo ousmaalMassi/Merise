@@ -28,7 +28,7 @@ public class GDFPanel extends JPanel implements MouseListener, MouseMotionListen
     public GDFPanel() {
         createPanelPopupMenu();
         createMCDObjectPopupMenu();
-        setBackground(Color.GRAY);
+//        setBackground(Color.GRAY);
         addMouseListener(this);
         addMouseMotionListener(this);
         this.graphDrawer = new GDFGraphDrawer();
@@ -77,7 +77,7 @@ public class GDFPanel extends JPanel implements MouseListener, MouseMotionListen
             double MousePositionX = this.getMousePosition().getX();
             double MousePositionY = this.getMousePosition().getY();
             JList<Object> jList = new JList<>(DDPanel.getAttributeList().toArray());
-            JOptionPane.showMessageDialog(this, new JScrollPane(jList));
+            JOptionPane.showMessageDialog(null, new JScrollPane(jList));
             List<Object> selectedValuesList = jList.getSelectedValuesList();
             for (int i = 0; i < selectedValuesList.size(); i++) {
                 graphDrawer.addAttribute(createAttribute(MousePositionX, MousePositionY, selectedValuesList.get(i).toString()));

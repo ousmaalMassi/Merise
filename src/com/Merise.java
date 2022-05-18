@@ -9,6 +9,7 @@ import com.MeriseGUI.rules.ManagementRulesPanel;
 import com.mcd.MCDGraph;
 import com.MeriseGUI.mcd.MCDPanel;
 import com.mld.MLDGraph;
+import com.mpd.MPDGraph;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,6 +28,7 @@ public class Merise extends JFrame {
     private JButton btnGenerate;
     private JButton btnGrid;
     private JToolBar toolBar;
+    private MPDPanel mpdPanel;
 
 
     public Merise() {
@@ -49,7 +51,7 @@ public class Merise extends JFrame {
         FlowPanel flowPanel = new FlowPanel();
         mcdPanel = new MCDPanel();
         mldPanel = new MLDPanel();
-        MPDPanel mpdPanel = new MPDPanel();
+        mpdPanel = new MPDPanel();
 
         JTabbedPane jTabbedPane = new JTabbedPane();
         jTabbedPane.add("flow", flowPanel);
@@ -157,12 +159,11 @@ public class Merise extends JFrame {
             transform = new Transform();
             MCDGraph mcdGraph = mcdPanel.getMcdGraph();
             MLDGraph mldGraph = transform.mcdToMld(mcdGraph);
-            //MPDGraph mpdGraph = transform.mldToMpd(mldGraph);
-//            System.out.println(mldGraph);
-//            System.out.println(mcdGraph);
+            MPDGraph mpdGraph = transform.mldToMpd(mldGraph);
             mldPanel.setMldGraph(mldGraph);
-            //mpdPanel.setMpdGraph(mpdGraph);
+            mpdPanel.setMpdGraph(mpdGraph);
         });
+
         btnExit.addActionListener((ActionEvent e) -> this.dispose());
 
     }

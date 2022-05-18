@@ -8,11 +8,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Table extends MeriseObject {
+public class MLDTable extends MeriseObject {
     List<String> primaryKeys;
-    Map<String, Table> foreignKeys;
+    Map<String, MLDTable> foreignKeys;
 
-    public Table(String name) {
+    public MLDTable(String name) {
         super(name);
         this.primaryKeys = new ArrayList<>();
         this.foreignKeys = new HashMap<>();
@@ -38,7 +38,7 @@ public class Table extends MeriseObject {
         primaryKeys.remove(property.getCode());
     }
 
-    public void addForeignKey(Table table){
+    public void addForeignKey(MLDTable table){
         Property property = table.getPrimaryKey();
         if (!foreignKeys.containsKey(property.getCode())) {
             this.addProperty(property);
@@ -50,7 +50,7 @@ public class Table extends MeriseObject {
         foreignKeys.remove(propertyName);
     }
 
-    public Map<String, Table> getForeignKeys() {
+    public Map<String, MLDTable> getForeignKeys() {
         return foreignKeys;
     }
 

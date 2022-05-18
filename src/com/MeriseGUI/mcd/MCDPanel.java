@@ -26,7 +26,7 @@ public class MCDPanel extends JPanel implements MouseListener, MouseMotionListen
     public MCDPanel() {
         createPanelPopupMenu();
         createMCDObjectPopupMenu();
-        setBackground(Color.GRAY);
+//        setBackground(Color.GRAY);
         addMouseListener(this);
         addMouseMotionListener(this);
         this.graphDrawer = new MCDGraphDrawer();
@@ -34,7 +34,6 @@ public class MCDPanel extends JPanel implements MouseListener, MouseMotionListen
         this.graphDrawer.setMcdGraph(this.mcdGraph);
         creatingLink = false;
     }
-
 
     @Override
     protected void paintComponent(Graphics g) {

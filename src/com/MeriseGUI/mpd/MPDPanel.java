@@ -1,16 +1,21 @@
 package com.MeriseGUI.mpd;
 
+import com.MeriseGUI.GraphicalNode;
 import com.mpd.MPDGraph;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
-public class MPDPanel extends JPanel {
-    private MPDGraph mpdGraph;
+public class MPDPanel extends JPanel implements MouseMotionListener {
     MPDGraphDrawer graphDrawer;
+    private GraphicalMPDTable nodeUnderCursor;
+
     public MPDPanel() {
-        mpdGraph = new MPDGraph();
         graphDrawer = new MPDGraphDrawer();
+        this.addMouseMotionListener(this);
     }
 
     @Override
@@ -26,7 +31,25 @@ public class MPDPanel extends JPanel {
     }
 
     public void setMpdGraph(MPDGraph mpdGraph) {
-        this.mpdGraph = mpdGraph;
+        graphDrawer.makeMPD(mpdGraph);
+        repaint();
+    }
 
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        nodeUnderCursor = graphDrawer.contains(e.getX(), e.getY());
+        if (nodeUnderCursor == null)
+            return;
+        this.moveNodeUnderCursor(e.getX(), e.getY());
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+
+    }
+
+    private void moveNodeUnderCursor(int x, int y) {
+        this.nodeUnderCursor.move(x, y);
+        repaint();
     }
 }

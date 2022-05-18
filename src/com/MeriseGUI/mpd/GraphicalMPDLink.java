@@ -6,8 +6,6 @@ import java.awt.*;
 
 public class GraphicalMPDLink extends GraphicalLink {
 
-    private static final long serialVersionUID = -6972652167790425200L;
-
     public GraphicalMPDLink(GraphicalMPDTable a, GraphicalMPDTable b) {
         super(a,b);
     }

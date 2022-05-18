@@ -11,7 +11,7 @@ public class MLDGraph {
     /**
      *
      */
-    private List<Table> tables;
+    private List<MLDTable> tables;
 
     /**
      * Default constructor
@@ -20,18 +20,18 @@ public class MLDGraph {
         tables = new ArrayList<>();
     }
 
-    public List<Table> getTables() {
+    public List<MLDTable> getTables() {
         return tables;
     }
 
-    public void setTables(List<Table> tables) {
+    public void setTables(List<MLDTable> tables) {
         this.tables = tables;
     }
 
     /**
      *
      */
-    public void associate(Table table1, Table table2) {
+    public void associate(MLDTable table1, MLDTable table2) {
         //table1.addLink(table2);
     }
 
@@ -50,7 +50,7 @@ public class MLDGraph {
                 """, this.tables);
     }
 
-    public Table search(String name){
+    public MLDTable search(String name){
         return this.tables
                 .stream()
                 .filter(table -> table.getName().equals(name))
