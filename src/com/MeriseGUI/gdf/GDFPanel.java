@@ -1,10 +1,7 @@
 package com.MeriseGUI.gdf;
 
 import com.MeriseGUI.ddd.DDPanel;
-import com.MeriseGUI.mcd.EntityView;
-import com.exception.DuplicateMeriseObject;
 import com.gdf.GDFGraph;
-import com.mcd.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,8 +9,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class GDFPanel extends JPanel implements MouseListener, MouseMotionListener {
     private final GDFGraph gdfGraph;
@@ -24,6 +19,7 @@ public class GDFPanel extends JPanel implements MouseListener, MouseMotionListen
     private GDFAttribute gdfAttribute2;
     private boolean creatingLink;
     private GDFAttribute nodeUnderCursor;
+    private Object[] dictionaryData;
 
     public GDFPanel() {
         createPanelPopupMenu();
@@ -31,9 +27,9 @@ public class GDFPanel extends JPanel implements MouseListener, MouseMotionListen
 //        setBackground(Color.GRAY);
         addMouseListener(this);
         addMouseMotionListener(this);
-        this.graphDrawer = new GDFGraphDrawer();
-        this.gdfGraph = new GDFGraph();
-        this.graphDrawer.setGraph(this.gdfGraph);
+        graphDrawer = new GDFGraphDrawer();
+        gdfGraph = new GDFGraph();
+        graphDrawer.setGraph(this.gdfGraph);
         creatingLink = false;
     }
 
@@ -76,7 +72,8 @@ public class GDFPanel extends JPanel implements MouseListener, MouseMotionListen
         addEntityMenuItem.addActionListener((action) -> {
             double MousePositionX = this.getMousePosition().getX();
             double MousePositionY = this.getMousePosition().getY();
-            JList<Object> jList = new JList<>(DDPanel.getAttributeList().toArray());
+            dictionaryData = DDPanel.getAttributeList().toArray();
+            JList<Object> jList = new JList<>(dictionaryData);
             JOptionPane.showMessageDialog(null, new JScrollPane(jList));
             List<Object> selectedValuesList = jList.getSelectedValuesList();
             for (int i = 0; i < selectedValuesList.size(); i++) {
@@ -120,7 +117,7 @@ public class GDFPanel extends JPanel implements MouseListener, MouseMotionListen
                 gdfAttribute2 = nodeUnderCursor;
             }
             if (gdfAttribute2 != null && gdfAttribute1 != null) {
-                graphDrawer.addLink(gdfAttribute2, gdfAttribute1);
+                graphDrawer.addLink(gdfAttribute1, gdfAttribute2);
                 repaint();
                 gdfAttribute2 = null;
                 gdfAttribute1 = null;

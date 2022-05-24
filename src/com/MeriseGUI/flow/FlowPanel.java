@@ -22,7 +22,6 @@ public class FlowPanel extends JPanel implements MouseListener, MouseMotionListe
     public FlowPanel() {
         createPanelPopupMenu();
         createMCDObjectPopupMenu();
-        setBackground(Color.GRAY);
         addMouseListener(this);
         addMouseMotionListener(this);
         this.graphDrawer = new FlowGraphDrawer();
