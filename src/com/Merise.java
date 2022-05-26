@@ -6,6 +6,7 @@ import com.MeriseGUI.gdf.GDFPanel;
 import com.MeriseGUI.mld.MLDPanel;
 import com.MeriseGUI.mpd.MPDPanel;
 import com.MeriseGUI.rules.ManagementRulesPanel;
+import com.MeriseGUI.sql.SQLPanel;
 import com.mcd.MCDGraph;
 import com.MeriseGUI.mcd.MCDPanel;
 import com.mld.MLDGraph;
@@ -20,6 +21,8 @@ public class Merise extends JFrame {
     private JMenuBar jMenuBar;
     private MCDPanel mcdPanel;
     private MLDPanel mldPanel;
+    private MPDPanel mpdPanel;
+    private SQLPanel sqlPanel;
     private Transform transform;
     private JButton btnNew;
     private JButton btnSave;
@@ -28,8 +31,6 @@ public class Merise extends JFrame {
     private JButton btnGenerate;
     private JButton btnGrid;
     private JToolBar toolBar;
-    private MPDPanel mpdPanel;
-
 
     public Merise() {
         initComponents();
@@ -38,7 +39,6 @@ public class Merise extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setVisible(true);
-
     }
 
     private void initComponents() {
@@ -52,6 +52,7 @@ public class Merise extends JFrame {
         mcdPanel = new MCDPanel();
         mldPanel = new MLDPanel();
         mpdPanel = new MPDPanel();
+        sqlPanel = new SQLPanel();
 
         JTabbedPane jTabbedPane = new JTabbedPane();
         jTabbedPane.add("flow", flowPanel);
@@ -61,6 +62,7 @@ public class Merise extends JFrame {
         jTabbedPane.add("mcd", mcdPanel);
         jTabbedPane.add("mld", mldPanel);
         jTabbedPane.add("mpd", mpdPanel);
+        jTabbedPane.add("sql", sqlPanel);
         add(jTabbedPane, BorderLayout.CENTER);
 //        add(jpn, BorderLayout.WEST);
         add(toolBar, BorderLayout.NORTH );
@@ -162,6 +164,7 @@ public class Merise extends JFrame {
             MPDGraph mpdGraph = transform.mldToMpd(mldGraph);
             mldPanel.setMldGraph(mldGraph);
             mpdPanel.setMpdGraph(mpdGraph);
+            sqlPanel.setSQLScript(transform.mpdToSQL(mpdGraph));
         });
 
         btnExit.addActionListener((ActionEvent e) -> this.dispose());

@@ -93,10 +93,10 @@ public class Transform {
         return this.mpdGraph;
     }
 
-    public String mpdToSQL(MLDGraph mldGraph) {
+    public String mpdToSQL(MPDGraph mpdGraph) {
         //TODO specify the targeted DBMS
         StringBuilder stringBuilder = new StringBuilder();
-        mldGraph.getTables().forEach(table -> stringBuilder
+        mpdGraph.getTables().forEach(table -> stringBuilder
                 .append("DROP TABLE IF EXISTS `").append(table.getName()).append("`;\n")
                 .append("CREATE TABLE `").append(table.getName()).append("` (\n")
                 .append(this.createColumn(table))
