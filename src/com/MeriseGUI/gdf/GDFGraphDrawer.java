@@ -2,6 +2,7 @@ package com.MeriseGUI.gdf;
 
 import com.MeriseGUI.mcd.AssociationView;
 import com.MeriseGUI.mcd.EntityView;
+import com.MeriseGUI.mcd.GraphicalMCDNode;
 import com.exception.DuplicateMeriseObject;
 import com.gdf.GDFGraph;
 import com.gdf.GDFNode;
@@ -43,7 +44,12 @@ public class GDFGraphDrawer {
             return;
         gdfGraph.remove(gdfGraph.contains(gdfAttribute.getName()));
         this.nodes.remove(gdfAttribute);
+        this.removeAttachedLinks(gdfAttribute);
         System.out.println(gdfGraph);
+    }
+
+    protected void removeAttachedLinks(GDFAttribute gdfAttribute) {
+        this.edges.removeIf(e -> e.getNodeA().equals(gdfAttribute) || e.getNodeB().equals(gdfAttribute) );
     }
 
     public void rename(GDFAttribute gdfAttribute, String newName) {

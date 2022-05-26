@@ -28,7 +28,6 @@ public class GraphicalMPDTable extends GraphicalNode {
 
     @Override
     public void draw(Graphics2D g) {
-        drawAttributes(g);
 
 
         attrNbr = attributes.size();
@@ -49,6 +48,7 @@ public class GraphicalMPDTable extends GraphicalNode {
 
         g.drawRect(pulledX, pulledY, width, height);
         g.drawLine(pulledX, pulledY+headHeight, pulledX+width, pulledY+headHeight);
+        drawAttributes(g);
 
     }
     private void drawAttributes(Graphics2D g) {

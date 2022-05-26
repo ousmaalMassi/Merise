@@ -69,7 +69,12 @@ public class MCDGraphDrawer {
         else
             mcdGraph.removeAssociation(mcdGraph.containsAssociation(mcdNodeView.getName()));
         this.nodes.remove(mcdNodeView);
+        this.removeAttachedLinks(mcdNodeView);
         System.out.println(mcdGraph);
+    }
+
+    protected void removeAttachedLinks(GraphicalMCDNode nodeUnderCursor) {
+        this.edges.removeIf(e -> e.getNodeA().equals(nodeUnderCursor) || e.getNodeB().equals(nodeUnderCursor) );
     }
 
     public void rename(GraphicalMCDNode mcdNodeView) {
