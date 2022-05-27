@@ -4,7 +4,7 @@ import javax.swing.table.AbstractTableModel;
 
 class TableModel extends AbstractTableModel {
     private Object[][] data;
-    private String[] title;
+    private final String[] title;
 
     public TableModel(Object[][] data, String[] title) {
         this.data = data;
@@ -63,7 +63,7 @@ class TableModel extends AbstractTableModel {
 
     public void removeRow(int position) {
         int indice = 0, indice2 = 0, nbRow = this.getRowCount() - 1, nbCol = this.getColumnCount();
-        Object temp[][] = new Object[nbRow][nbCol];
+        Object[][] temp = new Object[nbRow][nbCol];
         for (Object[] value : this.data) {
             if (indice != position) {
                 temp[indice2++] = value;
@@ -71,7 +71,6 @@ class TableModel extends AbstractTableModel {
             indice++;
         }
         data = temp;
-        temp = null;
         this.fireTableDataChanged();
     }
 
@@ -82,18 +81,20 @@ class TableModel extends AbstractTableModel {
      */
     public void addRow(Object[] data) {
         int indice = 0, nbRow = this.getRowCount(), nbCol = this.getColumnCount();
-        Object temp[][] = this.data;
+        Object[][] temp = this.data;
         this.data = new Object[nbRow + 1][nbCol];
         for (Object[] value : temp)
             this.data[indice++] = value;
         this.data[indice] = data;
-        temp = null;
         this.fireTableDataChanged();
     }
 
     @Override
     public boolean isCellEditable(int row, int col) {
-        return true;
+        return switch (col) {
+            case 3, 4 -> false;
+            default -> true;
+        };
     }
 
     public Object[][] getTableData() {

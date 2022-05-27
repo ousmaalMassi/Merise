@@ -1,12 +1,7 @@
 package com.MeriseGUI.gdf;
 
-import com.MeriseGUI.mcd.AssociationView;
-import com.MeriseGUI.mcd.EntityView;
-import com.MeriseGUI.mcd.GraphicalMCDNode;
-import com.exception.DuplicateMeriseObject;
 import com.gdf.GDFGraph;
 import com.gdf.GDFNode;
-import com.mcd.*;
 
 import java.awt.*;
 import java.util.LinkedList;
