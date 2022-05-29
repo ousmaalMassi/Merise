@@ -158,11 +158,26 @@ public class FlowPanel extends JPanel implements MouseListener, MouseMotionListe
         nodeUnderCursor = graphDrawer.contains(e.getX(), e.getY());
         if (nodeUnderCursor == null)
             return;
-        this.moveNodeUnderCursor(e.getX(), e.getY());
+
+        if (nodeUnderCursor instanceof Domain domain && nodeUnderCursor.inCorner(e.getX(), e.getY())) {
+            domain.resize(e.getX(), e.getY());
+        }
+        else
+            this.moveNodeUnderCursor(e.getX(), e.getY());
+        repaint();
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
+        if (nodeUnderCursor == null)
+            return;
+        if (nodeUnderCursor instanceof Domain) {
+            if ( nodeUnderCursor.inCorner(e.getX(), e.getY())) {
+                setCursor(Cursor.getPredefinedCursor(Cursor.SE_RESIZE_CURSOR));
+            }else{
+                setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+            }
+        }
 
     }
 
