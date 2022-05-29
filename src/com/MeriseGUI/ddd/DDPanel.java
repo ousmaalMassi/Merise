@@ -8,14 +8,9 @@ package com.MeriseGUI.ddd;
 import com.mcd.Property;
 
 import javax.swing.*;
-import javax.swing.table.TableCellRenderer;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Vector;
 
 /**
  * @author rpc
@@ -23,7 +18,14 @@ import java.util.List;
 public class DDPanel extends JPanel {
 
     private static final String SUPP_TEXT = "supprimer";
-    private JTable ddTable;
+    private static JTable ddTable;
+    private static final String NAME = "Nom";
+    private static final String TYPE = "Type";
+    private static final String LENGTH = "Taille";
+    private static final String MCD = "MCD";
+    private static final String GDF = "GDF";
+    private static int GDF_COL_INDEX;
+    private static int NAME_COL_INDEX;
     private JComboBox<Boolean> combo;
     private static TableModel tableModel;
     private Object[][] data;
@@ -36,13 +38,15 @@ public class DDPanel extends JPanel {
 
     private void initComponents() {
         data = new Object[][]{createEmptyDataRow()};
-        ArrayList<ArrayList> dataDictionary = new ArrayList<>();
         Property.Types[] comboData = new Property.Types[]{Property.Types.ALPHABETICAL, Property.Types.ALPHANUMERIC, Property.Types.DATE, Property.Types.DIGITAL, Property.Types.LOGIC};
         combo = new JComboBox(comboData);
-        String[] title = new String[]{"Nom", "Type", "Taille", "Entité", "utilisé en GDF"};
-        tableModel = new TableModel(data, title);
 
+        tableModel = new TableModel(data, new String[]{NAME, TYPE, LENGTH, MCD, GDF});
         ddTable = new JTable(tableModel);
+
+        NAME_COL_INDEX = ddTable.getColumn(NAME).getModelIndex();
+        GDF_COL_INDEX = ddTable.getColumn(GDF).getModelIndex();
+
         ddTable.getColumn("Type").setCellEditor(new DefaultCellEditor(combo));
 //        ddTable.getColumn("suppression").setCellRenderer(new ButtonRenderer());
         ddTable.setRowHeight(35);
@@ -69,6 +73,7 @@ public class DDPanel extends JPanel {
         this.add(footer, BorderLayout.SOUTH);
 
         tableModel.setValueAt(combo.getItemAt(0), ddTable.getRowCount() - 1, 1);
+        ddTable.remove(ddTable.getRowCount()-1);
     }
 
     private Object[] createEmptyDataRow() {
@@ -77,8 +82,6 @@ public class DDPanel extends JPanel {
 
     private void addNewRow(Object[] dataRow) {
         if (dataRow != null) {
-//            String attribName = (String) dataRow[0];
-//            dataRow[1] = attribName.replaceAll(" ", "_").toUpperCase();
             tableModel.addRow(dataRow);
         } else
             tableModel.addRow(createEmptyDataRow());
@@ -88,7 +91,7 @@ public class DDPanel extends JPanel {
     private void showExample() {
         tableModel.removeRow(0);
         Object[][] dataExample = new Object[][]{
-                {"id client", "", "11", "", true},
+                {"id client", "", "11", "", false},
                 {"nom", "", "50", "", false},
                 {"prénom", "", "50", "", false},
                 {"adresse", "", "255", "", false},
@@ -104,24 +107,31 @@ public class DDPanel extends JPanel {
         }
     }
 
-//    public class ButtonRenderer extends JButton implements TableCellRenderer {
-//
-//        @Override
-//        public Component getTableCellRendererComponent( JTable table, Object value, boolean isSelected, boolean isFocus, int row, int col) {
-//            setText((value != null) ? value.toString() : "");
-//            System.out.println(row+" "+col);
-//            return this;
-//        }
-//    }
-
     public static ArrayList<String> getAttributeList() {
         int nRow = tableModel.getRowCount();
         ArrayList<String> attrList = new ArrayList<>();
         for (int i = 0; i < nRow; i++) {
-            attrList.add(tableModel.getValueAt(i, 0).toString());
+            attrList.add(tableModel.getValueAt(i, NAME_COL_INDEX).toString());
         }
         attrList.removeIf(item -> item.equals(""));
         return attrList;
+    }
+
+    public static Vector<String> getGDFAttributes() {
+        int nRow = tableModel.getRowCount();
+        Vector<String> attrList = new Vector<>();
+        for (int i = 0; i < nRow; i++) {
+            if (tableModel.getValueAt(i, GDF_COL_INDEX).toString().equals("false"))
+                attrList.add(tableModel.getValueAt(i, NAME_COL_INDEX).toString());
+
+        }
+        attrList.removeIf(item -> item.equals(""));
+        return attrList;
+    }
+
+    public static void setUsedInGDF(String attributeName ,boolean used) {
+        int row = getAttributeList().indexOf(attributeName);
+        tableModel.setValueAt(used, row, GDF_COL_INDEX);
     }
 
    /* public static ArrayList<Property> getAttributeList() {
@@ -144,8 +154,8 @@ public class DDPanel extends JPanel {
         int nRow = tableModel.getRowCount() - 1;
         Object[][] tableData = new Object[nRow][2];
         for (int i = 0; i < nRow; i++) {
-            tableData[i][0] = tableModel.getValueAt(i, 0).toString();
-            tableData[i][1] = tableModel.getValueAt(i, 2).toString();
+            tableData[i][0] = tableModel.getValueAt(i, NAME_COL_INDEX).toString();
+            tableData[i][1] = tableModel.getValueAt(i, NAME_COL_INDEX).toString();
         }
         return tableData;
     }

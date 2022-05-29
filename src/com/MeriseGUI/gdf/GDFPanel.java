@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.List;
+import java.util.Vector;
 
 public class GDFPanel extends JPanel implements MouseListener, MouseMotionListener {
     private final GDFGraph gdfGraph;
@@ -19,7 +20,8 @@ public class GDFPanel extends JPanel implements MouseListener, MouseMotionListen
     private GDFAttribute gdfAttribute2;
     private boolean creatingLink;
     private GDFAttribute nodeUnderCursor;
-    private Object[] dictionaryData;
+    private Vector<String> dictionaryData;
+    JList<Object> jListAttribute = new JList<>();
 
     public GDFPanel() {
         createPanelPopupMenu();
@@ -60,6 +62,7 @@ public class GDFPanel extends JPanel implements MouseListener, MouseMotionListen
         this.nodePopupMenu.add(removeNodeMenuItem);
         removeNodeMenuItem.addActionListener((action) -> {
             graphDrawer.remove(nodeUnderCursor);
+            DDPanel.setUsedInGDF(nodeUnderCursor.getName(), false);
             repaint();
         });
     }
@@ -72,12 +75,16 @@ public class GDFPanel extends JPanel implements MouseListener, MouseMotionListen
         addEntityMenuItem.addActionListener((action) -> {
             double MousePositionX = this.getMousePosition().getX();
             double MousePositionY = this.getMousePosition().getY();
-            dictionaryData = DDPanel.getAttributeList().toArray();
-            JList<Object> jList = new JList<>(dictionaryData);
-            JOptionPane.showMessageDialog(null, new JScrollPane(jList));
-            List<Object> selectedValuesList = jList.getSelectedValuesList();
-            for (int i = 0; i < selectedValuesList.size(); i++) {
-                graphDrawer.addAttribute(createAttribute(MousePositionX, MousePositionY, selectedValuesList.get(i).toString()));
+
+            dictionaryData = DDPanel.getGDFAttributes();
+            jListAttribute.setListData(dictionaryData);
+            JOptionPane.showMessageDialog(null, new JScrollPane(jListAttribute));
+
+            List<Object> selectedValuesList = jListAttribute.getSelectedValuesList();
+            for (Object o : selectedValuesList) {
+                String attributeName = o.toString();
+                DDPanel.setUsedInGDF(attributeName, true);
+                graphDrawer.addAttribute(createAttribute(MousePositionX, MousePositionY, attributeName));
             }
             repaint();
         });
