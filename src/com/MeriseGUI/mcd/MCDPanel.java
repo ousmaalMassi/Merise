@@ -10,29 +10,33 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.List;
+import java.util.Vector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class MCDPanel extends JPanel implements MouseListener, MouseMotionListener {
     private final MCDGraph mcdGraph;
+    private final MCDGraphDrawer graphDrawer;
     private JPopupMenu panelPopupMenu;
     private JPopupMenu nodePopupMenu;
-    private final MCDGraphDrawer graphDrawer;
     private AssociationView associationToLink;
     private EntityView entityToLink;
     private boolean creatingLink;
     private GraphicalMCDNode nodeUnderCursor;
+    private Vector<String> dictionaryData;
+    private final JList<Object> jListAttribute;
 
     public MCDPanel() {
         createPanelPopupMenu();
         createMCDObjectPopupMenu();
-//        setBackground(Color.GRAY);
         addMouseListener(this);
         addMouseMotionListener(this);
+
         this.graphDrawer = new MCDGraphDrawer();
         this.mcdGraph = new MCDGraph();
         this.graphDrawer.setMcdGraph(this.mcdGraph);
-        creatingLink = false;
+        this.creatingLink = false;
+        this.jListAttribute = new JList<>();
     }
 
     @Override
@@ -66,14 +70,19 @@ public class MCDPanel extends JPanel implements MouseListener, MouseMotionListen
 
         this.nodePopupMenu.addSeparator();
         /**/
-        JMenuItem editAttributeMenuItem = new JMenuItem("Editer un attribut");
+        JMenuItem editAttributeMenuItem = new JMenuItem("Ajouter des attributs");
         this.nodePopupMenu.add(editAttributeMenuItem);
         editAttributeMenuItem.addActionListener((action) -> {
-            JList<Object> jList = new JList<>(DDPanel.getAttributeList().toArray());
-            JOptionPane.showMessageDialog(this, new JScrollPane(jList));
-            List<Object> selectedValuesList = jList.getSelectedValuesList();
-            for (int i = 0; i < selectedValuesList.size(); i++) {
-                graphDrawer.addProperty(nodeUnderCursor, selectedValuesList.get(i).toString());
+
+            dictionaryData = DDPanel.getMCDAttributes();
+            jListAttribute.setListData(dictionaryData);
+            JOptionPane.showMessageDialog(null, new JScrollPane(jListAttribute));
+            List<Object> selectedValuesList = jListAttribute.getSelectedValuesList();
+
+            for (Object o : selectedValuesList) {
+                String attributeName = o.toString();
+                DDPanel.setUsedInMCD(attributeName, nodeUnderCursor.getName());
+                graphDrawer.addProperty(nodeUnderCursor, attributeName);
             }
             repaint();
         });
@@ -181,8 +190,7 @@ public class MCDPanel extends JPanel implements MouseListener, MouseMotionListen
 
         if (e.getButton() == MouseEvent.BUTTON3 && nodeUnderCursor != null) {
             this.nodePopupMenu.show(e.getComponent(), e.getX(), e.getY());
-        }
-        else if (e.getButton() == MouseEvent.BUTTON3) {
+        } else if (e.getButton() == MouseEvent.BUTTON3) {
             this.panelPopupMenu.show(e.getComponent(), e.getX(), e.getY());
         }
 

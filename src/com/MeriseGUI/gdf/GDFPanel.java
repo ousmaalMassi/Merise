@@ -13,28 +13,28 @@ import java.util.Vector;
 
 public class GDFPanel extends JPanel implements MouseListener, MouseMotionListener {
     private final GDFGraph gdfGraph;
+    private final GDFGraphDrawer graphDrawer;
+    private final JList<Object> jListAttribute;
     private JPopupMenu panelPopupMenu;
     private JPopupMenu nodePopupMenu;
-    private final GDFGraphDrawer graphDrawer;
     private GDFAttribute gdfAttribute1;
     private GDFAttribute gdfAttribute2;
     private boolean creatingLink;
     private GDFAttribute nodeUnderCursor;
     private Vector<String> dictionaryData;
-    JList<Object> jListAttribute = new JList<>();
 
     public GDFPanel() {
         createPanelPopupMenu();
         createMCDObjectPopupMenu();
-//        setBackground(Color.GRAY);
         addMouseListener(this);
         addMouseMotionListener(this);
-        graphDrawer = new GDFGraphDrawer();
-        gdfGraph = new GDFGraph();
-        graphDrawer.setGraph(this.gdfGraph);
-        creatingLink = false;
-    }
 
+        this.graphDrawer = new GDFGraphDrawer();
+        this.gdfGraph = new GDFGraph();
+        this.graphDrawer.setGraph(this.gdfGraph);
+        this.creatingLink = false;
+        this.jListAttribute = new JList<>();
+    }
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -79,8 +79,8 @@ public class GDFPanel extends JPanel implements MouseListener, MouseMotionListen
             dictionaryData = DDPanel.getGDFAttributes();
             jListAttribute.setListData(dictionaryData);
             JOptionPane.showMessageDialog(null, new JScrollPane(jListAttribute));
-
             List<Object> selectedValuesList = jListAttribute.getSelectedValuesList();
+
             for (Object o : selectedValuesList) {
                 String attributeName = o.toString();
                 DDPanel.setUsedInGDF(attributeName, true);
@@ -111,16 +111,14 @@ public class GDFPanel extends JPanel implements MouseListener, MouseMotionListen
 
         if (e.getButton() == MouseEvent.BUTTON3 && nodeUnderCursor != null) {
             this.nodePopupMenu.show(e.getComponent(), e.getX(), e.getY());
-        }
-        else if (e.getButton() == MouseEvent.BUTTON3) {
+        } else if (e.getButton() == MouseEvent.BUTTON3) {
             this.panelPopupMenu.show(e.getComponent(), e.getX(), e.getY());
         }
 
         if (creatingLink) {
             if (gdfAttribute1 == null) {
                 gdfAttribute1 = nodeUnderCursor;
-            }
-            else if (gdfAttribute2 == null) {
+            } else if (gdfAttribute2 == null) {
                 gdfAttribute2 = nodeUnderCursor;
             }
             if (gdfAttribute2 != null && gdfAttribute1 != null) {
