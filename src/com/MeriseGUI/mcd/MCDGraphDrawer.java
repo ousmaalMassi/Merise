@@ -46,7 +46,7 @@ public class MCDGraphDrawer {
 
     public void addProperty(GraphicalMCDNode mcdNodeView, String name) {
 
-        long currentTimeMillis = System.currentTimeMillis();
+//        long currentTimeMillis = System.currentTimeMillis();
         MeriseObject meriseObject;
         if (mcdNodeView instanceof EntityView)
             meriseObject = mcdGraph.containsEntity(mcdNodeView.getName());
@@ -58,7 +58,21 @@ public class MCDGraphDrawer {
 
         mcdNodeView.getAttributes().add(property.name);
         System.out.println(mcdGraph);
-        System.out.println(System.currentTimeMillis() - currentTimeMillis+" ms");
+//        System.out.println(System.currentTimeMillis() - currentTimeMillis+" ms");
+    }
+
+    public void removeProperty(GraphicalMCDNode mcdNodeView, String name) {
+
+        MeriseObject meriseObject;
+        if (mcdNodeView instanceof EntityView)
+            meriseObject = mcdGraph.containsEntity(mcdNodeView.getName());
+        else
+            meriseObject = mcdGraph.containsAssociation(mcdNodeView.getName());
+        Property property = meriseObject.getPropertyList().stream().filter(p -> p.getName().equals(name)).findAny().orElse(null);
+        if (property == null)
+            return;
+        meriseObject.removeProperty(property);
+        mcdNodeView.getAttributes().remove(property.name);
     }
 
     public void remove(GraphicalMCDNode mcdNodeView) {

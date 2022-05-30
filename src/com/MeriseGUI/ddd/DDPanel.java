@@ -9,7 +9,7 @@ import com.mcd.Property;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Vector;
 
 /**
@@ -28,18 +28,16 @@ public class DDPanel extends JPanel {
     private static int NAME_COL_INDEX;
     private static int MCD_COL_INDEX;
     private static TableModel tableModel;
-    private JComboBox<Boolean> combo;
-    private Object[][] data;
-    private GroupLayout layout;
+    private JComboBox<Property.Types> combo;
 
     public DDPanel() {
         initComponents();
         showExample();
     }
 
-    public static ArrayList<String> getAttributeList() {
+    public static Vector<String> getAttributeList() {
         int nRow = tableModel.getRowCount();
-        ArrayList<String> attrList = new ArrayList<>();
+        Vector<String> attrList = new Vector<>();
         for (int i = 0; i < nRow; i++) {
             attrList.add(tableModel.getValueAt(i, NAME_COL_INDEX).toString());
         }
@@ -80,18 +78,8 @@ public class DDPanel extends JPanel {
         tableModel.setValueAt(name, row, MCD_COL_INDEX);
     }
 
-    public static Object[][] getAttributes() {
-        int nRow = tableModel.getRowCount() - 1;
-        Object[][] tableData = new Object[nRow][2];
-        for (int i = 0; i < nRow; i++) {
-            tableData[i][0] = tableModel.getValueAt(i, NAME_COL_INDEX).toString();
-            tableData[i][1] = tableModel.getValueAt(i, NAME_COL_INDEX).toString();
-        }
-        return tableData;
-    }
-
     private void initComponents() {
-        data = new Object[][]{createEmptyDataRow()};
+        Object[][] data = new Object[][]{createEmptyDataRow()};
         Property.Types[] comboData = new Property.Types[]{Property.Types.ALPHABETICAL, Property.Types.ALPHANUMERIC, Property.Types.DATE, Property.Types.DIGITAL, Property.Types.LOGIC};
         combo = new JComboBox(comboData);
 
@@ -136,28 +124,9 @@ public class DDPanel extends JPanel {
     }
 
     private void addNewRow(Object[] dataRow) {
-        if (dataRow != null) {
-            tableModel.addRow(dataRow);
-        } else
-            tableModel.addRow(createEmptyDataRow());
+        tableModel.addRow(Objects.requireNonNullElseGet(dataRow, this::createEmptyDataRow));
         tableModel.setValueAt(combo.getItemAt(0), ddTable.getRowCount() - 1, 1);
     }
-
-   /* public static ArrayList<Property> getAttributeList() {
-        int nRow = tableModel.getRowCount();
-        ArrayList<Property> attrList = new ArrayList<>();
-        for (int i = 0; i < nRow; i++) {
-            String name = tableModel.getValueAt(i, 0).toString();
-            String type = tableModel.getValueAt(i, 1).toString();
-            int length = Integer.parseInt(tableModel.getValueAt(i, 2).toString());
-            String types = tableModel.getValueAt(i, 1).toString();
-
-            Property property = new Property(name, Property.Types.ALPHABETICAL, length, List.of(Property.Constraints.NOT_NULL));
-            attrList.add(property);
-        }
-        attrList.removeIf(item -> item.equals(""));
-        return attrList;
-    }*/
 
     private void showExample() {
         tableModel.removeRow(0);
