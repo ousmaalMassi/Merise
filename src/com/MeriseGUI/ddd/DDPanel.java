@@ -9,7 +9,6 @@ import com.mcd.Property;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Objects;
 import java.util.Vector;
 
 /**
@@ -34,6 +33,72 @@ public class DDPanel extends JPanel {
         initComponents();
         showExample();
     }
+
+    private void initComponents() {
+        Object[][] data = new Object[][]{createEmptyDataRow("")};
+        Property.Types[] comboData = new Property.Types[]{Property.Types.ALPHABETICAL, Property.Types.ALPHANUMERIC, Property.Types.DATE, Property.Types.DIGITAL, Property.Types.LOGIC};
+        combo = new JComboBox(comboData);
+
+        tableModel = new TableModel(data, new String[]{NAME, TYPE, LENGTH, MCD, GDF});
+        ddTable = new JTable(tableModel);
+
+        NAME_COL_INDEX = ddTable.getColumn(NAME).getModelIndex();
+        MCD_COL_INDEX = ddTable.getColumn(MCD).getModelIndex();
+        GDF_COL_INDEX = ddTable.getColumn(GDF).getModelIndex();
+
+        ddTable.getColumn("Type").setCellEditor(new DefaultCellEditor(combo));
+//        ddTable.getColumn("suppression").setCellRenderer(new ButtonRenderer());
+        ddTable.setRowHeight(35);
+
+        JButton addRowBtn = new JButton();
+        addRowBtn.setText("Ajouter un attribue");
+        addRowBtn.setFont(new Font("Tahoma", Font.BOLD, 15));
+        addRowBtn.addActionListener(e -> addAttribute());
+
+        JButton removeRowBtn = new JButton();
+        removeRowBtn.setText(SUPP_TEXT);
+        removeRowBtn.setFont(new Font("Tahoma", Font.BOLD, 15));
+        removeRowBtn.addActionListener(e -> removeAttribute());
+
+        JScrollPane jScrollPane1 = new JScrollPane();
+        jScrollPane1.setViewportView(ddTable);
+
+        JPanel footer = new JPanel();
+        footer.add(addRowBtn);
+        footer.add(removeRowBtn);
+
+        this.setLayout(new BorderLayout());
+        this.add(jScrollPane1, BorderLayout.CENTER);
+        this.add(footer, BorderLayout.SOUTH);
+
+        tableModel.setValueAt(combo.getItemAt(0), ddTable.getRowCount() - 1, 1);
+        ddTable.remove(ddTable.getRowCount() - 1);
+    }
+
+    private void addAttribute() {
+        String inputDialog = JOptionPane.showInputDialog(this, "Veuillez entrer le nom de l'attribut");
+        if (inputDialog == null)
+            return;
+        tableModel.addRow(this.createEmptyDataRow(inputDialog));
+        tableModel.setValueAt(combo.getItemAt(0), ddTable.getRowCount() - 1, 1);
+    }
+
+    private Object[] createEmptyDataRow(String name) {
+        return new Object[]{name, "", "0", "", false};
+    }
+
+    private void removeAttribute() {
+        int selectedRow = ddTable.getSelectedRow();
+        if (selectedRow != -1) {
+            if (isUsedInMCD(selectedRow) || isUsedInGDF(selectedRow))
+                JOptionPane.showMessageDialog(this, "Cet Attribut est en cours d'utilisation!");
+            else
+                tableModel.removeRow(selectedRow);
+        }
+        else
+            JOptionPane.showMessageDialog(this, "Aucun attribut n'a été sélectionné");
+    }
+
 
     public static Vector<String> getAttributeList() {
         int nRow = tableModel.getRowCount();
@@ -78,56 +143,13 @@ public class DDPanel extends JPanel {
         tableModel.setValueAt(name, row, MCD_COL_INDEX);
     }
 
-    private void initComponents() {
-        Object[][] data = new Object[][]{createEmptyDataRow()};
-        Property.Types[] comboData = new Property.Types[]{Property.Types.ALPHABETICAL, Property.Types.ALPHANUMERIC, Property.Types.DATE, Property.Types.DIGITAL, Property.Types.LOGIC};
-        combo = new JComboBox(comboData);
-
-        tableModel = new TableModel(data, new String[]{NAME, TYPE, LENGTH, MCD, GDF});
-        ddTable = new JTable(tableModel);
-
-        NAME_COL_INDEX = ddTable.getColumn(NAME).getModelIndex();
-        MCD_COL_INDEX = ddTable.getColumn(MCD).getModelIndex();
-        GDF_COL_INDEX = ddTable.getColumn(GDF).getModelIndex();
-
-        ddTable.getColumn("Type").setCellEditor(new DefaultCellEditor(combo));
-//        ddTable.getColumn("suppression").setCellRenderer(new ButtonRenderer());
-        ddTable.setRowHeight(35);
-
-        JButton addRowBtn = new JButton();
-        addRowBtn.setText("Ajouter un attribue");
-        addRowBtn.setFont(new Font("Tahoma", Font.BOLD, 15));
-        addRowBtn.addActionListener(e -> addNewRow(null));
-
-        JButton removeRowBtn = new JButton();
-        removeRowBtn.setText(SUPP_TEXT);
-        removeRowBtn.setFont(new Font("Tahoma", Font.BOLD, 15));
-        removeRowBtn.addActionListener(e -> tableModel.removeRow(ddTable.getSelectedRow()));
-
-        JScrollPane jScrollPane1 = new JScrollPane();
-        jScrollPane1.setViewportView(ddTable);
-
-        JPanel footer = new JPanel();
-        footer.add(addRowBtn);
-        footer.add(removeRowBtn);
-
-        this.setLayout(new BorderLayout());
-        this.add(jScrollPane1, BorderLayout.CENTER);
-        this.add(footer, BorderLayout.SOUTH);
-
-        tableModel.setValueAt(combo.getItemAt(0), ddTable.getRowCount() - 1, 1);
-        ddTable.remove(ddTable.getRowCount() - 1);
+    private boolean isUsedInMCD(int selectedRow) {
+        return !tableModel.getValueAt(selectedRow, MCD_COL_INDEX).toString().isEmpty();
     }
 
-    private Object[] createEmptyDataRow() {
-        return new Object[]{"", "", "0", "", false};
+    private boolean isUsedInGDF(int selectedRow) {
+        return tableModel.getValueAt(selectedRow, GDF_COL_INDEX).toString().equals("true");
     }
-
-    private void addNewRow(Object[] dataRow) {
-        tableModel.addRow(Objects.requireNonNullElseGet(dataRow, this::createEmptyDataRow));
-        tableModel.setValueAt(combo.getItemAt(0), ddTable.getRowCount() - 1, 1);
-    }
-
     private void showExample() {
         tableModel.removeRow(0);
         Object[][] dataExample = new Object[][]{
@@ -143,7 +165,8 @@ public class DDPanel extends JPanel {
         };
 
         for (Object[] dataRow : dataExample) {
-            addNewRow(dataRow);
+            tableModel.addRow(dataRow);
+            tableModel.setValueAt(combo.getItemAt(0), ddTable.getRowCount() - 1, 1);
         }
     }
 
