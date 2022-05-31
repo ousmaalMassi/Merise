@@ -1,6 +1,7 @@
 package com.MeriseGUI.mcd;
 
 import com.MeriseGUI.GraphicalLink;
+import com.MeriseGUI.GraphicalNode;
 import com.MeriseObject;
 import com.exception.DuplicateMeriseObject;
 import com.mcd.*;
@@ -13,7 +14,7 @@ import java.util.LinkedList;
 public class MCDGraphDrawer {
 
     private final List<GraphicalMCDNode> nodes;
-    private final List<GraphicalLink> edges;
+    private final List<GraphicalMCDLink> edges;
     private MCDGraph mcdGraph;
 
     public MCDGraphDrawer() {
@@ -117,6 +118,12 @@ public class MCDGraphDrawer {
                 .orElse(null);
     }
 
+    public GraphicalMCDLink containsLink(int x, int y) {
+        return this.edges.stream().filter(edge -> edge.contains(x, y))
+                .findAny()
+                .orElse(null);
+    }
+
     public void addLink(EntityView entityToLink, AssociationView associationToLink) {
         Entity entity = mcdGraph.containsEntity(entityToLink.getName());
         Association association = mcdGraph.containsAssociation(associationToLink.getName());
@@ -130,4 +137,26 @@ public class MCDGraphDrawer {
         System.out.println(mcdGraph);
     }
 
+    public void removeLink(GraphicalMCDLink linkUnderCursor) {
+        GraphicalNode associationView = linkUnderCursor.getAssociationView();
+        GraphicalNode entityView = linkUnderCursor.getEntityView();
+
+        this.mcdGraph.unlink(associationView.getName(), entityView.getName());
+        this.edges.remove(linkUnderCursor);
+
+        System.out.println(mcdGraph);
+    }
+
+    public void editCard(GraphicalMCDLink linkUnderCursor, int cardIndex) {
+        Cardinalities[] cardinalities = Cardinalities.values();
+        linkUnderCursor.setCard(cardinalities[cardIndex].toString());
+
+        GraphicalNode associationView = linkUnderCursor.getAssociationView();
+        GraphicalNode entityView = linkUnderCursor.getEntityView();
+
+        Association association = this.mcdGraph.containsAssociation(associationView.getName());
+        association.setCard(entityView.getName(), cardinalities[cardIndex]);
+
+        System.out.println(mcdGraph);
+    }
 }

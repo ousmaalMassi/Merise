@@ -1,6 +1,7 @@
 package com.MeriseGUI.mcd;
 
 import com.MeriseGUI.GraphicalLink;
+import com.MeriseGUI.GraphicalNode;
 
 import java.awt.*;
 
@@ -22,7 +23,15 @@ public class GraphicalMCDLink extends GraphicalLink {
         this.card = card;
         //linkNbr++;
     }
-    
+
+    public GraphicalNode getEntityView() {
+        return this.nodeA;
+    }
+
+    public GraphicalNode getAssociationView() {
+        return this.nodeB;
+    }
+
     @Override
     public void draw(Graphics2D g) {
         super.draw(g);
@@ -49,5 +58,4 @@ public class GraphicalMCDLink extends GraphicalLink {
     public String toString() {
             return "(" + nodeA.toString() + ") ===> (" + nodeB.toString() + ") ";
     }
-
 }

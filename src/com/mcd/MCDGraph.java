@@ -92,10 +92,11 @@ public class MCDGraph {
     }
 
     /**
-     * @param association that associate a list of entities
+     * @param associationName that associate a list of entities
      * @param entityName  to associate with
      */
-    public void unlink(Association association, String entityName) {
+    public void unlink(String associationName, String entityName) {
+        Association association = this.containsAssociation(associationName);
         association.getLinks().remove(entityName);
     }
 

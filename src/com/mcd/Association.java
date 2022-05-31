@@ -34,6 +34,10 @@ public class Association extends MeriseObject {
         this.links = links;
     }
 
+    public void setCard(String name, Cardinalities cardinality) {
+        this.links.replace(name, cardinality);
+    }
+
     @Override
     public String toString(){
         return """

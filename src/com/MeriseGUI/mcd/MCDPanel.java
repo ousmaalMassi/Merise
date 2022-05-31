@@ -9,26 +9,29 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class MCDPanel extends JPanel implements MouseListener, MouseMotionListener {
     private final MCDGraph mcdGraph;
     private final MCDGraphDrawer graphDrawer;
     private JPopupMenu panelPopupMenu;
     private JPopupMenu nodePopupMenu;
+    private JPopupMenu linkPopupMenu;
     private AssociationView associationToLink;
     private EntityView entityToLink;
     private boolean creatingLink;
     private GraphicalMCDNode nodeUnderCursor;
+    private GraphicalMCDLink linkUnderCursor;
     private Vector<String> dictionaryData;
     private final JList<Object> jListAttribute;
 
     public MCDPanel() {
         createPanelPopupMenu();
         createMCDObjectPopupMenu();
+        createLinkPopupMenu();
+
         addMouseListener(this);
         addMouseMotionListener(this);
 
@@ -128,6 +131,26 @@ public class MCDPanel extends JPanel implements MouseListener, MouseMotionListen
 
     }
 
+    private void createLinkPopupMenu() {
+        this.linkPopupMenu = new JPopupMenu();
+
+        JMenuItem editCardMenuItem = new JMenuItem("Modifier");
+        this.linkPopupMenu.add(editCardMenuItem);
+        editCardMenuItem.addActionListener((action) -> {
+            JComboBox<Cardinalities> card = new JComboBox<>(Cardinalities.values());
+            JOptionPane.showMessageDialog(null, new JScrollPane(card));
+            graphDrawer.editCard(linkUnderCursor, card.getSelectedIndex());
+            repaint();
+        });
+
+        JMenuItem removeLinkMenuItem = new JMenuItem("Supprimer");
+        this.linkPopupMenu.add(removeLinkMenuItem);
+        removeLinkMenuItem.addActionListener((action) -> {
+            graphDrawer.removeLink(linkUnderCursor);
+            repaint();
+        });
+    }
+
     private EntityView createEntity() {
         int x = (int) this.getMousePosition().getX();
         int y = (int) this.getMousePosition().getY();
@@ -147,11 +170,15 @@ public class MCDPanel extends JPanel implements MouseListener, MouseMotionListen
     @Override
     public void mouseClicked(MouseEvent e) {
         nodeUnderCursor = graphDrawer.contains(e.getX(), e.getY());
+        linkUnderCursor = graphDrawer.containsLink(e.getX(), e.getY());
 
-        if (e.getButton() == MouseEvent.BUTTON3 && nodeUnderCursor != null) {
-            this.nodePopupMenu.show(e.getComponent(), e.getX(), e.getY());
-        } else if (e.getButton() == MouseEvent.BUTTON3) {
-            this.panelPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+        if (e.getButton() == MouseEvent.BUTTON3) {
+            if (nodeUnderCursor != null) {
+                this.nodePopupMenu.show(e.getComponent(), e.getX(), e.getY());
+            } else if (linkUnderCursor != null) {
+                this.linkPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+            } else
+                this.panelPopupMenu.show(e.getComponent(), e.getX(), e.getY());
         }
 
         if (creatingLink) {
@@ -159,11 +186,6 @@ public class MCDPanel extends JPanel implements MouseListener, MouseMotionListen
                 entityToLink = entityView;
             else if (nodeUnderCursor instanceof AssociationView associationView)
                 associationToLink = associationView;
-
-//            System.out.println("entityToLink: "+entityToLink);
-//            System.out.println("associationToLink: "+associationToLink);
-//            System.out.println();
-//            if ((entityToLink == null && associationToLink != null) || (entityToLink != null && associationToLink == null)) {
             if (entityToLink != null && associationToLink != null) {
                 graphDrawer.addLink(entityToLink, associationToLink);
                 repaint();
@@ -173,8 +195,6 @@ public class MCDPanel extends JPanel implements MouseListener, MouseMotionListen
 
             }
         }
-//        else if (creatingLink && associationToLink != null && entityToLink != null)
-
 
     }
 
@@ -185,7 +205,7 @@ public class MCDPanel extends JPanel implements MouseListener, MouseMotionListen
 
     @Override
     public void mouseReleased(MouseEvent e) {
-
+        nodeUnderCursor = null;
     }
 
     @Override
@@ -200,11 +220,10 @@ public class MCDPanel extends JPanel implements MouseListener, MouseMotionListen
 
     @Override
     public void mouseDragged(MouseEvent e) {
-
-        nodeUnderCursor = graphDrawer.contains(e.getX(), e.getY());
         if (nodeUnderCursor == null)
-            return;
-        this.moveNodeUnderCursor(e.getX(), e.getY());
+            nodeUnderCursor = graphDrawer.contains(e.getX(), e.getY());
+        else
+            this.moveNodeUnderCursor(e.getX(), e.getY());
     }
 
     @Override
