@@ -55,69 +55,18 @@ public class Merise extends JFrame {
         sqlPanel = new SQLPanel();
 
         JTabbedPane jTabbedPane = new JTabbedPane();
-        jTabbedPane.add("flow", flowPanel);
+        jTabbedPane.add("Diagramme de flux", flowPanel);
         jTabbedPane.add("Régles de gestion", managementRulesPanel);
         jTabbedPane.add("Dictionnaire de données", ddPanel);
-        jTabbedPane.add("gdf", gdfGraph);
-        jTabbedPane.add("mcd", mcdPanel);
-        jTabbedPane.add("mld", mldPanel);
-        jTabbedPane.add("mpd", mpdPanel);
-        jTabbedPane.add("sql", sqlPanel);
+        jTabbedPane.add("GDF", gdfGraph);
+        jTabbedPane.add("MCD", mcdPanel);
+        jTabbedPane.add("MLD", mldPanel);
+        jTabbedPane.add("MPD", mpdPanel);
+        jTabbedPane.add("SQL", sqlPanel);
         add(jTabbedPane, BorderLayout.CENTER);
 //        add(jpn, BorderLayout.WEST);
         add(toolBar, BorderLayout.NORTH );
 //        setJMenuBar(jMenuBar);
-
-
-
-
-
-//        long currentTimeMillis = System.currentTimeMillis();
-//        mcdPanel = new MCDPanel();
-//        transform = new Transform();
-//        MCDGraph mcdGraph = mcdPanel.getMcdGraph();
-//        MLDGraph mldGraph = transform.mcdToMld(mcdGraph);
-        //System.out.println(mldGraph);
-        //System.out.println(mcdGraph);
-        //System.out.println(transform.mpdToSQL(mldGraph));
-        //System.out.println(System.currentTimeMillis() - currentTimeMillis+" ms");
-
-        /*DataDictionary dataDictionary = new DataDictionary();
-        List<Property> propertyList = new ArrayList<>();
-        propertyList.add(new Property("id", Property.Types.INT, 11, Arrays.asList(Property.Constraints.PRIMARY_KEY, Property.Constraints.AUTO_INCREMENT)));
-        propertyList.add(new Property("nom", Property.Types.INT, 11, List.of(Property.Constraints.NOT_NULL)));
-        dataDictionary.setDictionary(new HashMap<>(){{ put("test", propertyList); }});
-        dataDictionary.addData("test", new Property("nom", Property.Types.INT, 11, List.of(Property.Constraints.NOT_NULL)));
-        dataDictionary.removeData("test", "nom");
-        System.out.println(dataDictionary);*/
-
-        /*DataDictionary dataDictionary = new DataDictionary();
-        GDFGraph gdfGraph = new GDFGraph();
-
-        dataDictionary
-                .addData(new Property("id", Property.Types.DIGITAL, 11, List.of(Property.Constraints.AUTO_INCREMENT)))
-                .addData(new Property("nom", Property.Types.ALPHABETICAL, 11, List.of(Property.Constraints.NOT_NULL)))
-                .addData(new Property("prénom", Property.Types.ALPHABETICAL, 11, List.of(Property.Constraints.NOT_NULL)))
-                .addData(new Property("adresse", Property.Types.ALPHANUMERIC, 11, List.of(Property.Constraints.NOT_NULL)))
-                .addData(new Property("id article", Property.Types.DIGITAL, 11, List.of(Property.Constraints.AUTO_INCREMENT)))
-                .addData(new Property("prix d'achat", Property.Types.ALPHANUMERIC, 11, List.of(Property.Constraints.NOT_NULL)))
-                .addData(new Property("prix de vente", Property.Types.ALPHANUMERIC, 30, List.of(Property.Constraints.NOT_NULL)))
-                .addData(new Property("designation", Property.Types.ALPHABETICAL, 11, List.of(Property.Constraints.NOT_NULL)));
-
-        Property id = dataDictionary.searchProperty("id");
-        Property nom = dataDictionary.searchProperty("nom");
-        Property adresse = dataDictionary.searchProperty("adresse");
-
-        DFNode dfNode = new DFNode(id.getName());
-        dfNode.addTarget(nom.getName());
-        dfNode.addTarget(adresse.getName());
-
-        //DFNode dfNode = new DFNode(id.getName());
-        //TODO recursive declaration, DFNode or Property directly
-
-        gdfGraph.addDfNodes(dfNode);
-
-        System.out.println(gdfGraph);*/
 
         pack();
     }
