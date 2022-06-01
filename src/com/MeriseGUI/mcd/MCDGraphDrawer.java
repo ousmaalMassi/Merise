@@ -1,6 +1,5 @@
 package com.MeriseGUI.mcd;
 
-import com.MeriseGUI.GraphicalLink;
 import com.MeriseGUI.GraphicalNode;
 import com.MeriseObject;
 import com.exception.DuplicateMeriseObject;
@@ -92,9 +91,17 @@ public class MCDGraphDrawer {
         this.edges.removeIf(e -> e.getNodeA().equals(nodeUnderCursor) || e.getNodeB().equals(nodeUnderCursor) );
     }
 
-    public void rename(GraphicalMCDNode mcdNodeView) {
+    public void rename(GraphicalMCDNode mcdNodeView, String newName) {
         if (mcdNodeView == null)
             return;
+        MeriseObject meriseObject;
+        if (mcdNodeView instanceof EntityView)
+            meriseObject = mcdGraph.containsEntity(mcdNodeView.getName());
+        else
+            meriseObject = mcdGraph.containsAssociation(mcdNodeView.getName());
+        meriseObject.setName(newName);
+        mcdNodeView.setName(newName);
+
         System.out.println(mcdGraph);
     }
 

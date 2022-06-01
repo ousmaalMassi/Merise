@@ -1,7 +1,6 @@
 package com.MeriseGUI.mcd;
 
 import com.MeriseGUI.ddd.DDPanel;
-import com.exception.DuplicateMeriseObject;
 import com.mcd.*;
 
 import javax.swing.*;
@@ -9,7 +8,6 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
@@ -60,7 +58,8 @@ public class MCDPanel extends JPanel implements MouseListener, MouseMotionListen
         JMenuItem renameNodeMenuItem = new JMenuItem("Renommer");
         this.nodePopupMenu.add(renameNodeMenuItem);
         renameNodeMenuItem.addActionListener((action) -> {
-            graphDrawer.rename(nodeUnderCursor);
+            String newName = JOptionPane.showInputDialog(this, "Veuillez entrer le nouveau nom");
+            graphDrawer.rename(nodeUnderCursor, newName);
             repaint();
         });
 
