@@ -126,6 +126,7 @@ public class GDFPanel extends JPanel implements MouseListener, MouseMotionListen
                 repaint();
                 gdfAttribute2 = null;
                 gdfAttribute1 = null;
+                nodeUnderCursor = null;
                 creatingLink = false;
             }
         }
@@ -153,11 +154,10 @@ public class GDFPanel extends JPanel implements MouseListener, MouseMotionListen
 
     @Override
     public void mouseDragged(MouseEvent e) {
-
-        nodeUnderCursor = graphDrawer.contains(e.getX(), e.getY());
         if (nodeUnderCursor == null)
-            return;
-        this.moveNodeUnderCursor(e.getX(), e.getY());
+            nodeUnderCursor = graphDrawer.contains(e.getX(), e.getY());
+        else
+            this.moveNodeUnderCursor(e.getX(), e.getY());
     }
 
     @Override
