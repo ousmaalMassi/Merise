@@ -1,8 +1,6 @@
 package com.MeriseGUI.flow;
 
 import com.MeriseGUI.GraphicalNode;
-import com.MeriseGUI.mcd.AssociationView;
-import com.MeriseGUI.mcd.EntityView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -65,21 +63,27 @@ public class FlowPanel extends JPanel implements MouseListener, MouseMotionListe
         JMenuItem addInternalActorMenuItem = new JMenuItem("Ajouter une acteur interne");
         this.panelPopupMenu.add(addInternalActorMenuItem);
         addInternalActorMenuItem.addActionListener((action) -> {
-            graphDrawer.addInternalActor(createInternalActor());
+            InternalActor internalActor = createInternalActor();
+            nodeUnderCursor = internalActor;
+            graphDrawer.addInternalActor(internalActor);
             repaint();
         });
 
         JMenuItem addExternalActorMenuItem = new JMenuItem("Ajouter une acteur externe");
         this.panelPopupMenu.add(addExternalActorMenuItem);
         addExternalActorMenuItem.addActionListener((action) -> {
-            graphDrawer.addExternalActor(createExternalActor());
+            ExternalActor externalActor = createExternalActor();
+            nodeUnderCursor = externalActor;
+            graphDrawer.addExternalActor(externalActor);
             repaint();
         });
 
         JMenuItem addDomainMenuItem = new JMenuItem("Ajouter une domaine");
         this.panelPopupMenu.add(addDomainMenuItem);
         addDomainMenuItem.addActionListener((action) -> {
-            graphDrawer.addDomain(createDomain());
+            Domain domain = createDomain();
+            nodeUnderCursor = domain;
+            graphDrawer.addDomain(domain);
             repaint();
         });
 
@@ -104,18 +108,19 @@ public class FlowPanel extends JPanel implements MouseListener, MouseMotionListe
     private Domain createDomain() {
         int x = (int) this.getMousePosition().getX();
         int y = (int) this.getMousePosition().getY();
-        return new Domain(x, y, 50, 50,"Domain");
+        return new Domain(x, y,"Domain");
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
         nodeUnderCursor = graphDrawer.contains(e.getX(), e.getY());
 
-        if (e.getButton() == MouseEvent.BUTTON3 && nodeUnderCursor != null) {
-            this.nodePopupMenu.show(e.getComponent(), e.getX(), e.getY());
-        }
-        else if (e.getButton() == MouseEvent.BUTTON3) {
-            this.panelPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+        if (e.getButton() == MouseEvent.BUTTON3) {
+            if (nodeUnderCursor != null) {
+                this.nodePopupMenu.show(e.getComponent(), e.getX(), e.getY());
+            }
+            else
+                this.panelPopupMenu.show(e.getComponent(), e.getX(), e.getY());
         }
 
         if (creatingLink) {
@@ -128,6 +133,7 @@ public class FlowPanel extends JPanel implements MouseListener, MouseMotionListe
                 repaint();
                 this.externalActor = null;
                 this.internalActor = null;
+                nodeUnderCursor = null;
                 creatingLink = false;
             }
         }
@@ -140,7 +146,7 @@ public class FlowPanel extends JPanel implements MouseListener, MouseMotionListe
 
     @Override
     public void mouseReleased(MouseEvent e) {
-
+        nodeUnderCursor = null;
     }
 
     @Override
@@ -155,30 +161,30 @@ public class FlowPanel extends JPanel implements MouseListener, MouseMotionListe
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        nodeUnderCursor = graphDrawer.contains(e.getX(), e.getY());
-        if (nodeUnderCursor == null)
-            return;
-
-        if (nodeUnderCursor instanceof Domain domain && nodeUnderCursor.inCorner(e.getX(), e.getY())) {
+        if (nodeUnderCursor == null) {
+            nodeUnderCursor = graphDrawer.contains(e.getX(), e.getY());
+        }
+        else if (nodeUnderCursor instanceof Domain domain && domain.inCorner(e.getX(), e.getY())) {
             domain.resize(e.getX(), e.getY());
+            repaint();
         }
         else
             this.moveNodeUnderCursor(e.getX(), e.getY());
-        repaint();
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        if (nodeUnderCursor == null)
-            return;
-        if (nodeUnderCursor instanceof Domain) {
-            if ( nodeUnderCursor.inCorner(e.getX(), e.getY())) {
+        if (nodeUnderCursor == null) {
+            nodeUnderCursor = graphDrawer.contains(e.getX(), e.getY());
+        }
+        if (nodeUnderCursor instanceof Domain domain) {
+            if ( domain.inCorner(e.getX(), e.getY()))
                 setCursor(Cursor.getPredefinedCursor(Cursor.SE_RESIZE_CURSOR));
-            }else{
+            else
                 setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-            }
         }
 
+        nodeUnderCursor = null;
     }
 
     private void moveNodeUnderCursor(int x, int y) {

@@ -20,8 +20,18 @@ public class FlowGraphDrawer {
     }
 
     public void draw(Graphics2D graphics2D) {
+
+        this.nodes.forEach(node -> {
+            if (node instanceof Domain)
+                node.draw(graphics2D);
+        });
+
         this.edges.forEach(edge -> edge.draw(graphics2D));
-        this.nodes.forEach(node -> node.draw(graphics2D));
+
+        this.nodes.forEach(node -> {
+            if (node instanceof Actor)
+                node.draw(graphics2D);
+        });
     }
 
     public void remove(GraphicalNode actor) {
@@ -50,7 +60,7 @@ public class FlowGraphDrawer {
     }
 
     public void addDomain(Domain domain) {
-        this.nodes.add(domain);
+        this.nodes.add(0, domain);
     }
 
     public GraphicalNode contains(int x, int y) {

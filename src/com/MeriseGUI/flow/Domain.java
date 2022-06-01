@@ -9,18 +9,23 @@ import java.awt.*;
  * @author rpc
  */
 public class Domain extends GraphicalNode {
-
-    private static final int MAX_RESIZE = 100;
-    private static final int DEFAULT_RESIZE = 7;
+    private static final int DEFAULT_RESIZE = 20;
+    private static final int DEFAULT_WIDTH = 100;
+    private static final int DEFAULT_HEIGHT = 100;
     protected static int domainNbr = 1;
-    private int resizeMargin;
     
     public Domain(int x, int y, int width, int height, String name) {
         super(x, y, name);
         this.width = width;
         this.height = height;
         domainNbr++;
-        resizeMargin = DEFAULT_RESIZE;
+    }
+
+    public Domain(int x, int y, String name) {
+        super(x, y, name);
+        this.width = DEFAULT_WIDTH;
+        this.height = DEFAULT_HEIGHT;
+        domainNbr++;
     }
     @Override
     public boolean contains(double x, double y) {
@@ -30,7 +35,7 @@ public class Domain extends GraphicalNode {
     
     @Override
     public boolean inCorner(int x, int y) {
-        return ( Math.abs(x-pulledX-width) <= resizeMargin ) && ( Math.abs(y-pulledY-height) <= resizeMargin );
+        return ( Math.abs(x-pulledX-width) <= DEFAULT_RESIZE ) && ( Math.abs(y-pulledY-height) <= DEFAULT_RESIZE );
     }
     
     @Override
@@ -50,16 +55,11 @@ public class Domain extends GraphicalNode {
 
     @Override
     public void resize(int x, int y) {
-        resizeMargin = MAX_RESIZE;
         width = Math.abs(pulledX-x);
         height = Math.abs(pulledY-y);
         
         this.x = pulledX+width/2;
         this.y = pulledY+height/2;
-    }
-
-    public void resetResizeMargin() {
-        resizeMargin = DEFAULT_RESIZE;
     }
     
 }
