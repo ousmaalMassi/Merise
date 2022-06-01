@@ -109,10 +109,11 @@ public class GDFPanel extends JPanel implements MouseListener, MouseMotionListen
     public void mouseClicked(MouseEvent e) {
         nodeUnderCursor = graphDrawer.contains(e.getX(), e.getY());
 
-        if (e.getButton() == MouseEvent.BUTTON3 && nodeUnderCursor != null) {
-            this.nodePopupMenu.show(e.getComponent(), e.getX(), e.getY());
-        } else if (e.getButton() == MouseEvent.BUTTON3) {
-            this.panelPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+        if (e.getButton() == MouseEvent.BUTTON3) {
+            if (nodeUnderCursor != null)
+                this.nodePopupMenu.show(e.getComponent(), e.getX(), e.getY());
+            else
+                this.panelPopupMenu.show(e.getComponent(), e.getX(), e.getY());
         }
 
         if (creatingLink) {
