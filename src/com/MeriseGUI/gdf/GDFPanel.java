@@ -139,7 +139,7 @@ public class GDFPanel extends JPanel implements MouseListener, MouseMotionListen
 
     @Override
     public void mouseReleased(MouseEvent e) {
-
+        nodeUnderCursor = null;
     }
 
     @Override
