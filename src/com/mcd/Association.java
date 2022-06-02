@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public class Association extends MeriseObject {
 
-    private Map<String, Cardinalities> links;
+    private Map<Entity, Cardinality> links;
 
     /**
      * constructor
@@ -23,19 +23,19 @@ public class Association extends MeriseObject {
     /**
      * @return List of Links
      */
-    public Map<String, Cardinalities> getLinks() {
+    public Map<Entity, Cardinality> getLinks() {
         return links;
     }
 
     /**
      * @param links between Entities and Cardinalities
      */
-    public void setLinks(Map<String, Cardinalities> links) {
+    public void setLinks(Map<Entity, Cardinality> links) {
         this.links = links;
     }
 
-    public void setCard(String name, Cardinalities cardinality) {
-        this.links.replace(name, cardinality);
+    public void setCard(Entity entity, Cardinality cardinality) {
+        this.links.replace(entity, cardinality);
     }
 
     @Override
