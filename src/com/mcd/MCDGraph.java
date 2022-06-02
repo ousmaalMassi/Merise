@@ -87,8 +87,7 @@ public class MCDGraph {
      * @param entity      to associate with
      */
     public void link(Entity entity, Association association) {
-        String entityName = entity.getName();
-        association.getLinks().put(entityName, Cardinalities.DEFAULT_CARDINALITY);
+        association.getLinks().put(entity, Cardinality.DEFAULT_CARDINALITY);
     }
 
     /**

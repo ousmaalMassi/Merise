@@ -18,7 +18,7 @@ public class MPDTable extends MeriseObject {
         this.foreignKeys = new HashMap<>();
     }
 
-    /*public Property getPrimaryKey(){
+    /*public Property getPrimaryKeys(){
         for (Property property : this.getPropertyList())
             if (property.getConstraints().contains(Property.Constraints.PRIMARY_KEY))
                 return property;

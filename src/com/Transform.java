@@ -4,11 +4,11 @@ import com.mcd.*;
 import com.mld.MLDGraph;
 import com.mld.MLDTable;
 import com.mpd.MPDGraph;
-import com.mpd.MPDTable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Transform {
 
@@ -29,24 +29,37 @@ public class Transform {
         mcdGraph.getAssociations().forEach(association -> {
             if (!association.getPropertyList().isEmpty() || association.getLinks().size() > 2) {
                 createTableFromAssociation(association);
-            } else {
-                Map<String, Cardinalities> links = association.getLinks();
-                List<String> entities = new ArrayList<>(association.getLinks().keySet());
-                MLDTable tableA = mldGraph.search(entities.get(0));
-                MLDTable tableB = mldGraph.search(entities.get(1));
+                return;
+            }
 
-                if (links.get(entities.get(0)).toString().endsWith("n") && links.get(entities.get(1)).toString().endsWith("n")) {
-                    createTableFromAssociation(association);
-                } else if (links.get(entities.get(0)).toString().endsWith("1") && links.get(entities.get(1)).toString().endsWith("1")) {
-                    tableB.addForeignKey(tableA);
+            Map<Entity, Cardinality> links = association.getLinks();
+            Set<Entity> entities = association.getLinks().keySet();
+
+            Entity entity1 = entities.iterator().next();
+            Entity entity2 = entities.iterator().next();
+
+            MLDTable table1 = mldGraph.search(entity1.getName());
+            MLDTable table2 = mldGraph.search(entity2.getName());
+
+            Cardinality Cardinality1 = links.get(entity1);
+            Cardinality Cardinality2 = links.get(entity2);
+
+            if ((Cardinality1.equals(com.mcd.Cardinality.ZERO_MANY) || Cardinality1.equals(com.mcd.Cardinality.ONE_MANY))
+            && (Cardinality2.equals(com.mcd.Cardinality.ZERO_MANY) || Cardinality2.equals(com.mcd.Cardinality.ONE_MANY))) {
+                createTableFromAssociation(association);
+            }
+            else if ((Cardinality1.equals(Cardinality.ZERO_ONE) || Cardinality1.equals(Cardinality.ONE_ONE))
+                    && (Cardinality2.equals(Cardinality.ZERO_ONE) || Cardinality2.equals(com.mcd.Cardinality.ONE_ONE))) {
+                table2.addForeignKey(table1);
+            }
+            else {
+                if (Cardinality1.equals(com.mcd.Cardinality.ZERO_MANY) || Cardinality1.equals(com.mcd.Cardinality.ONE_MANY)) {
+                    table2.addForeignKey(table1);
                 } else {
-                    if (links.get(entities.get(0)).toString().endsWith("n")) {
-                        tableB.addForeignKey(tableA);
-                    } else {
-                        tableA.addForeignKey(tableB);
-                    }
+                    table1.addForeignKey(table2);
                 }
             }
+
         });
 
         return mldGraph;
@@ -54,7 +67,11 @@ public class Transform {
 
     private void createTableFromAssociation(Association association) {
         MLDTable associationTable = createMLDTable(association);
-        association.getLinks().forEach((entityName, cardinality) -> associationTable.addForeignKey(mldGraph.search(entityName)));
+        association.getLinks().forEach((entity, cardinality) -> {
+            associationTable.addPrimaryKey(entity.getPropertyList().get(0));
+            associationTable.addForeignKey(mldGraph.search(entity.getName()));
+        });
+        associationTable.getPropertyList().addAll(associationTable.getPrimaryKeys());
         mldGraph.getTables().add(associationTable);
     }
 
@@ -80,7 +97,7 @@ public class Transform {
     public MPDGraph mldToMpd(MLDGraph mldGraph) {
 //        this.mldGraph.getTables().forEach(mldTable -> {
 //            MPDTable mpdTable = new MPDTable(mldTable.getName());
-//            mpdTable.addPrimaryKey(mldTable.getPrimaryKey());
+//            mpdTable.addPrimaryKey(mldTable.getPrimaryKeys());
 //            mpdTable.getPropertyList().forEach(property -> mpdTable.addProperty(property));
 //            mldTable.getForeignKeys().forEach((s, mldTable1) -> );
 //            this.mpdGraph.getTables().add(mpdTable);
@@ -110,19 +127,22 @@ public class Transform {
         List<String> list = new ArrayList<>();
         table.getPropertyList().forEach(property -> list.add(
                 "`" + property.getCode() + "`" +
-                " " + property.getType().toString() +
-                " (" + property.getLength() + ")" +
-                " " + this.createConstraints(property.getConstraints())
+                        " " + property.getType().toString() +
+                        " (" + property.getLength() + ")" +
+                        " " + this.createConstraints(property.getConstraints())
         ));
-        list.add(this.createPrimaryKey(table.getName(), table.getPrimaryKey()));
+        list.add(this.createPrimaryKey(table.getName(), table.getPrimaryKeys()));
         if (!table.getForeignKeys().isEmpty())
             this.foreignKeyConstraint.add(this.createForeignKeyColumn(table.getName(), table.getForeignKeys()));
         return String.join(",\n", list);
     }
 
-    private String createPrimaryKey(String tableName, Property primaryKey) {
-        //TODO remove AutoIncrements constraint from Association table and primaryKey can contain multiple properties
-        return "CONSTRAINT PK_"+tableName+" ADD PRIMARY KEY ("+primaryKey.getCode()+")";
+    private String createPrimaryKey(String tableName, List<Property> primaryKeys) {
+        List<String> list = new ArrayList<>();
+        primaryKeys.forEach(primaryKey ->
+                list.add("CONSTRAINT PK_" + tableName + " ADD PRIMARY KEY (" + primaryKey.getCode() + ")")
+        );
+        return String.join(",\n", list);
     }
 
     private String createConstraints(List<Property.Constraints> constraints) {
@@ -135,9 +155,9 @@ public class Transform {
 
     private String createForeignKeyColumn(String tableName, Map<String, MLDTable> foreignKeys) {
         List<String> list = new ArrayList<>();
-            foreignKeys.forEach((prop, tableRef) -> list.add(
-                    "ALTER TABLE " + tableName + " FOREIGN KEY (`" + prop + "`) REFERENCES " + tableRef.getName() + "(`" + prop + "`)")
-            );
+        foreignKeys.forEach((prop, tableRef) -> list.add(
+                "ALTER TABLE " + tableName + " FOREIGN KEY (`" + prop + "`) REFERENCES " + tableRef.getName() + "(`" + prop + "`)")
+        );
         return String.join(",\n", list);
     }
 }

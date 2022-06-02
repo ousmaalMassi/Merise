@@ -1,6 +1,7 @@
 package com.MeriseGUI.mpd;
 
 import com.MeriseGUI.GraphicalNode;
+import com.mcd.Property;
 
 import java.awt.*;
 import java.util.List;
@@ -13,7 +14,7 @@ public class GraphicalMPDTable extends GraphicalNode {
     protected static int PADDING = 20;
     private FontMetrics fm;
     private int attrNbr;
-    private String primaryKey;
+    private List<Property> primaryKeys;
     private List<String> foreignKeys;
 
     public GraphicalMPDTable(int x, int y, String name) {
@@ -113,12 +114,12 @@ public class GraphicalMPDTable extends GraphicalNode {
                 """.formatted(name, x, y);
     }
 
-    public void setPrimaryKey(String primaryKey) {
-        this.primaryKey = primaryKey;
+    public void setPrimaryKey(List<Property> primaryKeys) {
+        this.primaryKeys = primaryKeys;
     }
 
-    public String getPrimaryKey() {
-        return primaryKey;
+    public List<Property> getPrimaryKey() {
+        return primaryKeys;
     }
 
     public void addForeignKeys(String foreignKey) {

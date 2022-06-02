@@ -59,6 +59,8 @@ public class MCDPanel extends JPanel implements MouseListener, MouseMotionListen
         this.nodePopupMenu.add(renameNodeMenuItem);
         renameNodeMenuItem.addActionListener((action) -> {
             String newName = JOptionPane.showInputDialog(this, "Veuillez entrer le nouveau nom");
+            if (newName == null || newName.trim().isEmpty())
+                return;
             graphDrawer.rename(nodeUnderCursor, newName);
             repaint();
         });
@@ -136,7 +138,7 @@ public class MCDPanel extends JPanel implements MouseListener, MouseMotionListen
         JMenuItem editCardMenuItem = new JMenuItem("Modifier");
         this.linkPopupMenu.add(editCardMenuItem);
         editCardMenuItem.addActionListener((action) -> {
-            JComboBox<Cardinalities> card = new JComboBox<>(Cardinalities.values());
+            JComboBox<Cardinality> card = new JComboBox<>(Cardinality.values());
             JOptionPane.showMessageDialog(null, new JScrollPane(card));
             graphDrawer.editCard(linkUnderCursor, card.getSelectedIndex());
             repaint();

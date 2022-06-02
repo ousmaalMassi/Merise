@@ -6,6 +6,7 @@ import com.exception.DuplicateMeriseObject;
 import com.mcd.*;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.LinkedList;
@@ -53,7 +54,14 @@ public class MCDGraphDrawer {
         else
             meriseObject = mcdGraph.containsAssociation(mcdNodeView.getName());
 
-        Property property =  new Property(name, Property.Types.DIGITAL, 11, Arrays.asList(Property.Constraints.PRIMARY_KEY, Property.Constraints.AUTO_INCREMENT));
+        ArrayList<Property.Constraints> propertyArrayList = new ArrayList<>();
+        if (meriseObject.getPropertyList().isEmpty()) {
+            propertyArrayList.addAll(Arrays.asList(
+                Property.Constraints.NOT_NULL
+            ));
+        }
+
+        Property property =  new Property(name, Property.Types.DIGITAL, 11, propertyArrayList);
         meriseObject.addProperty(property);
 
         mcdNodeView.getAttributes().add(property.name);
@@ -138,7 +146,7 @@ public class MCDGraphDrawer {
         mcdGraph.link(entity, association);
 
         GraphicalMCDLink graphicalLink = new GraphicalMCDLink(entityToLink, associationToLink);
-        graphicalLink.setCard(Cardinalities.DEFAULT_CARDINALITY.toString());
+        graphicalLink.setCard(Cardinality.DEFAULT_CARDINALITY.toString());
         this.edges.add(graphicalLink);
 
         System.out.println(mcdGraph);
@@ -155,14 +163,14 @@ public class MCDGraphDrawer {
     }
 
     public void editCard(GraphicalMCDLink linkUnderCursor, int cardIndex) {
-        Cardinalities[] cardinalities = Cardinalities.values();
+        Cardinality[] cardinalities = Cardinality.values();
         linkUnderCursor.setCard(cardinalities[cardIndex].toString());
 
-        GraphicalNode associationView = linkUnderCursor.getAssociationView();
-        GraphicalNode entityView = linkUnderCursor.getEntityView();
+        String associationName = linkUnderCursor.getAssociationView().getName();
+        Entity entity = mcdGraph.containsEntity(linkUnderCursor.getEntityView().getName());
 
-        Association association = this.mcdGraph.containsAssociation(associationView.getName());
-        association.setCard(entityView.getName(), cardinalities[cardIndex]);
+        Association association = this.mcdGraph.containsAssociation(associationName);
+        association.setCard(entity, cardinalities[cardIndex]);
 
         System.out.println(mcdGraph);
     }

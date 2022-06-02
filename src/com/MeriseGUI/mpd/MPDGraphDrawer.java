@@ -30,15 +30,15 @@ public class MPDGraphDrawer {
         AtomicInteger y1 = new AtomicInteger(30);
 
         mpdGraph.getTables().forEach(table -> {
-            if (this.search(table.getName()) != null)
+            if (this.getGraphicalMPDTable(table.getName()) != null)
                 return;
             GraphicalMPDTable graphicalMPDTable = new GraphicalMPDTable(x1.get(), y1.get(), table.getName());
             x1.addAndGet(100);
             y1.addAndGet(100);
-            graphicalMPDTable.setPrimaryKey(table.getPrimaryKey().getName());
+            graphicalMPDTable.setPrimaryKey(table.getPrimaryKeys());
             table.getPropertyList().forEach(property -> graphicalMPDTable.getAttributes().add(property.getName()));
             table.getForeignKeys().forEach((foreignKey, table1) -> {
-                GraphicalMPDTable gTbl = search(table1.getName());
+                GraphicalMPDTable gTbl = getGraphicalMPDTable(table1.getName());
                 if (gTbl == null)
                     gTbl = new GraphicalMPDTable(500, 500, table1.getName());
                 GraphicalMPDLink graphicalMPDLink = new GraphicalMPDLink(graphicalMPDTable, gTbl);
@@ -47,11 +47,10 @@ public class MPDGraphDrawer {
             });
             graphicalMPDTables.add(graphicalMPDTable);
         });
-        System.out.println(graphicalMPDLinks.size());
     }
 
 
-    public GraphicalMPDTable search(String name) {
+    public GraphicalMPDTable getGraphicalMPDTable(String name) {
         return this.graphicalMPDTables.stream().filter(table -> table.getName().equals(name))
                 .findAny()
                 .orElse(null);

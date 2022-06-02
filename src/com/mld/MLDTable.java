@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MLDTable extends MeriseObject {
-    List<String> primaryKeys;
+    List<Property> primaryKeys;
     Map<String, MLDTable> foreignKeys;
 
     public MLDTable(String name) {
@@ -18,32 +18,26 @@ public class MLDTable extends MeriseObject {
         this.foreignKeys = new HashMap<>();
     }
 
-    /*public Property getPrimaryKey(){
-        for (Property property : this.getPropertyList())
-            if (property.getConstraints().contains(Property.Constraints.PRIMARY_KEY))
-                return property;
-        return null;
-    }*/
-
-    public Property getPrimaryKey(){
-        return this.propertyList.get(0);
+    public List<Property> getPrimaryKeys(){
+        return this.primaryKeys;
     }
 
     public void addPrimaryKey(Property property){
         if (!primaryKeys.contains(property))
-            primaryKeys.add(property.getCode());
+            primaryKeys.add(property);
     }
 
     public void removePrimaryKey(Property property){
-        primaryKeys.remove(property.getCode());
+        primaryKeys.remove(property);
     }
 
     public void addForeignKey(MLDTable table){
-        Property property = table.getPrimaryKey();
-        if (!foreignKeys.containsKey(property.getCode())) {
-            this.addProperty(property);
-            foreignKeys.put(property.getCode(), table);
-        }
+        table.getPrimaryKeys().forEach(property -> {
+            if (!foreignKeys.containsKey(property.getCode())) {
+                this.addProperty(property);
+                foreignKeys.put(property.getCode(), table);
+            }
+        });
     }
 
     public void removeForeignKey(String propertyName){
