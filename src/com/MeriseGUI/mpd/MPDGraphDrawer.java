@@ -30,6 +30,7 @@ public class MPDGraphDrawer {
         AtomicInteger y1 = new AtomicInteger(30);
 
         mpdGraph.getTables().forEach(table -> {
+            System.out.println(table.getForeignKeys());
             if (this.getGraphicalMPDTable(table.getName()) != null)
                 return;
             GraphicalMPDTable graphicalMPDTable = new GraphicalMPDTable(x1.get(), y1.get(), table.getName());

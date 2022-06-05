@@ -28,7 +28,7 @@ public class Transform {
 
         mcdGraph.getAssociations().forEach(association -> {
             if (!association.getPropertyList().isEmpty() || association.getLinks().size() > 2) {
-                createTableFromAssociation(association);
+                mldGraph.getTables().add(createAssociationTable(association));
                 return;
             }
 
@@ -38,50 +38,58 @@ public class Transform {
             Entity entity1 = entities.iterator().next();
             Entity entity2 = entities.iterator().next();
 
-            MLDTable table1 = mldGraph.search(entity1.getName());
-            MLDTable table2 = mldGraph.search(entity2.getName());
+            // these tables have been created when the association was created
+            MLDTable table1 = mldGraph.getTable(entity1.getName());
+            MLDTable table2 = mldGraph.getTable(entity2.getName());
 
-            Cardinality Cardinality1 = links.get(entity1);
-            Cardinality Cardinality2 = links.get(entity2);
+            Cardinality entityCardinality1 = links.get(entity1);
+            Cardinality entityCardinality2 = links.get(entity2);
 
-            if ((Cardinality1.equals(com.mcd.Cardinality.ZERO_MANY) || Cardinality1.equals(com.mcd.Cardinality.ONE_MANY))
-            && (Cardinality2.equals(com.mcd.Cardinality.ZERO_MANY) || Cardinality2.equals(com.mcd.Cardinality.ONE_MANY))) {
-                createTableFromAssociation(association);
-            }
-            else if ((Cardinality1.equals(Cardinality.ZERO_ONE) || Cardinality1.equals(Cardinality.ONE_ONE))
-                    && (Cardinality2.equals(Cardinality.ZERO_ONE) || Cardinality2.equals(com.mcd.Cardinality.ONE_ONE))) {
-                table2.addForeignKey(table1);
-            }
-            else {
-                if (Cardinality1.equals(com.mcd.Cardinality.ZERO_MANY) || Cardinality1.equals(com.mcd.Cardinality.ONE_MANY)) {
-                    table2.addForeignKey(table1);
-                } else {
-                    table1.addForeignKey(table2);
+            switch (getRelationShipType(entityCardinality1, entityCardinality2)) {
+                case ONE_TO_ONE -> table2.addForeignKey(table1);
+                case MANY_TO_MANY -> mldGraph.getTables().add(createAssociationTable(association));
+                case ONE_TO_MANY -> {
+                    if (isWeak(entityCardinality1))
+                        table2.addForeignKey(table1);
+                    else
+                        table1.addForeignKey(table2);
                 }
             }
-
         });
 
         return mldGraph;
     }
 
-    private void createTableFromAssociation(Association association) {
+    private boolean isWeak(Cardinality cardinality1) {
+        return cardinality1.equals(Cardinality.ZERO_MANY) || cardinality1.equals(Cardinality.ONE_MANY);
+    }
+
+    private RelationShip getRelationShipType(Cardinality cardinality1, Cardinality cardinality2) {
+
+        RelationShip relationShip;
+
+        boolean e1EndsWithOne = cardinality1.equals(Cardinality.ZERO_ONE) || cardinality1.equals(Cardinality.ONE_ONE);
+        boolean e2EndsWithOne = cardinality2.equals(Cardinality.ZERO_ONE) || cardinality2.equals(Cardinality.ONE_ONE);
+        boolean e2EndsWithMany = cardinality2.equals(Cardinality.ZERO_MANY) || cardinality2.equals(Cardinality.ONE_MANY);
+
+        if (e1EndsWithOne && e2EndsWithOne)
+            relationShip = RelationShip.ONE_TO_ONE;
+        else if (e1EndsWithOne && e2EndsWithMany)
+            relationShip = RelationShip.MANY_TO_MANY;
+        else
+            relationShip = RelationShip.ONE_TO_MANY;
+
+        return relationShip;
+    }
+
+    private MLDTable createAssociationTable(Association association) {
         MLDTable associationTable = createMLDTable(association);
         association.getLinks().forEach((entity, cardinality) -> {
             associationTable.addPrimaryKey(entity.getPropertyList().get(0));
-            associationTable.addForeignKey(mldGraph.search(entity.getName()));
+            associationTable.addForeignKey(mldGraph.getTable(entity.getName()));
         });
         associationTable.getPropertyList().addAll(associationTable.getPrimaryKeys());
-        mldGraph.getTables().add(associationTable);
-    }
-
-    private Property duplicateProperty(Property pkProp) {
-        Property fkProp = new Property();
-        fkProp.setName(pkProp.getCode());
-        fkProp.setType(pkProp.getType());
-        fkProp.setLength(pkProp.getLength());
-        fkProp.setConstraints(List.of(Property.Constraints.PRIMARY_KEY));
-        return fkProp;
+        return associationTable;
     }
 
     /**
@@ -104,9 +112,7 @@ public class Transform {
 //
 //        });
 //        return this.mpdGraph;
-        this.mldGraph.getTables().forEach(mldTable -> {
-            this.mpdGraph.getTables().add(mldTable);
-        });
+        this.mldGraph.getTables().forEach(mldTable -> this.mpdGraph.getTables().add(mldTable));
         return this.mpdGraph;
     }
 
@@ -159,5 +165,11 @@ public class Transform {
                 "ALTER TABLE " + tableName + " FOREIGN KEY (`" + prop + "`) REFERENCES " + tableRef.getName() + "(`" + prop + "`)")
         );
         return String.join(",\n", list);
+    }
+
+    public enum RelationShip {
+        ONE_TO_ONE,
+        ONE_TO_MANY,
+        MANY_TO_MANY
     }
 }

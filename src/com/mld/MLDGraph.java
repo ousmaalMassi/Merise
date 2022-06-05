@@ -42,15 +42,7 @@ public class MLDGraph {
         return stringBuilder.toString();
     }
 
-    public String toJSON() {
-        return String.format("""
-                    {
-                        "tables" : %s,
-                    }
-                """, this.tables);
-    }
-
-    public MLDTable search(String name){
+    public MLDTable getTable(String name){
         return this.tables
                 .stream()
                 .filter(table -> table.getName().equals(name))

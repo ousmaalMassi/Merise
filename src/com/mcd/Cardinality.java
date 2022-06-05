@@ -18,11 +18,4 @@ public enum Cardinality {
         return this.card;
     }
 
-    public String toJSON() {
-        return String.format("""
-                Cardinalities{
-                    card: %s
-                }
-                """, this.card);
-    }
 }

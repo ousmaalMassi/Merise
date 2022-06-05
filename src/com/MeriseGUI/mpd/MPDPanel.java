@@ -16,6 +16,7 @@ public class MPDPanel extends JPanel implements MouseMotionListener {
     public MPDPanel() {
         graphDrawer = new MPDGraphDrawer();
         this.addMouseMotionListener(this);
+        System.out.println("\uD83D\uDE00");
     }
 
     @Override
@@ -37,15 +38,15 @@ public class MPDPanel extends JPanel implements MouseMotionListener {
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        nodeUnderCursor = graphDrawer.contains(e.getX(), e.getY());
         if (nodeUnderCursor == null)
-            return;
-        this.moveNodeUnderCursor(e.getX(), e.getY());
+            nodeUnderCursor = graphDrawer.contains(e.getX(), e.getY());
+        else
+            this.moveNodeUnderCursor(e.getX(), e.getY());
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-
+        nodeUnderCursor = graphDrawer.contains(e.getX(), e.getY());
     }
 
     private void moveNodeUnderCursor(int x, int y) {

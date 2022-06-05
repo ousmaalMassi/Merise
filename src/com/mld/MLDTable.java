@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.Map;
 
 public class MLDTable extends MeriseObject {
+
     List<Property> primaryKeys;
+
     Map<String, MLDTable> foreignKeys;
 
     public MLDTable(String name) {
