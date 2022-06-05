@@ -229,7 +229,7 @@ public class MCDPanel extends JPanel implements MouseListener, MouseMotionListen
 
     @Override
     public void mouseMoved(MouseEvent e) {
-
+        nodeUnderCursor = graphDrawer.contains(e.getX(), e.getY());
     }
 
     private void moveNodeUnderCursor(int x, int y) {
