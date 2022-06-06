@@ -34,7 +34,7 @@ public class Transform {
             Map<Entity, Cardinality> links = association.getLinks();
             List<Entity> entities = association.getLinks().keySet().stream().toList();
 
-            if (entities.isEmpty())
+            if (entities.size() < 2)
                 return;
 
             Entity entity1 = entities.get(0);
@@ -85,10 +85,11 @@ public class Transform {
         MLDTable associationTable = createMLDTable(association);
         association.getLinks().forEach((entity, cardinality) -> {
             MLDTable refTable = mldGraph.getTable(entity.getName());
-            if (refTable == null) {
+            if (refTable == null)
                 return;
-            }
             Property primaryKey = refTable.getPrimaryKey();
+            if (primaryKey == null)
+                return;
             associationTable.propertyList.add(primaryKey);
             associationTable.setPrimaryKey(primaryKey.code);
             associationTable.setForeignKey(refTable);
