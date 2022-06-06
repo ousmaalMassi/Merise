@@ -52,6 +52,7 @@ public class Property {
 
     public enum Constraints {
         PRIMARY_KEY("PRIMARY KEY"),
+        FOREIGN_KEY("FOREIGN KEY"),
         NULL("NULL"),
         NOT_NULL("NOT NULL"),
         UNIQUE("UNIQUE"),

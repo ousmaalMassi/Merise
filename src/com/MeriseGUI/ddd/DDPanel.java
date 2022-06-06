@@ -176,11 +176,11 @@ public class DDPanel extends JPanel {
                 {"id client", "", "11", "", false},
                 {"nom", "", "50", "", false},
                 {"prénom", "", "50", "", false},
-                {"adresse", "", "255", "", false},
+                {"adresse", "", "256", "", false},
                 {"id_article", "", "11", "", false},
                 {"prix_achat", "", "10", "", false},
                 {"prix_vente", "", "10", "", false},
-                {"designation", "", true, "", false},
+                {"designation", "", "256", "", false},
                 {"quantity", "", "2", "", false},
         };
 
