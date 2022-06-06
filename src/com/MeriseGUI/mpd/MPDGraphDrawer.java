@@ -37,7 +37,7 @@ public class MPDGraphDrawer {
             x1.addAndGet(100);
             y1.addAndGet(100);
             graphicalMPDTable.setPrimaryKey(table.getPrimaryKeys());
-            table.getPropertyList().forEach(property -> graphicalMPDTable.getAttributes().add(property.getName()));
+            table.getPropertyList().forEach(property -> graphicalMPDTable.getAttributes().add(property));
             table.getForeignKeys().forEach((foreignKey, table1) -> {
                 GraphicalMPDTable gTbl = getGraphicalMPDTable(table1.getName());
                 if (gTbl == null)

@@ -9,13 +9,14 @@ import java.util.ArrayList;
 
 
 public class GraphicalMPDTable extends GraphicalNode {
-    protected List<String> attributes;
+    protected List<Property> attributes;
     protected int headHeight;
     protected static int PADDING = 20;
+    protected static int SPACING = 18;
     private FontMetrics fm;
     private int attrNbr;
     private List<Property> primaryKeys;
-    private List<String> foreignKeys;
+    private List<Property> foreignKeys;
 
     public GraphicalMPDTable(int x, int y, String name) {
         super(x, y, name);
@@ -29,7 +30,6 @@ public class GraphicalMPDTable extends GraphicalNode {
 
     @Override
     public void draw(Graphics2D g) {
-
 
         attrNbr = attributes.size();
 
@@ -49,42 +49,75 @@ public class GraphicalMPDTable extends GraphicalNode {
 
         g.drawRect(pulledX, pulledY, width, height);
         g.drawLine(pulledX, pulledY+headHeight, pulledX+width, pulledY+headHeight);
-        drawAttributes(g);
 
-    }
-    private void drawAttributes(Graphics2D g) {
         int sx = pulledX + PADDING;
         int sy = pulledY + headHeight + PADDING;
         int lineHeight = fm.getHeight() + 3;
         int nameY = pulledY + lineHeight;
 
-        Font oldFont = g.getFont();
-
-        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 17));
+//        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 17));
         g.drawString(name, sx, nameY);
 
-        if (attrNbr>0) {
-            g.setFont(new Font("Tahoma", Font.BOLD, 13));
-            g.drawString(attributes.get(0), sx, sy);
-            g.drawLine(sx, sy+5, sx+fm.stringWidth(attributes.get(0)), sy+5);
-            g.setFont(oldFont);
-            for (int i = 1; i < attrNbr; i++) {
-                g.drawString(attributes.get(i), sx, sy+i*lineHeight);
-            }
+        drawAttributes(g, sx, sy);
+    }
+    private void drawAttributes(Graphics2D g, int sx, int sy) {
 
+       /* for (Property property : primaryKeys) {
+            drawConstraintHeader("Pk_Primary", property.code, g, sx, sy);
+            sy += SPACING;
+
+            String line = property.code+" "+property.type+"("+property.length+")";
+            g.drawString(line, sx, sy);
+            sy += SPACING;
+        }*/
+
+        drawConstraint("Pk_Primary", g, sx, sy);
+
+        for (Property property : attributes) {
+            String line = property.code+" "+property.type+"("+property.length+")";
+            g.drawString(line, sx, sy);
+            sy += SPACING;
+        }
+
+        for (Property property : foreignKeys) {
+            drawConstraint("Pk_Foreign", g, sx, sy);
+            sy += SPACING;
+            String line = property.code+" "+property.type+"("+property.length+")";
+            g.drawString(line, sx, sy);
+            sy += SPACING;
         }
     }
-    @Override
-    public boolean contains(double x, double y) {
-        return ( Math.abs(this.x-x) <= width/2 ) && ( Math.abs(this.y-y) <= height/2 );
+
+    private void drawConstraint(String constName, Graphics2D g, int sx, int sy) {
+
+        int lineX1 = sx - 5;
+        int vLineY1 = sy;
+        int lineY2 = sy;
+        int maxLine = 0;
+
+        g.setFont(new Font(Font.DIALOG, Font.ITALIC, 11));
+        g.drawString(constName, sx - 10, sy);
+        g.setFont(new Font(Font.DIALOG, Font.PLAIN, 12));
+        sy += SPACING;
+
+        for (Property property : primaryKeys) {
+            String line = property.code+" "+property.type+"("+property.length+")";
+            g.drawString(line, sx, sy);
+            sy += SPACING;
+            lineY2 += 20;
+            maxLine = Math.max(fm.stringWidth(property.code), maxLine);
+        }
+        int hLineX2 = sx + maxLine;
+        g.drawLine(lineX1, vLineY1, lineX1, lineY2);
+        g.drawLine(lineX1, lineY2, hLineX2, lineY2);
     }
 
     private int calculateWidth(Graphics2D g){
         int stringWidth;
         int maxWidth = 0;
         int entityNameWidth = fm.stringWidth(name);
-        for (int i = 0; i < attrNbr; i++) {
-            stringWidth = fm.stringWidth(attributes.get(i));
+        for (Property property : attributes) {
+            stringWidth = fm.stringWidth(property.getCode());
             if (maxWidth < stringWidth) {
                 maxWidth = stringWidth;
             }
@@ -92,7 +125,11 @@ public class GraphicalMPDTable extends GraphicalNode {
         if (maxWidth < entityNameWidth) maxWidth = entityNameWidth;
 
         return maxWidth;
+    }
 
+    @Override
+    public boolean contains(double x, double y) {
+        return ( Math.abs(this.x-x) <= width/2 ) && ( Math.abs(this.y-y) <= height/2 );
     }
 
     @Override
@@ -101,8 +138,18 @@ public class GraphicalMPDTable extends GraphicalNode {
     }
 
     @Override
-    public void resize(int x, int y) {
+    public void resize(int x, int y) {}
 
+    public void setPrimaryKey(List<Property> primaryKeys) {
+        this.primaryKeys = primaryKeys;
+    }
+
+    public void addForeignKeys(Property foreignKey) {
+        this.foreignKeys.add(foreignKey);
+    }
+
+    public List<Property> getAttributes() {
+        return attributes;
     }
 
     @Override
@@ -112,21 +159,5 @@ public class GraphicalMPDTable extends GraphicalNode {
                 x: %s,
                 y: %s,
                 """.formatted(name, x, y);
-    }
-
-    public void setPrimaryKey(List<Property> primaryKeys) {
-        this.primaryKeys = primaryKeys;
-    }
-
-    public List<Property> getPrimaryKey() {
-        return primaryKeys;
-    }
-
-    public void addForeignKeys(String foreignKey) {
-        this.foreignKeys.add(foreignKey);
-    }
-
-    public List<String> getAttributes() {
-        return attributes;
     }
 }

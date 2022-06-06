@@ -12,7 +12,7 @@ public class MLDTable extends MeriseObject {
 
     List<Property> primaryKeys;
 
-    Map<String, MLDTable> foreignKeys;
+    Map<Property, MLDTable> foreignKeys;
 
     public MLDTable(String name) {
         super(name);
@@ -35,9 +35,8 @@ public class MLDTable extends MeriseObject {
 
     public void addForeignKey(MLDTable table){
         table.getPrimaryKeys().forEach(property -> {
-            if (!foreignKeys.containsKey(property.getCode())) {
-                this.addProperty(property);
-                foreignKeys.put(property.getCode(), table);
+            if (!foreignKeys.containsKey(property)) {
+                foreignKeys.put(property, table);
             }
         });
     }
@@ -46,7 +45,7 @@ public class MLDTable extends MeriseObject {
         foreignKeys.remove(propertyName);
     }
 
-    public Map<String, MLDTable> getForeignKeys() {
+    public Map<Property, MLDTable> getForeignKeys() {
         return foreignKeys;
     }
 
@@ -55,6 +54,7 @@ public class MLDTable extends MeriseObject {
         List<Property> propertyList = this.getPropertyList();
         List<String> list = new ArrayList<>();
         propertyList.forEach(property -> list.add(property.getCode()));
+        foreignKeys.forEach((property, mldTable) -> list.add(property.getCode()));
         return this.name+" : "+String.join(", ", list)+"\n";
     }
 }

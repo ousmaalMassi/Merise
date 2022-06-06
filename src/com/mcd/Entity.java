@@ -18,9 +18,11 @@ public class Entity extends MeriseObject {
      * @return property
      */
     public Property getId(){
-        for (Property property : this.getPropertyList())
-            if (property.getConstraints().contains(Property.Constraints.PRIMARY_KEY))
-                return property;
+        if (!propertyList.isEmpty())
+            return propertyList.get(0);
+//        for (Property property : this.getPropertyList())
+//            if (property.getConstraints().contains(Property.Constraints.PRIMARY_KEY))
+//                return property;
         return null;
     }
 

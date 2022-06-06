@@ -8,7 +8,6 @@ import com.mpd.MPDGraph;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class Transform {
 
@@ -33,10 +32,10 @@ public class Transform {
             }
 
             Map<Entity, Cardinality> links = association.getLinks();
-            Set<Entity> entities = association.getLinks().keySet();
+            List<Entity> entities = association.getLinks().keySet().stream().toList();
 
-            Entity entity1 = entities.iterator().next();
-            Entity entity2 = entities.iterator().next();
+            Entity entity1 = entities.get(0);
+            Entity entity2 = entities.get(1);
 
             // these tables have been created when the association was created
             MLDTable table1 = mldGraph.getTable(entity1.getName());
@@ -46,7 +45,7 @@ public class Transform {
             Cardinality entityCardinality2 = links.get(entity2);
 
             switch (getRelationShipType(entityCardinality1, entityCardinality2)) {
-                case ONE_TO_ONE -> table2.addForeignKey(table1);
+                case ONE_TO_ONE -> table1.addForeignKey(table2);
                 case MANY_TO_MANY -> mldGraph.getTables().add(createAssociationTable(association));
                 case ONE_TO_MANY -> {
                     if (isWeak(entityCardinality1))
@@ -67,15 +66,12 @@ public class Transform {
     private RelationShip getRelationShipType(Cardinality cardinality1, Cardinality cardinality2) {
 
         RelationShip relationShip;
-
-        boolean e1EndsWithOne = cardinality1.equals(Cardinality.ZERO_ONE) || cardinality1.equals(Cardinality.ONE_ONE);
-        boolean e2EndsWithOne = cardinality2.equals(Cardinality.ZERO_ONE) || cardinality2.equals(Cardinality.ONE_ONE);
-        boolean e2EndsWithMany = cardinality2.equals(Cardinality.ZERO_MANY) || cardinality2.equals(Cardinality.ONE_MANY);
-
-        if (e1EndsWithOne && e2EndsWithOne)
-            relationShip = RelationShip.ONE_TO_ONE;
-        else if (e1EndsWithOne && e2EndsWithMany)
+        if ((cardinality1 == Cardinality.ZERO_MANY || cardinality1 == Cardinality.ONE_MANY) &&
+                (cardinality2 == Cardinality.ZERO_MANY || cardinality2 == Cardinality.ONE_MANY))
             relationShip = RelationShip.MANY_TO_MANY;
+        else if ((cardinality1 == Cardinality.ONE_ONE || cardinality1 == Cardinality.ZERO_ONE) &&
+                (cardinality2 == Cardinality.ONE_ONE || cardinality2 == Cardinality.ZERO_ONE))
+            relationShip = RelationShip.ONE_TO_ONE;
         else
             relationShip = RelationShip.ONE_TO_MANY;
 
@@ -85,10 +81,10 @@ public class Transform {
     private MLDTable createAssociationTable(Association association) {
         MLDTable associationTable = createMLDTable(association);
         association.getLinks().forEach((entity, cardinality) -> {
-            associationTable.addPrimaryKey(entity.getPropertyList().get(0));
+            associationTable.addPrimaryKey(entity.getId());
             associationTable.addForeignKey(mldGraph.getTable(entity.getName()));
         });
-        associationTable.getPropertyList().addAll(associationTable.getPrimaryKeys());
+//        associationTable.getPropertyList().addAll(associationTable.getPrimaryKeys());
         return associationTable;
     }
 
@@ -99,6 +95,8 @@ public class Transform {
     private MLDTable createMLDTable(MeriseObject node) {
         MLDTable table = new MLDTable(node.getName());
         table.setPropertyList(node.getPropertyList());
+        if (node instanceof Entity entity)
+            table.addPrimaryKey(entity.getId());
         return table;
     }
 
@@ -159,10 +157,10 @@ public class Transform {
         return String.join(" ", list);
     }
 
-    private String createForeignKeyColumn(String tableName, Map<String, MLDTable> foreignKeys) {
+    private String createForeignKeyColumn(String tableName, Map<Property, MLDTable> foreignKeys) {
         List<String> list = new ArrayList<>();
-        foreignKeys.forEach((prop, tableRef) -> list.add(
-                "ALTER TABLE " + tableName + " FOREIGN KEY (`" + prop + "`) REFERENCES " + tableRef.getName() + "(`" + prop + "`)")
+        foreignKeys.forEach((property, tableRef) -> list.add(
+                "ALTER TABLE " + tableName + " FOREIGN KEY (`" + property.getCode() + "`) REFERENCES " + tableRef.getName() + "(`" + property.getCode() + "`)")
         );
         return String.join(",\n", list);
     }

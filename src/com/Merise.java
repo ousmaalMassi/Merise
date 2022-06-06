@@ -39,6 +39,7 @@ public class Merise extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setVisible(true);
+        System.out.println("\uD83D\uDE00");
     }
 
     private void initComponents() {
