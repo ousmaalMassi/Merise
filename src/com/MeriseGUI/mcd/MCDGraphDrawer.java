@@ -1,15 +1,14 @@
 package com.MeriseGUI.mcd;
 
 import com.MeriseGUI.GraphicalNode;
+import com.MeriseGUI.ddd.DDPanel;
 import com.MeriseObject;
 import com.exception.DuplicateMeriseObject;
 import com.mcd.*;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
-import java.util.LinkedList;
 
 public class MCDGraphDrawer {
 
@@ -45,7 +44,7 @@ public class MCDGraphDrawer {
         System.out.println(mcdGraph);
     }
 
-    public void addProperty(GraphicalMCDNode mcdNodeView, String name) {
+    public void addProperty(String propertyName, GraphicalMCDNode mcdNodeView) {
 
 //        long currentTimeMillis = System.currentTimeMillis();
         MeriseObject meriseObject;
@@ -54,14 +53,19 @@ public class MCDGraphDrawer {
         else
             meriseObject = mcdGraph.containsAssociation(mcdNodeView.getName());
 
-        ArrayList<Property.Constraints> propertyArrayList = new ArrayList<>();
+        Map<String, String> map = DDPanel.getProperty(propertyName);
+        String name = map.get("name");
+        Property.Types type = Property.Types.valueOf(map.get("type"));
+        int length = Integer.parseInt(map.get("length"));
+        ArrayList<Property.Constraints> constraints = new ArrayList<>();
+
         if (meriseObject.getPropertyList().isEmpty()) {
-            propertyArrayList.addAll(Arrays.asList(
-                Property.Constraints.NOT_NULL
+            constraints.addAll(Arrays.asList(
+                    Property.Constraints.NOT_NULL
             ));
         }
 
-        Property property =  new Property(name, Property.Types.DIGITAL, 11, propertyArrayList);
+        Property property =  new Property(name, type, length, constraints);
         meriseObject.addProperty(property);
 
         mcdNodeView.getAttributes().add(property.name);
@@ -69,7 +73,7 @@ public class MCDGraphDrawer {
 //        System.out.println(System.currentTimeMillis() - currentTimeMillis+" ms");
     }
 
-    public void removeProperty(GraphicalMCDNode mcdNodeView, String name) {
+    public void removeProperty(String name, GraphicalMCDNode mcdNodeView) {
 
         MeriseObject meriseObject;
         if (mcdNodeView instanceof EntityView)

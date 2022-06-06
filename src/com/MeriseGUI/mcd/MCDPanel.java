@@ -86,7 +86,7 @@ public class MCDPanel extends JPanel implements MouseListener, MouseMotionListen
             for (Object o : selectedValuesList) {
                 String attributeName = o.toString();
                 DDPanel.setUsedInMCD(attributeName, nodeUnderCursor.getName());
-                graphDrawer.addProperty(nodeUnderCursor, attributeName);
+                graphDrawer.addProperty(attributeName, nodeUnderCursor);
             }
             repaint();
         });
@@ -103,7 +103,7 @@ public class MCDPanel extends JPanel implements MouseListener, MouseMotionListen
             for (Object o : selectedValuesList) {
                 String attributeName = o.toString();
                 DDPanel.setUsedInMCD(attributeName, "");
-                graphDrawer.removeProperty(nodeUnderCursor, attributeName);
+                graphDrawer.removeProperty(attributeName, nodeUnderCursor);
             }
             repaint();
         });

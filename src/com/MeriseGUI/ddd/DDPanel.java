@@ -9,6 +9,8 @@ import com.mcd.Property;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 /**
@@ -23,9 +25,11 @@ public class DDPanel extends JPanel {
     private static final String MCD = "MCD";
     private static final String GDF = "GDF";
     private static JTable ddTable;
-    private static int GDF_COL_INDEX;
     private static int NAME_COL_INDEX;
-    private static int MCD_COL_INDEX;
+    private static int TYPE_COL_INDEX;
+    private static int LENGTH_COL_INDEX;
+    public static int GDF_COL_INDEX;
+    public static int MCD_COL_INDEX;
     private static TableModel tableModel;
     private JComboBox<Property.Types> combo;
 
@@ -43,6 +47,8 @@ public class DDPanel extends JPanel {
         ddTable = new JTable(tableModel);
 
         NAME_COL_INDEX = ddTable.getColumn(NAME).getModelIndex();
+        TYPE_COL_INDEX = ddTable.getColumn(TYPE).getModelIndex();
+        LENGTH_COL_INDEX = ddTable.getColumn(LENGTH).getModelIndex();
         MCD_COL_INDEX = ddTable.getColumn(MCD).getModelIndex();
         GDF_COL_INDEX = ddTable.getColumn(GDF).getModelIndex();
 
@@ -99,7 +105,7 @@ public class DDPanel extends JPanel {
             JOptionPane.showMessageDialog(this, "Aucun attribut n'a été sélectionné");
     }
 
-
+    // GDF methods start
     public static Vector<String> getAttributeList() {
         int nRow = tableModel.getRowCount();
         Vector<String> attrList = new Vector<>();
@@ -109,7 +115,6 @@ public class DDPanel extends JPanel {
         attrList.removeIf(item -> item.equals(""));
         return attrList;
     }
-
     public static Vector<String> getGDFAttributes() {
         int nRow = tableModel.getRowCount();
         Vector<String> attrList = new Vector<>();
@@ -121,12 +126,17 @@ public class DDPanel extends JPanel {
         attrList.removeIf(item -> item.equals(""));
         return attrList;
     }
-
     public static void setUsedInGDF(String attributeName, boolean used) {
         int row = getAttributeList().indexOf(attributeName);
         tableModel.setValueAt(used, row, GDF_COL_INDEX);
     }
+    private boolean isUsedInGDF(int selectedRow) {
+        return tableModel.getValueAt(selectedRow, GDF_COL_INDEX).toString().equals("true");
+    }
+    // GDF methods end
 
+
+    // MCD methods start
     public static Vector<String> getMCDAttributes() {
         int nRow = tableModel.getRowCount();
         Vector<String> attrList = new Vector<>();
@@ -137,19 +147,29 @@ public class DDPanel extends JPanel {
         attrList.removeIf(item -> item.equals(""));
         return attrList;
     }
-
     public static void setUsedInMCD(String attributeName, String name) {
         int row = getAttributeList().indexOf(attributeName);
         tableModel.setValueAt(name, row, MCD_COL_INDEX);
     }
-
     private boolean isUsedInMCD(int selectedRow) {
         return !tableModel.getValueAt(selectedRow, MCD_COL_INDEX).toString().isEmpty();
     }
+    // MCD methods end
 
-    private boolean isUsedInGDF(int selectedRow) {
-        return tableModel.getValueAt(selectedRow, GDF_COL_INDEX).toString().equals("true");
+    public static Map<String, String> getProperty(String string) {
+        int nRow = tableModel.getRowCount();
+        Map<String, String> prop = new HashMap<>();
+        for (int i = 0; i < nRow; i++) {
+            if (tableModel.getValueAt(i, NAME_COL_INDEX).toString().equals(string)) {
+                prop.put("name", tableModel.getValueAt(i, NAME_COL_INDEX).toString());
+                prop.put("type", tableModel.getValueAt(i, TYPE_COL_INDEX).toString());
+                prop.put("length", tableModel.getValueAt(i, LENGTH_COL_INDEX).toString());
+                break;
+            }
+        }
+        return prop;
     }
+
     private void showExample() {
         tableModel.removeRow(0);
         Object[][] dataExample = new Object[][]{
