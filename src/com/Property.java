@@ -1,6 +1,5 @@
-package com.mcd;
+package com;
 
-import java.util.List;
 
 /**
  * 
@@ -15,14 +14,11 @@ public class Property {
 
     public int length;
 
-    public List<Constraints> constraints;
-
-    public Property(String name, Types type, int length, List<Constraints> constraints) {
+    public Property(String name, Types type, int length) {
         this.code = this.normalize(name);
         this.name = name;
         this.type = type;
         this.length = length;
-        this.constraints = constraints;
     }
 
     public Property() {
@@ -51,8 +47,8 @@ public class Property {
     }
 
     public enum Constraints {
-        PRIMARY_KEY("PRIMARY KEY"),
-        FOREIGN_KEY("FOREIGN KEY"),
+        PK("PRIMARY KEY"),
+        FK("FOREIGN KEY"),
         NULL("NULL"),
         NOT_NULL("NOT NULL"),
         UNIQUE("UNIQUE"),
@@ -101,14 +97,6 @@ public class Property {
         this.length = length;
     }
 
-    public List<Constraints> getConstraints() {
-        return constraints;
-    }
-
-    public void setConstraints(List<Constraints> constraints) {
-        this.constraints = constraints;
-    }
-
     private String normalize(String name) {
         return name.replaceAll(" ", "_").replaceAll("'", "_");
     }
@@ -134,7 +122,6 @@ public class Property {
                   |________ code : %s,
                   |________ name : %s,
                   |________ type : %s,
-                  |________ length : %s,
-                  |________ constraints : %s""".formatted(this.code, this.name,  this.type, this.length, this.constraints);
+                  |________ length : %s""".formatted(this.code, this.name,  this.type, this.length);
     }
 }

@@ -3,6 +3,7 @@ package com.MeriseGUI.mcd;
 import com.MeriseGUI.GraphicalNode;
 import com.MeriseGUI.ddd.DDPanel;
 import com.MeriseObject;
+import com.Property;
 import com.exception.DuplicateMeriseObject;
 import com.mcd.*;
 
@@ -57,15 +58,8 @@ public class MCDGraphDrawer {
         String name = map.get("name");
         Property.Types type = Property.Types.valueOf(map.get("type"));
         int length = Integer.parseInt(map.get("length"));
-        ArrayList<Property.Constraints> constraints = new ArrayList<>();
 
-        if (meriseObject.getPropertyList().isEmpty()) {
-            constraints.addAll(Arrays.asList(
-                    Property.Constraints.NOT_NULL
-            ));
-        }
-
-        Property property =  new Property(name, type, length, constraints);
+        Property property =  new Property(name, type, length);
         meriseObject.addProperty(property);
 
         mcdNodeView.getAttributes().add(property.name);

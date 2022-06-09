@@ -5,7 +5,7 @@
  */
 package com.MeriseGUI.ddd;
 
-import com.mcd.Property;
+import com.Property;
 
 import javax.swing.*;
 import java.awt.*;

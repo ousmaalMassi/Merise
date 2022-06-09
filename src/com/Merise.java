@@ -115,6 +115,7 @@ public class Merise extends JFrame {
             mldPanel.setMldGraph(mldGraph);
             mpdPanel.setMpdGraph(mpdGraph);
             sqlPanel.setSQLScript(transform.mpdToSQL(mpdGraph));
+            JOptionPane.showMessageDialog(this, "Terminé!");
         });
 
         btnExit.addActionListener((ActionEvent e) -> this.dispose());

@@ -31,22 +31,22 @@ public class MPDGraphDrawer {
 
         mpdGraph.getTables().forEach(table -> {
 
-//            if (this.getGraphicalMPDTable(table.getName()) != null)
-//                return;
-//            GraphicalMPDTable graphicalMPDTable = new GraphicalMPDTable(x1.get(), y1.get(), table.getName());
-//            x1.addAndGet(100);
-//            y1.addAndGet(100);
-//            graphicalMPDTable.setPrimaryKey(table.getPrimaryKeys());
-//            table.getPropertyList().forEach(property -> graphicalMPDTable.getAttributes().add(property));
-//            table.getForeignKeys().forEach((foreignKey, table1) -> {
-//                GraphicalMPDTable gTbl = getGraphicalMPDTable(table1.getName());
-//                if (gTbl == null)
-//                    gTbl = new GraphicalMPDTable(500, 500, table1.getName());
-//                GraphicalMPDLink graphicalMPDLink = new GraphicalMPDLink(graphicalMPDTable, gTbl);
-//                graphicalMPDLinks.add(graphicalMPDLink);
-//                graphicalMPDTable.addForeignKeys(foreignKey);
-//            });
-//            graphicalMPDTables.add(graphicalMPDTable);
+            if (this.getGraphicalMPDTable(table.getName()) != null)
+                return;
+            GraphicalMPDTable graphicalMPDTable = new GraphicalMPDTable(x1.get(), y1.get(), table.getName());
+            x1.addAndGet(100);
+            y1.addAndGet(100);
+            graphicalMPDTable.setPrimaryKey(table.getPrimaryAllKeys());
+            table.getPropertyList().forEach(property -> graphicalMPDTable.getAttributes().add(property));
+            table.getForeignKeys().forEach((foreignKey, table1) -> {
+                GraphicalMPDTable gTbl = getGraphicalMPDTable(table1.getName());
+                if (gTbl == null)
+                    gTbl = new GraphicalMPDTable(500, 500, table1.getName());
+                GraphicalMPDLink graphicalMPDLink = new GraphicalMPDLink(graphicalMPDTable, gTbl);
+                graphicalMPDLinks.add(graphicalMPDLink);
+                graphicalMPDTable.addForeignKeys(foreignKey);
+            });
+            graphicalMPDTables.add(graphicalMPDTable);
         });
     }
 

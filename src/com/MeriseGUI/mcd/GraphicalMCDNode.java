@@ -90,19 +90,15 @@ public class GraphicalMCDNode extends GraphicalNode {
         int lineHeight = fm.getHeight() + 3;
         int nameY = pulledY + lineHeight;
 
-        Font oldFont = g.getFont();
-
         g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 17));
         g.drawString(name, sx, nameY);
 
         if (attrNbr>0) {
             if (this instanceof EntityView) {
-                g.setFont(new Font("Tahoma", Font.BOLD, 13));
+                g.setFont(new Font("Thoma", Font.BOLD, 13));
                 g.drawString(attributes.get(0), sx, sy);
                 g.drawLine(sx, sy+5, sx+fm.stringWidth(attributes.get(0)), sy+5);
-                g.setFont(oldFont);
             }else{
-                g.setFont(oldFont);
                 g.drawString(attributes.get(0), sx, sy);
             }
             for (int i = 1; i < attrNbr; i++) {

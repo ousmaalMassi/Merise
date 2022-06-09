@@ -1,7 +1,7 @@
 package com.mld;
 
 import com.MeriseObject;
-import com.mcd.Property;
+import com.Property;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,19 +10,25 @@ import java.util.Map;
 
 public class MLDTable extends MeriseObject {
     private Map<Property, MLDTable> foreignKeys;
+    private List<Property> primaryKeys;
 
     public MLDTable(String name) {
         super(name);
         this.foreignKeys = new HashMap<>();
+        this.primaryKeys = new ArrayList<>();
+    }
+
+    public List<Property> getPrimaryAllKeys() {
+        return primaryKeys;
     }
 
     public Property getPrimaryKey(){
-        return propertyList.stream().filter(p -> p.constraints.contains(Property.Constraints.PRIMARY_KEY)).findAny().orElse(null);
+        return primaryKeys.get(0);
     }
 
     public void setPrimaryKey(String propertyCode){
         Property property = propertyList.stream().filter(p -> p.code.equals(propertyCode)).findAny().orElse(null);
-        property.constraints.add(Property.Constraints.PRIMARY_KEY);
+        primaryKeys.add(property);
     }
 
     public void setForeignKey(MLDTable refTable){
@@ -31,7 +37,6 @@ public class MLDTable extends MeriseObject {
             property = refTable.getPrimaryKey();
             propertyList.add(property);
         }
-        property.constraints.add(Property.Constraints.FOREIGN_KEY);
         foreignKeys.put(property, refTable);
     }
 

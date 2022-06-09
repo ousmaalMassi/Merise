@@ -133,8 +133,8 @@ public class Transform {
         mpdGraph.getTables().forEach(table -> stringBuilder
                 .append("DROP TABLE IF EXISTS `").append(table.getName()).append("`;\n")
                 .append("CREATE TABLE `").append(table.getName()).append("` (\n")
-                .append(this.createColumn(table))
-                .append(") ").append("ENGINE=InnoDB;").append("\n\n")
+                .append(this.createColumn(table)).append("\n")
+                .append(")").append("ENGINE=InnoDB;").append("\n\n")
         );
         stringBuilder.append(String.join(",\n", this.foreignKeyConstraint));
         return stringBuilder.toString();
@@ -142,32 +142,24 @@ public class Transform {
 
     private String createColumn(MLDTable table) {
         List<String> list = new ArrayList<>();
-//        table.getPropertyList().forEach(property -> list.add(
-//                "`" + property.getCode() + "`" +
-//                        " " + property.getType().toString() +
-//                        " (" + property.getLength() + ")" +
-//                        " " + this.createConstraints(property.getConstraints())
-//        ));
-//        list.add(this.createPrimaryKey(table.getName(), table.getPrimaryKeys()));
-//        if (!table.getForeignKeys().isEmpty())
-//            this.foreignKeyConstraint.add(this.createForeignKeyColumn(table.getName(), table.getForeignKeys()));
+        table.getPropertyList().forEach(property -> list.add(
+                "`" + property.getCode() + "`" +
+                        " " + property.getType().toString() + " " +
+                        "(" + property.getLength() + ")" + " " +
+                        Property.Constraints.NOT_NULL
+        ));
+        list.add(this.createPrimaryKey(table.getPrimaryAllKeys()));
+        if (!table.getForeignKeys().isEmpty())
+            this.foreignKeyConstraint.add(this.createForeignKeyColumn(table.getName(), table.getForeignKeys()));
         return String.join(",\n", list);
     }
 
-    private String createPrimaryKey(String tableName, List<Property> primaryKeys) {
+    private String createPrimaryKey(List<Property> primaryKeys) {
         List<String> list = new ArrayList<>();
         primaryKeys.forEach(primaryKey ->
-                list.add("CONSTRAINT PK_" + tableName + " ADD PRIMARY KEY (" + primaryKey.getCode() + ")")
+                list.add("PRIMARY KEY (" + primaryKey.code + ")")
         );
         return String.join(",\n", list);
-    }
-
-    private String createConstraints(List<Property.Constraints> constraints) {
-        List<String> list = new ArrayList<>();
-        constraints.forEach(
-                constraint -> list.add(constraint.toString())
-        );
-        return String.join(" ", list);
     }
 
     private String createForeignKeyColumn(String tableName, Map<Property, MLDTable> foreignKeys) {
@@ -183,4 +175,5 @@ public class Transform {
         ONE_TO_MANY,
         MANY_TO_MANY
     }
+
 }

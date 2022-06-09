@@ -1,7 +1,7 @@
 package com.MeriseGUI.mpd;
 
 import com.MeriseGUI.GraphicalNode;
-import com.mcd.Property;
+import com.Property;
 
 import java.awt.*;
 import java.util.List;
@@ -14,7 +14,6 @@ public class GraphicalMPDTable extends GraphicalNode {
     protected static int PADDING = 20;
     protected static int SPACING = 18;
     private FontMetrics fm;
-    private int attrNbr;
     private List<Property> primaryKeys;
     private List<Property> foreignKeys;
     private int sx;
@@ -33,12 +32,12 @@ public class GraphicalMPDTable extends GraphicalNode {
     @Override
     public void draw(Graphics2D g) {
 
-        attrNbr = attributes.size();
+        int attrNbr = attributes.size();
 
         fm = g.getFontMetrics();
-        if (attrNbr>0)
+        if (attrNbr >0)
             width = calculateWidth(g) + PADDING * 2;
-        height = headHeight+attrNbr*fm.getHeight()+PADDING;
+        height = headHeight+ attrNbr *fm.getHeight()*2+PADDING;
 
         pulledX = x-width/2;
         pulledY = y-height/2;
@@ -60,10 +59,28 @@ public class GraphicalMPDTable extends GraphicalNode {
 //        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 17));
         g.drawString(name, sx, nameY);
 
+        List<Property> pFkKeys = new ArrayList<>();
+        List<Property> pkKeys = new ArrayList<>();
+        List<Property> attrs = new ArrayList<>();
+        List<Property> fkKeys = new ArrayList<>();
 
-        drawAttributes("Pk_Primary", primaryKeys, g);
-        drawAttributes("Attributes", attributes, g);
-        drawAttributes("Pk_Foreign", foreignKeys, g);
+        attributes.forEach(property -> {
+            if (this.primaryKeys.contains(property) && this.foreignKeys.contains(property)) {
+                pFkKeys.add(property);
+            }
+            else if (this.primaryKeys.contains(property)) {
+                pkKeys.add(property);
+            }
+            else if ( this.foreignKeys.contains(property)) {
+                fkKeys.add(property);
+            }
+            else
+               attrs.add(property);
+        });
+        drawAttributes("PFk_Prim_Foreign", pFkKeys, g);
+        drawAttributes("Pk_Primary", pkKeys, g);
+        drawAttributes("Attributes", attrs, g);
+        drawAttributes("Pk_Foreign", fkKeys, g);
     }
 
     private void drawAttributes(String constName, List<Property> list, Graphics2D g) {
@@ -73,7 +90,7 @@ public class GraphicalMPDTable extends GraphicalNode {
         int lineX1 = sx - 5;
         int vLineY1 = sy;
         int lineY2 = sy;
-        int hLineX2 = 0;
+        int hLineX2;
         int maxLine = 0;
 
         g.setFont(new Font(Font.DIALOG, Font.ITALIC, 11));
@@ -88,8 +105,10 @@ public class GraphicalMPDTable extends GraphicalNode {
             lineY2 += 20;
             maxLine = Math.max(fm.stringWidth(property.code), maxLine);
         }
-        hLineX2 = sx + maxLine;
         g.drawLine(lineX1, vLineY1, lineX1, lineY2);
+        if (constName.equals("Attributes"))
+            maxLine = 5;
+        hLineX2 = sx + maxLine;
         g.drawLine(lineX1, lineY2, hLineX2, lineY2);
 
     }
@@ -106,7 +125,7 @@ public class GraphicalMPDTable extends GraphicalNode {
         }
         if (maxWidth < entityNameWidth) maxWidth = entityNameWidth;
 
-        return maxWidth;
+        return maxWidth*3;
     }
 
     @Override
