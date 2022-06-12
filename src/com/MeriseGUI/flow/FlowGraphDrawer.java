@@ -68,4 +68,11 @@ public class FlowGraphDrawer {
                 .findAny()
                 .orElse(null);
     }
+
+    public void removeLink(Flow linkUnderCursor) {
+        GraphicalNode nodeA = linkUnderCursor.getNodeA();
+        GraphicalNode nodeB = linkUnderCursor.getNodeB();
+
+
+    }
 }

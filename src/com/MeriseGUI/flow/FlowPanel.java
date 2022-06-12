@@ -1,6 +1,7 @@
 package com.MeriseGUI.flow;
 
 import com.MeriseGUI.GraphicalNode;
+import com.mcd.Cardinality;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,15 +12,17 @@ import java.awt.event.MouseMotionListener;
 public class FlowPanel extends JPanel implements MouseListener, MouseMotionListener {
     private JPopupMenu panelPopupMenu;
     private JPopupMenu nodePopupMenu;
+    private JPopupMenu linkPopupMenu;
     private final FlowGraphDrawer graphDrawer;
     private InternalActor internalActor;
     private ExternalActor externalActor;
     private GraphicalNode nodeUnderCursor;
+    private Flow linkUnderCursor;
     private boolean creatingLink;
 
     public FlowPanel() {
         createPanelPopupMenu();
-        createMCDObjectPopupMenu();
+        createAttributePopupMenu();
         addMouseListener(this);
         addMouseMotionListener(this);
         this.graphDrawer = new FlowGraphDrawer();
@@ -39,7 +42,7 @@ public class FlowPanel extends JPanel implements MouseListener, MouseMotionListe
             graphDrawer.draw(g2d);
     }
 
-    private void createMCDObjectPopupMenu() {
+    private void createAttributePopupMenu() {
         this.nodePopupMenu = new JPopupMenu();
 
         JMenuItem renameNodeMenuItem = new JMenuItem("Renommer");
@@ -91,6 +94,17 @@ public class FlowPanel extends JPanel implements MouseListener, MouseMotionListe
         this.panelPopupMenu.add(addLinkMenuItem);
         addLinkMenuItem.addActionListener((action) -> this.creatingLink = true);
 
+    }
+
+    private void createLinkPopupMenu() {
+        this.linkPopupMenu = new JPopupMenu();
+
+        JMenuItem removeLinkMenuItem = new JMenuItem("Supprimer");
+        this.linkPopupMenu.add(removeLinkMenuItem);
+        removeLinkMenuItem.addActionListener((action) -> {
+            graphDrawer.removeLink(linkUnderCursor);
+            repaint();
+        });
     }
 
     private InternalActor createInternalActor() {
