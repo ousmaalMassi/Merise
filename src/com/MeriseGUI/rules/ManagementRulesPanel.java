@@ -1,6 +1,7 @@
 package com.MeriseGUI.rules;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class ManagementRulesPanel extends JPanel{
@@ -44,6 +45,7 @@ public class ManagementRulesPanel extends JPanel{
         this.setLayout(new BorderLayout());
         this.add(jScrollPane1, BorderLayout.CENTER);
         this.add(footer, BorderLayout.SOUTH);
+        this.setBorder(new EmptyBorder(10, 10, 10, 10));
 
     }
 

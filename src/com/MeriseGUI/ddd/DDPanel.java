@@ -8,6 +8,7 @@ package com.MeriseGUI.ddd;
 import com.Property;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -76,7 +77,8 @@ public class DDPanel extends JPanel {
         this.setLayout(new BorderLayout());
         this.add(jScrollPane1, BorderLayout.CENTER);
         this.add(footer, BorderLayout.SOUTH);
-
+        this.setBorder(new EmptyBorder(10, 10, 10, 10));
+        
         tableModel.setValueAt(combo.getItemAt(0), ddTable.getRowCount() - 1, 1);
         ddTable.remove(ddTable.getRowCount() - 1);
     }
