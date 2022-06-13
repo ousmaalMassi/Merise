@@ -11,8 +11,8 @@ public class ManagementRulesPanel extends JPanel{
     public ManagementRulesPanel() {
 
         String[][] data = {
-                { "1", "CSE" },
-                { "2", "IT" }
+                { "1", "Chaque professeur est caractérisé par son code, son nom, son prénom, son adresse, son grade et son nombre d’heures d’enseignement selon son grade." },
+                { "2", "Un professeur peut enseigner plusieurs modules" }
         };
 
         // Column Names
@@ -25,7 +25,7 @@ public class ManagementRulesPanel extends JPanel{
         JButton addRowBtn = new JButton();
         addRowBtn.setText("Ajouter une régle de gestion");
         addRowBtn.setFont(new Font("Tahoma", Font.BOLD, 15));
-        addRowBtn.addActionListener(e -> addAttribute());
+        addRowBtn.addActionListener(e -> addNewRule());
 
         JButton removeRowBtn = new JButton();
         removeRowBtn.setText("Supprimer");
@@ -49,16 +49,16 @@ public class ManagementRulesPanel extends JPanel{
 
     }
 
-    private void addAttribute() {
-        String inputDialog = JOptionPane.showInputDialog(this, "Veuillez entrer le nom de l'attribut");
-        if (inputDialog == null)
-            return;
-        rulesTableModel.addRow(this.createEmptyDataRow(inputDialog));
+    private void addNewRule() {
+//        String inputDialog = JOptionPane.showInputDialog(this, "Veuillez entrer le nom de l'attribut");
+//        if (inputDialog == null)
+//            return;
+        rulesTableModel.addRow(this.createEmptyDataRow(""));
     }
 
-    private Object[] createEmptyDataRow(String name) {
+    private Object[] createEmptyDataRow(String rule) {
         int index = rulesTableModel.getRowCount()+1;
-        return new Object[]{index, name};
+        return new Object[]{index, rule};
     }
 
     private void removeAttribute() {

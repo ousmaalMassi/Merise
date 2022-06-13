@@ -50,6 +50,12 @@ public class RulesTableModel  extends AbstractTableModel {
         this.data[indice] = data;
         this.fireTableDataChanged();
     }
+
+    @Override
+    public void setValueAt(Object value, int row, int col) {
+        this.data[row][col] = value;
+    }
+
     public void removeRow(int position) {
         int indice = 0, indice2 = 0, nbRow = this.getRowCount() - 1, nbCol = this.getColumnCount();
         Object[][] temp = new Object[nbRow][nbCol];
@@ -62,5 +68,6 @@ public class RulesTableModel  extends AbstractTableModel {
         data = temp;
         this.fireTableDataChanged();
     }
+
 
 }
