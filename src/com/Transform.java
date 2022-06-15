@@ -1,5 +1,7 @@
 package com;
 
+import com.exception.DuplicateMeriseObject;
+import com.gdf.GDFGraph;
 import com.mcd.*;
 import com.mld.MLDGraph;
 import com.mld.MLDTable;
@@ -8,6 +10,7 @@ import com.mpd.MPDGraph;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Transform {
 
@@ -20,6 +23,25 @@ public class Transform {
         mpdGraph = new MPDGraph();
         foreignKeyConstraint = new ArrayList<>();
     }
+
+    public MCDGraph gdfToMcd(GDFGraph gdfGraph) {
+        MCDGraph mcdGraph = new MCDGraph();
+        AtomicInteger num = new AtomicInteger();
+        gdfGraph.getDfNodes().stream().filter(gdfNode -> gdfNode.getTargets().isEmpty()).forEach(gdfNode -> {
+            num.getAndIncrement();
+            Entity entity = new Entity("entity "+num);
+            entity.addProperty(new Property(gdfNode.getName(), Property.Types.ALPHABETICAL, 11));
+            gdfNode.getTargets().forEach(s ->
+                    entity.addProperty(new Property(s, Property.Types.ALPHABETICAL, 11)));
+            try {
+                mcdGraph.addEntity(entity);
+            } catch (DuplicateMeriseObject e) {
+                throw new RuntimeException(e);
+            }
+        });
+        return mcdGraph;
+    }
+
 
     public MLDGraph mcdToMld(MCDGraph mcdGraph) {
 

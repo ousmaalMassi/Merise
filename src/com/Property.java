@@ -122,6 +122,7 @@ public class Property {
                   |________ code : %s,
                   |________ name : %s,
                   |________ type : %s,
-                  |________ length : %s""".formatted(this.code, this.name,  this.type, this.length);
+                  |________ length : %s
+                  """.formatted(this.code, this.name,  this.type, this.length);
     }
 }

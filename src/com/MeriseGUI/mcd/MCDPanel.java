@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Vector;
 
 public class MCDPanel extends JPanel implements MouseListener, MouseMotionListener {
-    private final MCDGraph mcdGraph;
+    private MCDGraph mcdGraph;
     private final MCDGraphDrawer graphDrawer;
     private JPopupMenu panelPopupMenu;
     private JPopupMenu nodePopupMenu;
@@ -34,10 +34,15 @@ public class MCDPanel extends JPanel implements MouseListener, MouseMotionListen
         addMouseMotionListener(this);
 
         this.graphDrawer = new MCDGraphDrawer();
+
         this.mcdGraph = new MCDGraph();
         this.graphDrawer.setMcdGraph(this.mcdGraph);
         this.creatingLink = false;
         this.jListAttribute = new JList<>();
+    }
+
+    public void setMcdGraph(MCDGraph mcdGraph) {
+        this.mcdGraph = mcdGraph;
     }
 
     @Override

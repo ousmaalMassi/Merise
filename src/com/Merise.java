@@ -7,6 +7,7 @@ import com.MeriseGUI.mld.MLDPanel;
 import com.MeriseGUI.mpd.MPDPanel;
 import com.MeriseGUI.rules.ManagementRulesPanel;
 import com.MeriseGUI.sql.SQLPanel;
+import com.gdf.GDFGraph;
 import com.mcd.MCDGraph;
 import com.MeriseGUI.mcd.MCDPanel;
 import com.mld.MLDGraph;
@@ -15,10 +16,13 @@ import com.mpd.MPDGraph;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class Merise extends JFrame {
 
     private JMenuBar jMenuBar;
+    private GDFPanel gdfPanel;
     private MCDPanel mcdPanel;
     private MLDPanel mldPanel;
     private MPDPanel mpdPanel;
@@ -29,6 +33,7 @@ public class Merise extends JFrame {
     private JButton btnSaveAs;
     private JButton btnExit;
     private JButton btnGenerate;
+    private JButton btnGdfToMcd;
     private JButton btnGrid;
     private JToolBar toolBar;
 
@@ -40,16 +45,31 @@ public class Merise extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setVisible(true);
         System.out.println("\uD83D\uDE00");
+
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent evt) {
+                int resp = JOptionPane.showConfirmDialog(null,
+                        "Are you sure you want to exit?",
+                        "Exit?", JOptionPane.YES_NO_OPTION);
+                if (resp == JOptionPane.YES_OPTION)
+                    setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                else
+                    setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+            }
+        });
+
     }
 
     private void initComponents() {
         createToolBar();
         addBtnListeners();
 
+        transform = new Transform();
+
         ManagementRulesPanel managementRulesPanel = new ManagementRulesPanel();
         DDPanel ddPanel = new DDPanel();
-        GDFPanel gdfGraph = new GDFPanel();
         FlowPanel flowPanel = new FlowPanel();
+        gdfPanel = new GDFPanel();
         mcdPanel = new MCDPanel();
         mldPanel = new MLDPanel();
         mpdPanel = new MPDPanel();
@@ -59,7 +79,7 @@ public class Merise extends JFrame {
         jTabbedPane.add("Diagramme de flux", flowPanel);
         jTabbedPane.add("Régles de gestion", managementRulesPanel);
         jTabbedPane.add("Dictionnaire de données", ddPanel);
-        jTabbedPane.add("GDF", gdfGraph);
+        jTabbedPane.add("GDF", gdfPanel);
         jTabbedPane.add("MCD", mcdPanel);
         jTabbedPane.add("MLD", mldPanel);
         jTabbedPane.add("MPD", mpdPanel);
@@ -77,8 +97,9 @@ public class Merise extends JFrame {
         btnNew = initToolBarBtn("new_file", "nouveau fichier (CTRL+N)", true);
         btnSave = initToolBarBtn("open_folder", "Ouvrir un nouveau projet (CTRL+O)", true);
         btnSaveAs = initToolBarBtn("save_as", "Enregistrer sous (CTRL+SHIFT+S)", true);
-        btnGenerate = initToolBarBtn("generate", "Générer l'MLD & l'MPD (F6)", true);
-        btnExit = initToolBarBtn("exit", "Exit (ALT+F4)", true);
+        btnGdfToMcd = initToolBarBtn("generate2", "Générer MCD à partir de GDF", true);
+        btnGenerate = initToolBarBtn("generate", "Générer le MLD & le MPD (F6)", true);
+//        btnExit = initToolBarBtn("exit", "Exit (ALT+F4)", true);
         btnGrid = initToolBarBtn("grid", "Grille (CTRL+G)", false);
 
         //toolBar.setBackground(Color.DARK_GRAY);
@@ -108,9 +129,7 @@ public class Merise extends JFrame {
             //gridEnabled = !gridEnabled;
         });
         btnGenerate.addActionListener((ActionEvent e) -> {
-            transform = new Transform();
-            MCDGraph mcdGraph = mcdPanel.getMcdGraph();
-            MLDGraph mldGraph = transform.mcdToMld(mcdGraph);
+            MLDGraph mldGraph = transform.mcdToMld(mcdPanel.getMcdGraph());
             MPDGraph mpdGraph = transform.mldToMpd(mldGraph);
             mldPanel.setMldGraph(mldGraph);
             mpdPanel.setMpdGraph(mpdGraph);
@@ -118,7 +137,14 @@ public class Merise extends JFrame {
             JOptionPane.showMessageDialog(this, "Terminé!");
         });
 
-        btnExit.addActionListener((ActionEvent e) -> this.dispose());
+        btnGdfToMcd.addActionListener((ActionEvent e) -> {
+            GDFGraph gdfGraph = gdfPanel.getGraph();
+            MCDGraph mcdGraph = transform.gdfToMcd(gdfGraph);
+            mcdPanel.setMcdGraph(mcdGraph);
+            JOptionPane.showMessageDialog(this, "Terminé!");
+        });
+
+//        btnExit.addActionListener((ActionEvent e) -> this.dispose());
 
     }
 }

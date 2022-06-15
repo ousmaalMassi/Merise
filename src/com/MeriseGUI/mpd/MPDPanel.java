@@ -1,12 +1,10 @@
 package com.MeriseGUI.mpd;
 
-import com.MeriseGUI.GraphicalNode;
 import com.mpd.MPDGraph;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
 public class MPDPanel extends JPanel implements MouseMotionListener {
@@ -32,7 +30,7 @@ public class MPDPanel extends JPanel implements MouseMotionListener {
     }
 
     public void setMpdGraph(MPDGraph mpdGraph) {
-        graphDrawer.makeMPD(mpdGraph);
+        graphDrawer.printMPD(mpdGraph);
         repaint();
     }
 

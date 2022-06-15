@@ -22,7 +22,7 @@ public class MPDGraphDrawer {
         graphicalMPDTables.forEach(node -> node.draw(graphics2D));
     }
 
-    public void makeMPD (MPDGraph mpdGraph){
+    public void printMPD(MPDGraph mpdGraph){
         graphicalMPDTables.clear();
         graphicalMPDLinks.clear();
 

@@ -39,7 +39,7 @@ public class GDFNode {
 
     @Override
     public String toString() {
-        return "DFNode{" +
+        return "{" +
                 "name='" + name + '\'' +
                 ", targets=" + targets +
                 '}';
