@@ -2,10 +2,10 @@ package com.MeriseGUI.mcd;
 
 import com.MeriseGUI.GraphicalNode;
 import com.MeriseGUI.ddd.DDPanel;
-import com.MeriseObject;
-import com.Property;
+import com.model.MeriseObject;
+import com.model.Property;
 import com.exception.DuplicateMeriseObject;
-import com.mcd.*;
+import com.model.mcd.*;
 
 import java.awt.*;
 import java.util.*;
@@ -126,9 +126,13 @@ public class MCDGraphDrawer {
     }
 
     public GraphicalMCDNode contains(int x, int y) {
-        return this.nodes.stream().filter(node -> node.contains(x, y))
-                .findAny()
-                .orElse(null);
+//        return this.nodes.stream().filter(node -> node.contains(x, y))
+//                .findAny()
+//                .orElse(null);
+        for (int i = this.nodes.size() - 1; i >= 0; i--)
+            if (nodes.get(i).contains(x, y))
+                return nodes.get(i);
+        return null;
     }
 
     public GraphicalMCDLink containsLink(int x, int y) {

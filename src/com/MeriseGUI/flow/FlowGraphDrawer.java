@@ -64,9 +64,13 @@ public class FlowGraphDrawer {
     }
 
     public GraphicalNode contains(int x, int y) {
-        return this.nodes.stream().filter(node -> node.contains(x, y))
+        /*return this.nodes.stream().filter(node -> node.contains(x, y))
                 .findAny()
-                .orElse(null);
+                .orElse(null);*/
+        for (int i = this.nodes.size() - 1; i >= 0; i--)
+            if (nodes.get(i).contains(x, y))
+                return nodes.get(i);
+        return null;
     }
 
     public void removeLink(Flow linkUnderCursor) {
