@@ -1,7 +1,7 @@
-package com.mcd;
+package com.model.mcd;
 
-import com.MeriseObject;
-import com.Property;
+import com.model.MeriseObject;
+import com.model.Property;
 
 /**
  * 

@@ -1,6 +1,6 @@
-package com.mcd;
+package com.model.mcd;
 
-import com.MeriseObject;
+import com.model.MeriseObject;
 
 import java.util.HashMap;
 import java.util.Map;

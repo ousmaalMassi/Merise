@@ -1,7 +1,7 @@
-package com.mld;
+package com.model.mld;
 
-import com.MeriseObject;
-import com.Property;
+import com.model.MeriseObject;
+import com.model.Property;
 
 import java.util.ArrayList;
 import java.util.HashMap;

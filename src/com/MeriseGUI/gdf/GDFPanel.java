@@ -1,7 +1,7 @@
 package com.MeriseGUI.gdf;
 
 import com.MeriseGUI.ddd.DDPanel;
-import com.gdf.GDFGraph;
+import com.model.gdf.GDFGraph;
 
 import javax.swing.*;
 import java.awt.*;

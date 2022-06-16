@@ -1,6 +1,6 @@
 package com.MeriseGUI.mld;
 
-import com.mld.MLDGraph;
+import com.model.mld.MLDGraph;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

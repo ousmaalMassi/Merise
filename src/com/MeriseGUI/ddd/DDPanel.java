@@ -5,7 +5,7 @@
  */
 package com.MeriseGUI.ddd;
 
-import com.Property;
+import com.model.Property;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

@@ -1,7 +1,7 @@
 package com.MeriseGUI.mpd;
 
 import com.MeriseGUI.GraphicalNode;
-import com.Property;
+import com.model.Property;
 
 import java.awt.*;
 import java.util.List;

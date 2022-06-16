@@ -1,6 +1,7 @@
-package com;
+package com.model;
 
 import com.exception.DuplicateProperty;
+import com.model.Property;
 
 import java.util.ArrayList;
 import java.util.List;

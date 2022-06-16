@@ -1,7 +1,6 @@
 package com.MeriseGUI.flow;
 
 import com.MeriseGUI.GraphicalNode;
-import com.mcd.Cardinality;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,7 +21,8 @@ public class FlowPanel extends JPanel implements MouseListener, MouseMotionListe
 
     public FlowPanel() {
         createPanelPopupMenu();
-        createAttributePopupMenu();
+        createNodePopupMenu();
+
         addMouseListener(this);
         addMouseMotionListener(this);
         this.graphDrawer = new FlowGraphDrawer();
@@ -42,7 +42,7 @@ public class FlowPanel extends JPanel implements MouseListener, MouseMotionListe
             graphDrawer.draw(g2d);
     }
 
-    private void createAttributePopupMenu() {
+    private void createNodePopupMenu() {
         this.nodePopupMenu = new JPopupMenu();
 
         JMenuItem renameNodeMenuItem = new JMenuItem("Renommer");

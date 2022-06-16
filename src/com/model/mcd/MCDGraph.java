@@ -1,4 +1,4 @@
-package com.mcd;
+package com.model.mcd;
 
 import com.exception.DuplicateMeriseObject;
 

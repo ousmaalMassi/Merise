@@ -1,6 +1,6 @@
 package com.MeriseGUI.mpd;
 
-import com.mpd.MPDGraph;
+import com.model.mpd.MPDGraph;
 
 import javax.swing.*;
 import java.awt.*;

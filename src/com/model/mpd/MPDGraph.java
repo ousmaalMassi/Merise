@@ -1,7 +1,7 @@
-package com.mpd;
+package com.model.mpd;
 
 
-import com.mld.MLDTable;
+import com.model.mld.MLDTable;
 
 import java.util.ArrayList;
 import java.util.List;

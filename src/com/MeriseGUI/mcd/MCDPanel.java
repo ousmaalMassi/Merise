@@ -1,7 +1,7 @@
 package com.MeriseGUI.mcd;
 
 import com.MeriseGUI.ddd.DDPanel;
-import com.mcd.*;
+import com.model.mcd.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,7 +27,7 @@ public class MCDPanel extends JPanel implements MouseListener, MouseMotionListen
 
     public MCDPanel() {
         createPanelPopupMenu();
-        createMCDObjectPopupMenu();
+        createNodePopupMenu();
         createLinkPopupMenu();
 
         addMouseListener(this);
@@ -57,7 +57,7 @@ public class MCDPanel extends JPanel implements MouseListener, MouseMotionListen
             graphDrawer.draw(g2d);
     }
 
-    private void createMCDObjectPopupMenu() {
+    private void createNodePopupMenu() {
         this.nodePopupMenu = new JPopupMenu();
 
         JMenuItem renameNodeMenuItem = new JMenuItem("Renommer");

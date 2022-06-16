@@ -1,11 +1,13 @@
 package com;
 
 import com.exception.DuplicateMeriseObject;
-import com.gdf.GDFGraph;
-import com.mcd.*;
-import com.mld.MLDGraph;
-import com.mld.MLDTable;
-import com.mpd.MPDGraph;
+import com.model.MeriseObject;
+import com.model.Property;
+import com.model.gdf.GDFGraph;
+import com.model.mcd.*;
+import com.model.mld.MLDGraph;
+import com.model.mld.MLDTable;
+import com.model.mpd.MPDGraph;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -112,7 +114,7 @@ public class Transform {
             Property primaryKey = refTable.getPrimaryKey();
             if (primaryKey == null)
                 return;
-            associationTable.propertyList.add(primaryKey);
+            associationTable.getPropertyList().add(primaryKey);
             associationTable.setPrimaryKey(primaryKey.code);
             associationTable.setForeignKey(refTable);
         });

@@ -1,7 +1,7 @@
 package com.MeriseGUI.gdf;
 
-import com.gdf.GDFGraph;
-import com.gdf.GDFNode;
+import com.model.gdf.GDFGraph;
+import com.model.gdf.GDFNode;
 
 import java.awt.*;
 import java.util.LinkedList;

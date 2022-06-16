@@ -1,4 +1,4 @@
-package com.gdf;
+package com.model.gdf;
 
 import java.util.ArrayList;
 import java.util.List;

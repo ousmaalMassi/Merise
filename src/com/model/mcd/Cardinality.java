@@ -1,4 +1,4 @@
-package com.mcd;
+package com.model.mcd;
 
 public enum Cardinality {
     ZERO_ONE("0, 1"),
