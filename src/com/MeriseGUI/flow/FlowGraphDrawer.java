@@ -1,9 +1,6 @@
 package com.MeriseGUI.flow;
 
 import com.MeriseGUI.GraphicalNode;
-import com.MeriseGUI.mcd.AssociationView;
-import com.MeriseGUI.mcd.EntityView;
-import com.MeriseGUI.mcd.GraphicalMCDNode;
 
 import java.awt.*;
 import java.util.LinkedList;
@@ -40,10 +37,11 @@ public class FlowGraphDrawer {
         this.nodes.remove(actor);
     }
 
-    public void rename(GraphicalNode actor) {
-        if (actor == null)
+    public void rename(GraphicalNode node, String newName) {
+        if (node == null)
             return;
-        System.out.println("rename");
+        System.out.println(newName);
+        node.setName(newName);
     }
 
     public void addLink(Actor actor1, Actor actor2) {

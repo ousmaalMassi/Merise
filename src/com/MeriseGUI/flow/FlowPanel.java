@@ -48,7 +48,10 @@ public class FlowPanel extends JPanel implements MouseListener, MouseMotionListe
         JMenuItem renameNodeMenuItem = new JMenuItem("Renommer");
         this.nodePopupMenu.add(renameNodeMenuItem);
         renameNodeMenuItem.addActionListener((action) -> {
-            graphDrawer.rename(nodeUnderCursor);
+            String newName = JOptionPane.showInputDialog(this, "Veuillez entrer le nouveau nom");
+            if (newName == null || newName.trim().isEmpty())
+                return;
+            graphDrawer.rename(nodeUnderCursor, newName);
             repaint();
         });
 
