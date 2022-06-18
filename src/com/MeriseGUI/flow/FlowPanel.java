@@ -22,6 +22,7 @@ public class FlowPanel extends JPanel implements MouseListener, MouseMotionListe
     public FlowPanel() {
         createPanelPopupMenu();
         createNodePopupMenu();
+        createLinkPopupMenu();
 
         addMouseListener(this);
         addMouseMotionListener(this);
@@ -131,11 +132,13 @@ public class FlowPanel extends JPanel implements MouseListener, MouseMotionListe
     @Override
     public void mouseClicked(MouseEvent e) {
         nodeUnderCursor = graphDrawer.contains(e.getX(), e.getY());
+        linkUnderCursor = graphDrawer.containsLink(e.getX(), e.getY());
 
         if (e.getButton() == MouseEvent.BUTTON3) {
-            if (nodeUnderCursor != null) {
+            if (nodeUnderCursor != null)
                 this.nodePopupMenu.show(e.getComponent(), e.getX(), e.getY());
-            }
+            else if (linkUnderCursor != null)
+                this.linkPopupMenu.show(e.getComponent(), e.getX(), e.getY());
             else
                 this.panelPopupMenu.show(e.getComponent(), e.getX(), e.getY());
         }

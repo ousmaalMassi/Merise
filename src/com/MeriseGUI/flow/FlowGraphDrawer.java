@@ -72,9 +72,12 @@ public class FlowGraphDrawer {
     }
 
     public void removeLink(Flow linkUnderCursor) {
-        GraphicalNode nodeA = linkUnderCursor.getNodeA();
-        GraphicalNode nodeB = linkUnderCursor.getNodeB();
+        this.edges.remove(linkUnderCursor);
+    }
 
-
+    public Flow containsLink(int x, int y) {
+        return this.edges.stream().filter(edge -> edge.contains(x, y))
+                .findAny()
+                .orElse(null);
     }
 }
