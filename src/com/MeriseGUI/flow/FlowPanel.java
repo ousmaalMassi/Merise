@@ -13,8 +13,8 @@ public class FlowPanel extends JPanel implements MouseListener, MouseMotionListe
     private JPopupMenu nodePopupMenu;
     private JPopupMenu linkPopupMenu;
     private final FlowGraphDrawer graphDrawer;
-    private InternalActor internalActor;
-    private ExternalActor externalActor;
+    private Actor actor1;
+    private Actor actor2;
     private GraphicalNode nodeUnderCursor;
     private Flow linkUnderCursor;
     private boolean creatingLink;
@@ -144,15 +144,19 @@ public class FlowPanel extends JPanel implements MouseListener, MouseMotionListe
         }
 
         if (creatingLink) {
-            if (nodeUnderCursor instanceof InternalActor internalActor)
-                this.internalActor = internalActor;
-            else if (nodeUnderCursor instanceof ExternalActor externalActor)
-                this.externalActor = externalActor;
-            if (this.externalActor != null && this.internalActor != null) {
-                graphDrawer.addLink(this.externalActor, this.internalActor);
+            if (actor1 == null)
+                actor1 = (Actor) nodeUnderCursor;
+            else if (actor2 == null)
+                actor2 = (Actor) nodeUnderCursor;
+            if (actor1 != null && this.actor2 != null) {
+                if ((actor1.getClass() == actor2.getClass()) && (actor1 instanceof ExternalActor)) {
+                    JOptionPane.showMessageDialog(this, "Vous ne pouvez pas attacher deux Acteurs externes entre eux");
+                    return;
+                }
+                graphDrawer.addLink(this.actor1, this.actor2);
                 repaint();
-                this.externalActor = null;
-                this.internalActor = null;
+                this.actor2 = null;
+                this.actor1 = null;
                 nodeUnderCursor = null;
                 creatingLink = false;
             }
