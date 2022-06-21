@@ -1,6 +1,7 @@
 package com.MeriseGUI.gdf;
 
 import com.MeriseGUI.ddd.DDPanel;
+import com.MeriseGUI.flow.Flow;
 import com.model.gdf.GDFGraph;
 
 import javax.swing.*;
@@ -17,15 +18,18 @@ public class GDFPanel extends JPanel implements MouseListener, MouseMotionListen
     private final JList<Object> jListAttribute;
     private JPopupMenu panelPopupMenu;
     private JPopupMenu nodePopupMenu;
+    private JPopupMenu linkPopupMenu;
     private GDFAttribute gdfAttribute1;
     private GDFAttribute gdfAttribute2;
     private boolean creatingLink;
     private GDFAttribute nodeUnderCursor;
+    private DF linkUnderCursor;
     private Vector<String> dictionaryData;
 
     public GDFPanel() {
         createPanelPopupMenu();
-        createMCDObjectPopupMenu();
+        createNodePopupMenu();
+        createLinkPopupMenu();
         addMouseListener(this);
         addMouseMotionListener(this);
 
@@ -48,7 +52,7 @@ public class GDFPanel extends JPanel implements MouseListener, MouseMotionListen
             graphDrawer.draw(g2d);
     }
 
-    private void createMCDObjectPopupMenu() {
+    private void createNodePopupMenu() {
         this.nodePopupMenu = new JPopupMenu();
 
         JMenuItem renameNodeMenuItem = new JMenuItem("Renommer");
@@ -95,6 +99,17 @@ public class GDFPanel extends JPanel implements MouseListener, MouseMotionListen
 
     }
 
+    private void createLinkPopupMenu() {
+        this.linkPopupMenu = new JPopupMenu();
+
+        JMenuItem removeLinkMenuItem = new JMenuItem("Supprimer");
+        this.linkPopupMenu.add(removeLinkMenuItem);
+        removeLinkMenuItem.addActionListener((action) -> {
+            graphDrawer.removeLink(linkUnderCursor);
+            repaint();
+        });
+    }
+
     private GDFAttribute createAttribute(double MousePositionX, double MousePositionY, String name) {
         int x = (int) MousePositionX;
         int y = (int) MousePositionY;
@@ -108,10 +123,13 @@ public class GDFPanel extends JPanel implements MouseListener, MouseMotionListen
     @Override
     public void mouseClicked(MouseEvent e) {
         nodeUnderCursor = graphDrawer.contains(e.getX(), e.getY());
+        linkUnderCursor = graphDrawer.containsLink(e.getX(), e.getY());
 
         if (e.getButton() == MouseEvent.BUTTON3) {
             if (nodeUnderCursor != null)
                 this.nodePopupMenu.show(e.getComponent(), e.getX(), e.getY());
+            else if (linkUnderCursor != null)
+                this.linkPopupMenu.show(e.getComponent(), e.getX(), e.getY());
             else
                 this.panelPopupMenu.show(e.getComponent(), e.getX(), e.getY());
         }

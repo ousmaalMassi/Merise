@@ -6,11 +6,11 @@ import com.MeriseGUI.GraphicalNode;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 
-public class GDFLink extends GraphicalLink {
+public class DF extends GraphicalLink {
 
     private static final long serialVersionUID = -6972652167790425200L;
 
-    public GDFLink(GraphicalNode a, GraphicalNode b) {
+    public DF(GraphicalNode a, GraphicalNode b) {
         super(a, b);
     }
     

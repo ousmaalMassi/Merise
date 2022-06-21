@@ -1,5 +1,6 @@
 package com.MeriseGUI.gdf;
 
+import com.MeriseGUI.GraphicalNode;
 import com.model.gdf.GDFGraph;
 import com.model.gdf.GDFNode;
 
@@ -10,7 +11,7 @@ import java.util.List;
 public class GDFGraphDrawer {
 
     private final List<GDFAttribute> nodes;
-    private final List<GDFLink> edges;
+    private final List<DF> edges;
     private GDFGraph gdfGraph;
 
     public GDFGraphDrawer() {
@@ -61,16 +62,33 @@ public class GDFGraphDrawer {
                 .orElse(null);
     }
 
-    public void addLink(GDFAttribute gdfAttribute1, GDFAttribute gdfAttribute2) {
-        GDFNode gdfNode1 =  gdfGraph.contains(gdfAttribute1.getName());
-        GDFNode gdfNode2 =  gdfGraph.contains(gdfAttribute2.getName());
+    public void addLink(GDFAttribute source, GDFAttribute target) {
+        GDFNode gdfNodeSource =  gdfGraph.contains(source.getName());
+        GDFNode gdfNodeTarget =  gdfGraph.contains(target.getName());
 
-        gdfNode1.addTarget(gdfNode2.getName());
-        GDFLink graphicalLink = new GDFLink(gdfAttribute1, gdfAttribute2);
+        gdfNodeSource.addTarget(gdfNodeTarget.getName());
+        DF df = new DF(source, target);
 
-        this.edges.add(graphicalLink);
+        this.edges.add(df);
 
         System.out.println(gdfGraph);
     }
 
+    public void removeLink(DF df) {
+        GraphicalNode sourceNode = df.getNodeA();
+        GraphicalNode targetNode  = df.getNodeB();
+        GDFNode gdfNodeSource =  gdfGraph.contains(sourceNode.getName());
+        GDFNode gdfNodeTarget =  gdfGraph.contains(targetNode.getName());
+
+        gdfNodeSource.removeTarget(gdfNodeTarget.getName());
+        this.edges.remove(df);
+
+        System.out.println(gdfGraph);
+    }
+
+    public DF containsLink(int x, int y) {
+        return this.edges.stream().filter(edge -> edge.contains(x, y))
+                .findAny()
+                .orElse(null);
+    }
 }
