@@ -3,8 +3,8 @@ package com.MeriseGUI.ddd;
 import javax.swing.table.AbstractTableModel;
 
 class TableModel extends AbstractTableModel {
-    private Object[][] data;
     private final String[] title;
+    private Object[][] data;
 
     public TableModel(Object[][] data, String[] title) {
         this.data = data;
@@ -54,7 +54,7 @@ class TableModel extends AbstractTableModel {
     }
 
     /**
-     * @param col
+     * @param col is the index of the column that we desire to get its class
      */
     @Override
     public Class getColumnClass(int col) {
@@ -77,7 +77,7 @@ class TableModel extends AbstractTableModel {
     /**
      * Permet d'ajouter une ligne dans le tableau
      *
-     * @param data
+     * @param data we provide to add to the table
      */
     public void addRow(Object[] data) {
         int indice = 0, nbRow = this.getRowCount(), nbCol = this.getColumnCount();
@@ -92,7 +92,7 @@ class TableModel extends AbstractTableModel {
     @Override
     public boolean isCellEditable(int row, int col) {
         return switch (col) {
-            case 3, 4 -> false;
+            case 4, 5 -> false;
             default -> true;
         };
     }
