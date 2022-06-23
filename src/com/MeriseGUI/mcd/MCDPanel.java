@@ -1,5 +1,6 @@
 package com.MeriseGUI.mcd;
 
+import com.MeriseGUI.GraphicalNode;
 import com.MeriseGUI.ddd.DDPanel;
 import com.model.mcd.*;
 
@@ -21,6 +22,7 @@ public class MCDPanel extends JPanel implements MouseListener, MouseMotionListen
     private EntityView entityToLink;
     private boolean creatingLink;
     private GraphicalMCDNode nodeUnderCursor;
+    private GraphicalMCDNode lastSelectedNode;
     private GraphicalMCDLink linkUnderCursor;
     private Vector<String> dictionaryData;
     private final JList<Object> jListAttribute;
@@ -120,14 +122,18 @@ public class MCDPanel extends JPanel implements MouseListener, MouseMotionListen
         JMenuItem addEntityMenuItem = new JMenuItem("Ajouter une Entité");
         this.panelPopupMenu.add(addEntityMenuItem);
         addEntityMenuItem.addActionListener((action) -> {
-            graphDrawer.addEntity(createEntity());
+            EntityView entity = createEntity();
+            graphDrawer.addEntity(entity);
+            setNodeAsSelected(entity);
             repaint();
         });
 
         JMenuItem addAssociationMenuItem = new JMenuItem("Ajouter une Association");
         this.panelPopupMenu.add(addAssociationMenuItem);
         addAssociationMenuItem.addActionListener((action) -> {
-            graphDrawer.addAssociation(createAssociation());
+            AssociationView association = createAssociation();
+            graphDrawer.addAssociation(association);
+            setNodeAsSelected(association);
             repaint();
         });
 
@@ -178,7 +184,9 @@ public class MCDPanel extends JPanel implements MouseListener, MouseMotionListen
         nodeUnderCursor = graphDrawer.contains(e.getX(), e.getY());
         linkUnderCursor = graphDrawer.containsLink(e.getX(), e.getY());
 
-        if (e.getButton() == MouseEvent.BUTTON3) {
+        setNodeAsSelected(nodeUnderCursor);
+
+        if (e.getButton() == MouseEvent.BUTTON3 || e.getClickCount() == 2) {
             if (nodeUnderCursor != null) {
                 this.nodePopupMenu.show(e.getComponent(), e.getX(), e.getY());
             } else if (linkUnderCursor != null) {
@@ -198,16 +206,12 @@ public class MCDPanel extends JPanel implements MouseListener, MouseMotionListen
                 entityToLink = null;
                 associationToLink = null;
                 creatingLink = false;
-
             }
         }
-
     }
 
     @Override
-    public void mousePressed(MouseEvent e) {
-
-    }
+    public void mousePressed(MouseEvent e) {}
 
     @Override
     public void mouseReleased(MouseEvent e) {
@@ -215,14 +219,10 @@ public class MCDPanel extends JPanel implements MouseListener, MouseMotionListen
     }
 
     @Override
-    public void mouseEntered(MouseEvent e) {
-
-    }
+    public void mouseEntered(MouseEvent e) {}
 
     @Override
-    public void mouseExited(MouseEvent e) {
-
-    }
+    public void mouseExited(MouseEvent e) {}
 
     @Override
     public void mouseDragged(MouseEvent e) {
@@ -230,11 +230,29 @@ public class MCDPanel extends JPanel implements MouseListener, MouseMotionListen
             nodeUnderCursor = graphDrawer.contains(e.getX(), e.getY());
         else
             this.moveNodeUnderCursor(e.getX(), e.getY());
+
+        setNodeAsSelected(nodeUnderCursor);
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
         nodeUnderCursor = graphDrawer.contains(e.getX(), e.getY());
+    }
+
+    private void setNodeAsSelected(GraphicalMCDNode nodeUnderCursor) {
+
+        if (nodeUnderCursor != null && lastSelectedNode == null) {
+            lastSelectedNode = nodeUnderCursor;
+            lastSelectedNode.setSelected(true);
+            repaint();
+        } else if (nodeUnderCursor != null) {
+            lastSelectedNode.setSelected(false);
+            lastSelectedNode = nodeUnderCursor;
+            lastSelectedNode.setSelected(true);
+            repaint();
+        } else if (lastSelectedNode != null)
+            lastSelectedNode.setSelected(false);
+
     }
 
     private void moveNodeUnderCursor(int x, int y) {

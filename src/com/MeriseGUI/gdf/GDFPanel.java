@@ -1,7 +1,7 @@
 package com.MeriseGUI.gdf;
 
+import com.MeriseGUI.GraphicalNode;
 import com.MeriseGUI.ddd.DDPanel;
-import com.MeriseGUI.flow.Flow;
 import com.model.gdf.GDFGraph;
 
 import javax.swing.*;
@@ -23,6 +23,7 @@ public class GDFPanel extends JPanel implements MouseListener, MouseMotionListen
     private GDFAttribute gdfAttribute2;
     private boolean creatingLink;
     private GDFAttribute nodeUnderCursor;
+    private GDFAttribute lastSelectedNode;
     private DF linkUnderCursor;
     private Vector<String> dictionaryData;
 
@@ -88,7 +89,10 @@ public class GDFPanel extends JPanel implements MouseListener, MouseMotionListen
             for (Object o : selectedValuesList) {
                 String attributeName = o.toString();
                 DDPanel.setUsedInGDF(attributeName, true);
-                graphDrawer.addAttribute(createAttribute(MousePositionX, MousePositionY, attributeName));
+                GDFAttribute gdfAttribute = createAttribute(MousePositionX, MousePositionY, attributeName);
+                graphDrawer.addAttribute(gdfAttribute);
+                setNodeAsSelected(gdfAttribute);
+
             }
             repaint();
         });
@@ -125,7 +129,9 @@ public class GDFPanel extends JPanel implements MouseListener, MouseMotionListen
         nodeUnderCursor = graphDrawer.contains(e.getX(), e.getY());
         linkUnderCursor = graphDrawer.containsLink(e.getX(), e.getY());
 
-        if (e.getButton() == MouseEvent.BUTTON3) {
+        setNodeAsSelected(nodeUnderCursor);
+
+        if (e.getButton() == MouseEvent.BUTTON3 || e.getClickCount() == 2) {
             if (nodeUnderCursor != null)
                 this.nodePopupMenu.show(e.getComponent(), e.getX(), e.getY());
             else if (linkUnderCursor != null)
@@ -177,10 +183,29 @@ public class GDFPanel extends JPanel implements MouseListener, MouseMotionListen
             nodeUnderCursor = graphDrawer.contains(e.getX(), e.getY());
         else
             this.moveNodeUnderCursor(e.getX(), e.getY());
+
+        setNodeAsSelected(nodeUnderCursor);
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
+
+    }
+
+    private void setNodeAsSelected(GDFAttribute nodeUnderCursor) {
+
+        if (nodeUnderCursor != null && lastSelectedNode == null) {
+            lastSelectedNode = nodeUnderCursor;
+            lastSelectedNode.setSelected(true);
+            repaint();
+        } else if (nodeUnderCursor != null) {
+            lastSelectedNode.setSelected(false);
+            lastSelectedNode = nodeUnderCursor;
+            lastSelectedNode.setSelected(true);
+            repaint();
+        } else if (lastSelectedNode != null) {
+            lastSelectedNode.setSelected(false);
+        }
 
     }
 

@@ -15,12 +15,14 @@ public class GDFAttribute extends GraphicalNode{
     protected int shiftedX;
     protected int shiftedY;
     static int ActorNbr;
+    private final Font font;
 
 
     public GDFAttribute(int x, int y, String name) {
         super(x, y, name);
         ActorNbr++;
         totalPadding = 20;
+        font = new Font(Font.DIALOG, Font.PLAIN, 14);
     }
     
     public int getTotalPadding() {
@@ -41,8 +43,8 @@ public class GDFAttribute extends GraphicalNode{
         shiftedY = y - height/2;
         int textX = shiftedX;
         int textY = shiftedY + height/2 + fm.getHeight()/4;
-
-        g.setColor(Color.black);
+        g.setFont(font);
+        g.setColor(strokeColor);
         g.drawString(name, textX, textY);
     }
 

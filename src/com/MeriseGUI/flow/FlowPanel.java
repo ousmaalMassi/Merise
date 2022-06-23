@@ -13,9 +13,10 @@ public class FlowPanel extends JPanel implements MouseListener, MouseMotionListe
     private JPopupMenu nodePopupMenu;
     private JPopupMenu linkPopupMenu;
     private final FlowGraphDrawer graphDrawer;
-    private Actor actor1;
-    private Actor actor2;
+    private Actor sourceActor;
+    private Actor targetActor;
     private GraphicalNode nodeUnderCursor;
+    private GraphicalNode lastSelectedNode;
     private Flow linkUnderCursor;
     private boolean creatingLink;
 
@@ -73,6 +74,7 @@ public class FlowPanel extends JPanel implements MouseListener, MouseMotionListe
             InternalActor internalActor = createInternalActor();
             nodeUnderCursor = internalActor;
             graphDrawer.addInternalActor(internalActor);
+            setNodeAsSelected(internalActor);
             repaint();
         });
 
@@ -82,6 +84,7 @@ public class FlowPanel extends JPanel implements MouseListener, MouseMotionListe
             ExternalActor externalActor = createExternalActor();
             nodeUnderCursor = externalActor;
             graphDrawer.addExternalActor(externalActor);
+            setNodeAsSelected(externalActor);
             repaint();
         });
 
@@ -91,6 +94,7 @@ public class FlowPanel extends JPanel implements MouseListener, MouseMotionListe
             Domain domain = createDomain();
             nodeUnderCursor = domain;
             graphDrawer.addDomain(domain);
+            setNodeAsSelected(domain);
             repaint();
         });
 
@@ -134,39 +138,43 @@ public class FlowPanel extends JPanel implements MouseListener, MouseMotionListe
         nodeUnderCursor = graphDrawer.contains(e.getX(), e.getY());
         linkUnderCursor = graphDrawer.containsLink(e.getX(), e.getY());
 
-        if (e.getButton() == MouseEvent.BUTTON3) {
+        setNodeAsSelected(nodeUnderCursor);
+
+        if (e.getButton() == MouseEvent.BUTTON3 || e.getClickCount() == 2) {
             if (nodeUnderCursor != null)
                 this.nodePopupMenu.show(e.getComponent(), e.getX(), e.getY());
             else if (linkUnderCursor != null)
                 this.linkPopupMenu.show(e.getComponent(), e.getX(), e.getY());
             else
                 this.panelPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+            return;
         }
 
-        if (creatingLink) {
-            if (actor1 == null)
-                actor1 = (Actor) nodeUnderCursor;
-            else if (actor2 == null)
-                actor2 = (Actor) nodeUnderCursor;
-            if (actor1 != null && this.actor2 != null) {
-                if ((actor1.getClass() == actor2.getClass()) && (actor1 instanceof ExternalActor)) {
-                    JOptionPane.showMessageDialog(this, "Vous ne pouvez pas attacher deux Acteurs externes entre eux");
-                    return;
-                }
-                graphDrawer.addLink(this.actor1, this.actor2);
-                repaint();
-                this.actor2 = null;
-                this.actor1 = null;
-                nodeUnderCursor = null;
-                creatingLink = false;
-            }
+        if (!creatingLink || nodeUnderCursor instanceof Domain)
+            return;
+
+        if (sourceActor == null)
+            sourceActor = (Actor) nodeUnderCursor;
+        else if (targetActor == null)
+            targetActor = (Actor) nodeUnderCursor;
+
+        if (sourceActor == null || targetActor == null)
+            return;
+
+        if ((sourceActor.getClass() == targetActor.getClass()) && (targetActor instanceof ExternalActor)) {
+            JOptionPane.showMessageDialog(this, "Vous ne pouvez pas attacher deux acteurs externes entre eux");
+        } else {
+            graphDrawer.addLink(sourceActor, targetActor);
+            repaint();
         }
+        targetActor = null;
+        sourceActor = null;
+        nodeUnderCursor = null;
+        creatingLink = false;
     }
 
     @Override
-    public void mousePressed(MouseEvent e) {
-
-    }
+    public void mousePressed(MouseEvent e) {}
 
     @Override
     public void mouseReleased(MouseEvent e) {
@@ -174,14 +182,10 @@ public class FlowPanel extends JPanel implements MouseListener, MouseMotionListe
     }
 
     @Override
-    public void mouseEntered(MouseEvent e) {
-
-    }
+    public void mouseEntered(MouseEvent e) {}
 
     @Override
-    public void mouseExited(MouseEvent e) {
-
-    }
+    public void mouseExited(MouseEvent e) {}
 
     @Override
     public void mouseDragged(MouseEvent e) {
@@ -194,6 +198,8 @@ public class FlowPanel extends JPanel implements MouseListener, MouseMotionListe
         }
         else
             this.moveNodeUnderCursor(e.getX(), e.getY());
+
+        setNodeAsSelected(nodeUnderCursor);
     }
 
     @Override
@@ -209,6 +215,23 @@ public class FlowPanel extends JPanel implements MouseListener, MouseMotionListe
         }
 
         nodeUnderCursor = null;
+    }
+
+    private void setNodeAsSelected(GraphicalNode nodeUnderCursor) {
+
+        if (nodeUnderCursor != null && lastSelectedNode == null) {
+            lastSelectedNode = nodeUnderCursor;
+            lastSelectedNode.setSelected(true);
+            repaint();
+        } else if (nodeUnderCursor != null) {
+            lastSelectedNode.setSelected(false);
+            lastSelectedNode = nodeUnderCursor;
+            lastSelectedNode.setSelected(true);
+            repaint();
+        } else if (lastSelectedNode != null) {
+            lastSelectedNode.setSelected(false);
+        }
+
     }
 
     private void moveNodeUnderCursor(int x, int y) {

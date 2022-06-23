@@ -45,6 +45,7 @@ public class FlowGraphDrawer {
     }
 
     public void addLink(Actor actor1, Actor actor2) {
+        // TODO verify duplicated flows
         Flow flow = new Flow(actor1, actor2);
         this.edges.add(flow);
     }
@@ -65,9 +66,15 @@ public class FlowGraphDrawer {
         /*return this.nodes.stream().filter(node -> node.contains(x, y))
                 .findAny()
                 .orElse(null);*/
-        for (int i = this.nodes.size() - 1; i >= 0; i--)
-            if (nodes.get(i).contains(x, y))
-                return nodes.get(i);
+        int lastIndex = this.nodes.size() - 1;
+        for (int i = lastIndex; i >= 0; i--) {
+            GraphicalNode graphicalNode = nodes.get(i);
+            if (graphicalNode.contains(x, y)) {
+                nodes.remove(graphicalNode);
+                nodes.add(graphicalNode);
+                return graphicalNode;
+            }
+        }
         return null;
     }
 

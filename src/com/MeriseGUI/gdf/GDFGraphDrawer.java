@@ -57,9 +57,16 @@ public class GDFGraphDrawer {
     }
 
     public GDFAttribute contains(int x, int y) {
-        return this.nodes.stream().filter(node -> node.contains(x, y))
-                .findAny()
-                .orElse(null);
+        int lastIndex = this.nodes.size() - 1;
+        for (int i = lastIndex; i >= 0; i--) {
+            GDFAttribute graphicalNode = nodes.get(i);
+            if (graphicalNode.contains(x, y)) {
+                nodes.remove(graphicalNode);
+                nodes.add(graphicalNode);
+                return graphicalNode;
+            }
+        }
+        return null;
     }
 
     public void addLink(GDFAttribute source, GDFAttribute target) {

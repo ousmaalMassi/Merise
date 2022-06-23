@@ -129,9 +129,15 @@ public class MCDGraphDrawer {
 //        return this.nodes.stream().filter(node -> node.contains(x, y))
 //                .findAny()
 //                .orElse(null);
-        for (int i = this.nodes.size() - 1; i >= 0; i--)
-            if (nodes.get(i).contains(x, y))
-                return nodes.get(i);
+        int lastIndex = this.nodes.size() - 1;
+        for (int i = lastIndex; i >= 0; i--) {
+            GraphicalMCDNode graphicalNode = nodes.get(i);
+            if (graphicalNode.contains(x, y)) {
+                nodes.remove(graphicalNode);
+                nodes.add(graphicalNode);
+                return graphicalNode;
+            }
+        }
         return null;
     }
 
