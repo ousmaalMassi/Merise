@@ -39,16 +39,21 @@ public class GraphicalLink {
     }
 
     public boolean contains(double mx, double my) {
-        
-        if( mx < Math.min(nodeA.getX(), nodeB.getX()) ||
-            mx > Math.max(nodeA.getX(), nodeB.getX()) ) {
+
+        int nodeAX = nodeA.getX();
+        int nodeAY = nodeA.getY();
+        int nodeBX = nodeB.getX();
+        int nodeBY = nodeB.getY();
+
+        if( mx < Math.min(nodeAX, nodeBX) ||
+                mx > Math.max(nodeAX, nodeBX) ) {
             return false;
         }
-        
-        int A = nodeB.getY() - nodeA.getY();
-        int B = nodeB.getX() - nodeA.getX();
 
-        return Math.abs(A*mx - B*my + nodeB.getX()*nodeA.getY() - nodeB.getY()*nodeA.getX())/Math.sqrt(A*A+B*B) <= 5;
+        int A = nodeBY - nodeAY;
+        int B = nodeBX - nodeAX;
+
+        return Math.abs(A * mx - B * my + nodeBX * nodeAY - nodeBY * nodeAX) / Math.sqrt( A * A + B * B) <= 5;
     }
 
     public GraphicalNode getNodeA() {
@@ -136,7 +141,7 @@ public class GraphicalLink {
     }
 
     protected boolean isNodesMoved() {
-        return (lxa != nodeA.getX() && lya != nodeA.getY() || lxb != nodeB.getX() && lyb != nodeB.getY()); 
+        return (lxa != nodeA.getX() && lya != nodeA.getY() || lxb != nodeB.getX() && lyb != nodeB.getY());
     }
 	
     

@@ -1,6 +1,5 @@
 package com.MeriseGUI.mcd;
 
-import com.MeriseGUI.GraphicalNode;
 import com.MeriseGUI.ddd.DDPanel;
 import com.model.mcd.*;
 
@@ -163,6 +162,13 @@ public class MCDPanel extends JPanel implements MouseListener, MouseMotionListen
         });
     }
 
+    private void editCard() {
+            JComboBox<Cardinality> card = new JComboBox<>(Cardinality.values());
+            JOptionPane.showMessageDialog(null, new JScrollPane(card));
+            graphDrawer.editCard(linkUnderCursor, card.getSelectedIndex());
+            repaint();
+    }
+
     private EntityView createEntity() {
         int x = (int) this.getMousePosition().getX();
         int y = (int) this.getMousePosition().getY();
@@ -186,11 +192,14 @@ public class MCDPanel extends JPanel implements MouseListener, MouseMotionListen
 
         setNodeAsSelected(nodeUnderCursor);
 
-        if (e.getButton() == MouseEvent.BUTTON3 || e.getClickCount() == 2) {
+        if (e.getClickCount() == 2 || e.getButton() == MouseEvent.BUTTON3) {
             if (nodeUnderCursor != null) {
                 this.nodePopupMenu.show(e.getComponent(), e.getX(), e.getY());
             } else if (linkUnderCursor != null) {
-                this.linkPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+                if(linkUnderCursor.underCard(e.getX(), e.getY()))
+                    this.editCard();
+                else
+                    this.linkPopupMenu.show(e.getComponent(), e.getX(), e.getY());
             } else
                 this.panelPopupMenu.show(e.getComponent(), e.getX(), e.getY());
         }
