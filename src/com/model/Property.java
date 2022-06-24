@@ -41,7 +41,7 @@ public class Property {
     public enum Types {
         ALPHABETICAL,
         ALPHANUMERIC,
-        DIGITAL,
+        NUMERIC,
         DATE,
         LOGIC
     }

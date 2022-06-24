@@ -109,7 +109,7 @@ public class DDPanel extends JPanel {
 
     private void initComponents() {
         Object[][] data = new Object[][]{createEmptyDataRow("", "")};
-        Property.Types[] comboData = new Property.Types[]{Property.Types.ALPHABETICAL, Property.Types.ALPHANUMERIC, Property.Types.DATE, Property.Types.DIGITAL, Property.Types.LOGIC};
+        Property.Types[] comboData = new Property.Types[]{Property.Types.ALPHABETICAL, Property.Types.ALPHANUMERIC, Property.Types.DATE, Property.Types.NUMERIC, Property.Types.LOGIC};
         combo = new JComboBox(comboData);
 
         tableModel = new TableModel(data, new String[]{NAME, CODE, TYPE, LENGTH, MCD, GDF, DELETE});
