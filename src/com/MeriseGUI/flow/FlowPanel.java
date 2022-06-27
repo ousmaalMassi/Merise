@@ -223,13 +223,15 @@ public class FlowPanel extends JPanel implements MouseListener, MouseMotionListe
             lastSelectedNode = nodeUnderCursor;
             lastSelectedNode.setSelected(true);
             repaint();
+        }
+        if (nodeUnderCursor == null && lastSelectedNode != null) {
+            lastSelectedNode.setSelected(false);
+            repaint();
         } else if (nodeUnderCursor != null) {
             lastSelectedNode.setSelected(false);
             lastSelectedNode = nodeUnderCursor;
             lastSelectedNode.setSelected(true);
             repaint();
-        } else if (lastSelectedNode != null) {
-            lastSelectedNode.setSelected(false);
         }
 
     }
