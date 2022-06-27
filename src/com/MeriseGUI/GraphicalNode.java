@@ -103,7 +103,7 @@ public abstract class GraphicalNode implements Serializable{
         this.selected = selected;
         
         if (selected) {
-            strokeColor = Color.blue;
+            strokeColor = Color.red;
             strokeWidth = SELECTED_STROKE;
         }else{
             strokeColor = Color.black;
