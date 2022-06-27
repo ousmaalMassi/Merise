@@ -1,6 +1,5 @@
 package com.MeriseGUI.gdf;
 
-import com.MeriseGUI.GraphicalNode;
 import com.MeriseGUI.ddd.DDPanel;
 import com.model.gdf.GDFGraph;
 
@@ -198,13 +197,15 @@ public class GDFPanel extends JPanel implements MouseListener, MouseMotionListen
             lastSelectedNode = nodeUnderCursor;
             lastSelectedNode.setSelected(true);
             repaint();
+        }
+        if (nodeUnderCursor == null && lastSelectedNode != null) {
+            lastSelectedNode.setSelected(false);
+            repaint();
         } else if (nodeUnderCursor != null) {
             lastSelectedNode.setSelected(false);
             lastSelectedNode = nodeUnderCursor;
             lastSelectedNode.setSelected(true);
             repaint();
-        } else if (lastSelectedNode != null) {
-            lastSelectedNode.setSelected(false);
         }
 
     }
