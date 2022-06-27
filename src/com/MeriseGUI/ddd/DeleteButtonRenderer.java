@@ -12,7 +12,7 @@ class DeleteButtonRenderer implements TableCellRenderer, TableCellEditor {
     private int row;
 
     DeleteButtonRenderer(JTable table) {
-        btn = new JButton("Remove");
+        btn = new JButton("X");
         btn.addActionListener(e -> {
             TableModel model = (TableModel) table.getModel();
 //                if (isUsedInMCD(row) || isUsedInGDF(row))

@@ -25,7 +25,7 @@ public class DDPanel extends JPanel {
     private static final String LENGTH = "Taille";
     private static final String MCD = "MCD";
     private static final String GDF = "GDF";
-    private static final String DELETE = "supprimer";
+    private static final String DELETE = "";
     private static final int COLUMN_HEIGHT = 35;
     public static int NAME_COL_INDEX;
     public static int CODE_COL_INDEX;
@@ -125,6 +125,7 @@ public class DDPanel extends JPanel {
         ddTable.getColumn(TYPE).setCellEditor(new DefaultCellEditor(combo));
         ddTable.getColumn(DELETE).setCellRenderer(new DeleteButtonRenderer(ddTable));
         ddTable.getColumn(DELETE).setCellEditor(new DeleteButtonRenderer(ddTable));
+        ddTable.getColumn(DELETE).setMaxWidth(50);
         ddTable.setRowHeight(COLUMN_HEIGHT);
 
         /*JTextField name = new JTextField();
@@ -135,23 +136,24 @@ public class DDPanel extends JPanel {
         length.setColumns(20);*/
 
         JButton addRowBtn = new JButton();
-        addRowBtn.setText("Ajouter un attribue");
+        addRowBtn.setText("Ajouter une donnée");
         addRowBtn.setFont(new Font(Font.DIALOG, Font.BOLD, 15));
         addRowBtn.addActionListener(e -> addAttribute());
 
 
         JPanel header = new JPanel();
+        header.setLayout(new BorderLayout());
 //        header.add(name);
 //        header.add(code);
 //        header.add(length);
 //        header.add(combo);
-        header.add(addRowBtn);
+        header.add(addRowBtn, BorderLayout.EAST);
 
         JScrollPane jScrollPane = new JScrollPane();
         jScrollPane.setViewportView(ddTable);
 
         this.setLayout(new BorderLayout());
-        this.add(header, BorderLayout.NORTH);
+        this.add(header, BorderLayout.SOUTH);
         this.add(jScrollPane, BorderLayout.CENTER);
         this.setBorder(new EmptyBorder(10, 10, 10, 10));
 
@@ -160,7 +162,7 @@ public class DDPanel extends JPanel {
     /**************** end ****************/
 
     private void addAttribute() {
-        String name = JOptionPane.showInputDialog(this, "Veuillez entrer le nom de l'attribut");
+        String name = JOptionPane.showInputDialog(this, "Veuillez entrer le nom de la donnée", "fgjhgjh");
         if (name == null)
             return;
         String code = normalize(name);
