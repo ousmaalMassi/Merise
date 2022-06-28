@@ -165,6 +165,7 @@ public class FlowPanel extends MPanel<FlowGraphController, GraphicalNode, GArrow
 
     @Override
     public void mouseDragged(MouseEvent e) {
+
         if (nodeUnderCursor == null) {
             nodeUnderCursor = graphDrawer.contains(e.getX(), e.getY());
         }

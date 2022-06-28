@@ -7,13 +7,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
-public abstract class MPanel<T extends GraphController, S extends GraphicalNode, V extends GraphicalLink>  extends JPanel {
+public abstract class MPanel<T extends GraphController, N extends GraphicalNode, L extends GraphicalLink>  extends JPanel {
     protected JPopupMenu panelPopupMenu;
     protected JPopupMenu nodePopupMenu;
     protected JPopupMenu linkPopupMenu;
-    protected S nodeUnderCursor;
-    protected S lastSelectedNode;
-    protected V linkUnderCursor;
+    protected N nodeUnderCursor;
+    protected N lastSelectedNode;
+    protected L linkUnderCursor;
+    protected L lastSelectedLink;
     protected T graphDrawer;
 
     public MPanel(T graphDrawer) {
@@ -42,10 +43,11 @@ public abstract class MPanel<T extends GraphController, S extends GraphicalNode,
     }
 
     public void mouseClicked(MouseEvent e) {
-        nodeUnderCursor = (S) graphDrawer.contains(e.getX(), e.getY());
-        linkUnderCursor = (V) graphDrawer.containsLink(e.getX(), e.getY());
+        nodeUnderCursor = (N) graphDrawer.contains(e.getX(), e.getY());
+        linkUnderCursor = (L) graphDrawer.containsLink(e.getX(), e.getY());
 
         setNodeAsSelected(nodeUnderCursor);
+        setLinkAsSelected(linkUnderCursor);
 
         if (e.getButton() == MouseEvent.BUTTON3 || e.getClickCount() == 2) {
             if (nodeUnderCursor != null)
@@ -62,10 +64,10 @@ public abstract class MPanel<T extends GraphController, S extends GraphicalNode,
         repaint();
     }
 
-    protected void setNodeAsSelected(GraphicalNode nodeUnderCursor) {
+    protected void setNodeAsSelected(N nodeUnderCursor) {
 
         if (nodeUnderCursor != null && lastSelectedNode == null) {
-            lastSelectedNode = (S) nodeUnderCursor;
+            lastSelectedNode = nodeUnderCursor;
             lastSelectedNode.setSelected(true);
             repaint();
         }
@@ -74,10 +76,27 @@ public abstract class MPanel<T extends GraphController, S extends GraphicalNode,
             repaint();
         } else if (nodeUnderCursor != null) {
             lastSelectedNode.setSelected(false);
-            lastSelectedNode = (S) nodeUnderCursor;
+            lastSelectedNode = nodeUnderCursor;
             lastSelectedNode.setSelected(true);
             repaint();
         }
 
+    }
+
+    private void setLinkAsSelected(L linkUnderCursor) {
+        if (linkUnderCursor != null && lastSelectedLink == null) {
+            lastSelectedLink = linkUnderCursor;
+            lastSelectedLink.setSelected(true);
+            repaint();
+        }
+        if (linkUnderCursor == null && lastSelectedLink != null) {
+            lastSelectedLink.setSelected(false);
+            repaint();
+        } else if (linkUnderCursor != null) {
+            lastSelectedLink.setSelected(false);
+            lastSelectedLink = linkUnderCursor;
+            lastSelectedLink.setSelected(true);
+            repaint();
+        }
     }
 }

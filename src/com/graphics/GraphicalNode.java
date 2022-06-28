@@ -6,15 +6,8 @@
 package com.graphics;
 
 import java.awt.*;
-import java.io.Serializable;
-import java.util.Collection;
 
-/**
- *
- * @author rpc
- */
-public abstract class GraphicalNode implements Serializable{
-
+public abstract class GraphicalNode {
     protected static final Font FONT_SELECT = new Font(Font.DIALOG, Font.BOLD, 16);
     protected static final Font FONT_UNSELECT = new Font(Font.DIALOG, Font.PLAIN, 16);
     protected static BasicStroke UNSELECTED_STROKE = new BasicStroke(1.5f);

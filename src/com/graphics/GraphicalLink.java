@@ -1,19 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.graphics;
 
 import java.awt.*;
 
 public class GraphicalLink {
-
     protected static final int TOLERANCE = 7;
-
     protected static BasicStroke UNSELECTED_STROKE = new BasicStroke(1.2f);
     protected static BasicStroke SELECTED_STROKE = new BasicStroke(2);
-
     protected GraphicalNode nodeA;
     protected GraphicalNode nodeB;
     private Color strokeColor;
@@ -66,11 +58,6 @@ public class GraphicalLink {
         g.setColor(strokeColor);
         g.setStroke(stroke);
         g.drawLine(xa, ya, xb, yb);
-    }
-
-    protected void move(int dx, int dy) {
-        nodeA.move(dx, dy);
-        nodeB.move(dx, dy);
     }
 
     public void setSelected(boolean selected) {
