@@ -10,11 +10,11 @@ public class InternalActor extends Actor {
     
     public InternalActor(int x, int y, String name) {
         super(x, y, name);
-        nodeType = NodeType.INTERNAL_NODE;
     }
 
     @Override
     public void draw(Graphics2D g) {
+        g.setStroke(DEFAULT_STROKE);
         super.draw(g);
     }
 

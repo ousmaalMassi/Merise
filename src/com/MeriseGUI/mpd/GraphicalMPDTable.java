@@ -15,7 +15,7 @@ public class GraphicalMPDTable extends GraphicalNode {
     protected static int SPACING = 18;
     private FontMetrics fm;
     private List<Property> primaryKeys;
-    private List<Property> foreignKeys;
+    private final List<Property> foreignKeys;
     private int sx;
     private int sy;
 
@@ -36,25 +36,25 @@ public class GraphicalMPDTable extends GraphicalNode {
 
         fm = g.getFontMetrics();
         if (attrNbr >0)
-            width = calculateWidth(g) + PADDING * 2;
+            width = calculateWidth() + PADDING * 2;
         height = headHeight+ attrNbr *fm.getHeight()*2+PADDING;
 
-        pulledX = x-width/2;
-        pulledY = y-height/2;
+        shiftedX = x-width/2;
+        shiftedY = y-height/2;
 
         g.setColor(Color.WHITE);
-        g.fillRect(pulledX, pulledY, width, height);
+        g.fillRect(shiftedX, shiftedY, width, height);
 
         g.setColor(strokeColor);
-        g.setStroke(strokeWidth);
+        g.setStroke(stroke);
 
-        g.drawRect(pulledX, pulledY, width, height);
-        g.drawLine(pulledX, pulledY+headHeight, pulledX+width, pulledY+headHeight);
+        g.drawRect(shiftedX, shiftedY, width, height);
+        g.drawLine(shiftedX, shiftedY +headHeight, shiftedX +width, shiftedY +headHeight);
 
-        sx = pulledX + PADDING;
-        sy = pulledY + headHeight + PADDING;
+        sx = shiftedX + PADDING;
+        sy = shiftedY + headHeight + PADDING;
         int lineHeight = fm.getHeight() + 3;
-        int nameY = pulledY + lineHeight;
+        int nameY = shiftedY + lineHeight;
 
 //        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 17));
         g.drawString(name, sx, nameY);
@@ -113,7 +113,7 @@ public class GraphicalMPDTable extends GraphicalNode {
 
     }
 
-    private int calculateWidth(Graphics2D g){
+    private int calculateWidth(){
         int stringWidth;
         int maxWidth = 0;
         int entityNameWidth = fm.stringWidth(name);
@@ -133,14 +133,6 @@ public class GraphicalMPDTable extends GraphicalNode {
         return ( Math.abs(this.x-x) <= width/2 ) && ( Math.abs(this.y-y) <= height/2 );
     }
 
-    @Override
-    public boolean inCorner(int x, int y) {
-        return false;
-    }
-
-    @Override
-    public void resize(int x, int y) {}
-
     public void setPrimaryKey(List<Property> primaryKeys) {
         this.primaryKeys = primaryKeys;
     }
@@ -151,6 +143,20 @@ public class GraphicalMPDTable extends GraphicalNode {
 
     public List<Property> getAttributes() {
         return attributes;
+    }
+
+    @Override
+    public void setSelected(boolean selected) {
+        if (selected) {
+            strokeColor = Color.red;
+            stroke = SELECTED_STROKE;
+            font = FONT_SELECT;
+        }
+        else{
+            strokeColor = Color.black;
+            stroke = UNSELECTED_STROKE;
+            font = FONT_UNSELECT;
+        }
     }
 
     @Override

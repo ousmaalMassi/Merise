@@ -7,39 +7,41 @@ package com.MeriseGUI;
 
 import java.awt.*;
 import java.io.Serializable;
+import java.util.Collection;
 
 /**
  *
  * @author rpc
  */
 public abstract class GraphicalNode implements Serializable{
-    
-    protected static BasicStroke UNSELECTED_STROKE = new BasicStroke(1.2f);
+
+    protected static final Font FONT_SELECT = new Font(Font.DIALOG, Font.BOLD, 16);
+    protected static final Font FONT_UNSELECT = new Font(Font.DIALOG, Font.PLAIN, 16);
+    protected static BasicStroke UNSELECTED_STROKE = new BasicStroke(1.5f);
     protected static BasicStroke SELECTED_STROKE = new BasicStroke(2);
     protected int x;
     protected int y;
     protected int width;
     protected int height;
-    protected int pulledX;
-    protected int pulledY;
+    protected int shiftedX;
+    protected int shiftedY;
     protected String name;
-    protected boolean selected;
     protected Color strokeColor;
-    protected Stroke strokeWidth;
+    protected Stroke stroke;
+    protected Font font;
     
     public GraphicalNode(int x, int y, String name) {
         this.x = x;
         this.y = y;
         this.setName(name);
         this.strokeColor = Color.black;
-        this.strokeWidth = UNSELECTED_STROKE;
+        this.stroke = UNSELECTED_STROKE;
+        this.font = FONT_SELECT;
     }
 
-    public boolean contains(double x, double y) {
-        return false;
-    }
+    public abstract boolean contains(double x, double y);
 
-    public void draw(Graphics2D g) {}
+    public abstract void draw(Graphics2D g);
 
     public void move(int x, int y) {
         this.x = x;
@@ -61,31 +63,6 @@ public abstract class GraphicalNode implements Serializable{
     public void setY(int y) {
         this.y = y;
     }
-
-    public int getPulledX() {
-        return pulledX;
-    }
-
-    public int getPulledY() {
-        return pulledY;
-    }
-
-    
-    public int getWidth() {
-        return width;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
     
     public String getName() {
         return name;
@@ -95,24 +72,5 @@ public abstract class GraphicalNode implements Serializable{
         this.name = name.equals("") ?  this.name : name;
     }
 
-    public boolean isSelected() {
-        return selected;
-    }
-
-    public void setSelected(boolean selected) {
-        this.selected = selected;
-        
-        if (selected) {
-            strokeColor = Color.red;
-            strokeWidth = SELECTED_STROKE;
-        }else{
-            strokeColor = Color.black;
-            strokeWidth = UNSELECTED_STROKE;
-        }
-    }
-
-    public abstract boolean inCorner(int x, int y);
-
-    public abstract void resize(int x, int y);
-
+    public abstract void setSelected(boolean selected);
 }

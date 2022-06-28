@@ -2,35 +2,13 @@ package com.MeriseGUI.gdf;
 
 import com.MeriseGUI.GraphicalNode;
 import java.awt.*;
-import java.io.Serial;
 
 public class GDFAttribute extends GraphicalNode{
-
-    @Serial
-    private static final long serialVersionUID = -7357466511459361679L;
-
     protected int width;
     protected int height;
-    protected int totalPadding;
-    protected int shiftedX;
-    protected int shiftedY;
-    static int ActorNbr;
-    private final Font font;
-
 
     public GDFAttribute(int x, int y, String name) {
         super(x, y, name);
-        ActorNbr++;
-        totalPadding = 20;
-        font = new Font(Font.DIALOG, Font.PLAIN, 14);
-    }
-    
-    public int getTotalPadding() {
-        return totalPadding;
-    }
-
-    public void setTotalPadding(int totalPadding) {
-        this.totalPadding = totalPadding;
     }
     
     @Override
@@ -49,24 +27,28 @@ public class GDFAttribute extends GraphicalNode{
     }
 
     @Override
+    public void setSelected(boolean selected) {
+        if (selected) {
+            strokeColor = Color.red;
+            font = FONT_SELECT;
+        }
+        else{
+            strokeColor = Color.black;
+            font = FONT_UNSELECT;
+        }
+    }
+
+    @Override
      public boolean contains(double x, double y) {
-        if (width <= 0 || height <= 0) return false;
-        return (Math.pow((x-shiftedX)/width-0.5, 2) + Math.pow((y-shiftedY)/height-0.5, 2)) < 1;
+        if (this.shiftedX > x || this.shiftedY > y) return false;
+        return ( Math.abs(this.x-x) <= width/2 ) && ( Math.abs(this.y-y) <= height/2 );
+//        if (width <= 0 || height <= 0) return false;
+//        return (Math.pow((x-shiftedX)/width-0.5, 2) + Math.pow((y-shiftedY)/height-0.5, 2)) < 1;
     }
      
     @Override
     public String toString() {
         return "(" + (x) + ", " + (y) + ") ";
 
-    }
-
-    @Override
-    public boolean inCorner(int x, int y) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void resize(int x, int y) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
