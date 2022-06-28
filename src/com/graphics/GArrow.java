@@ -3,8 +3,8 @@ package com.graphics;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 
-public class GArrow extends GraphicalLink {
-    public GArrow(GraphicalNode a, GraphicalNode b) {
+public class GArrow extends GLink {
+    public GArrow(GNode a, GNode b) {
         super(a, b);
     }
 
@@ -19,11 +19,11 @@ public class GArrow extends GraphicalLink {
         int[] xPoints = {0, -5, 5};
         int[] yPoints = {0, -10, -10};
 
-        int endY = nodeB.getY();
-        int endX = nodeB.getX();
+        int endX = nodeB.x;
+        int endY = nodeB.y;
 
-        int x = nodeA.getX();
-        int y = nodeA.getY();
+        int x = nodeA.x;
+        int y = nodeA.y;
 
         double angle = Math.atan2(endY - y, endX - x);
 

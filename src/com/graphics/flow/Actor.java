@@ -1,10 +1,10 @@
 package com.graphics.flow;
 
-import com.graphics.GraphicalNode;
+import com.graphics.GNode;
 
 import java.awt.*;
 
-public class Actor extends GraphicalNode{
+public class Actor extends GNode {
 
     protected static BasicStroke DASHED_STROKE = new BasicStroke(
             1.5f,

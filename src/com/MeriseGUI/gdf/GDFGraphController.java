@@ -1,7 +1,7 @@
 package com.MeriseGUI.gdf;
 
 import com.MeriseGUI.GraphController;
-import com.graphics.GraphicalNode;
+import com.graphics.GNode;
 import com.graphics.gdf.DF;
 import com.graphics.gdf.GDFAttribute;
 import com.models.gdf.GDFGraph;
@@ -85,8 +85,8 @@ public class GDFGraphController extends GraphController<GDFAttribute, DF> {
 
     @Override
     public void removeLink(DF link) {
-        GraphicalNode sourceNode = link.getNodeA();
-        GraphicalNode targetNode  = link.getNodeB();
+        GNode sourceNode = link.getNodeA();
+        GNode targetNode  = link.getNodeB();
         GDFNode gdfNodeSource =  gdfGraph.contains(sourceNode.getName());
         GDFNode gdfNodeTarget =  gdfGraph.contains(targetNode.getName());
 

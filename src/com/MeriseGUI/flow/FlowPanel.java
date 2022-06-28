@@ -1,7 +1,7 @@
 package com.MeriseGUI.flow;
 
 import com.graphics.GArrow;
-import com.graphics.GraphicalNode;
+import com.graphics.GNode;
 import com.MeriseGUI.MPanel;
 import com.graphics.flow.Actor;
 import com.graphics.flow.Domain;
@@ -14,7 +14,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
-public class FlowPanel extends MPanel<FlowGraphController, GraphicalNode, GArrow> implements MouseListener, MouseMotionListener {
+public class FlowPanel extends MPanel<FlowGraphController, GNode, GArrow> implements MouseListener, MouseMotionListener {
     private Actor sourceActor;
     private Actor targetActor;
     private boolean creatingLink;

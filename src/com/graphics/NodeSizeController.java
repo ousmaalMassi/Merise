@@ -1,8 +1,8 @@
 package com.graphics;
 
-public interface NodeSizeControl {
+public interface NodeSizeController {
 
     boolean inCorner(int x, int y);
-
     void resize(int x, int y);
+
 }

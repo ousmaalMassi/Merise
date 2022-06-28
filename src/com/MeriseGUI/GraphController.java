@@ -1,13 +1,13 @@
 package com.MeriseGUI;
 
-import com.graphics.GraphicalLink;
-import com.graphics.GraphicalNode;
+import com.graphics.GLink;
+import com.graphics.GNode;
 
 import java.awt.*;
 import java.util.LinkedList;
 import java.util.List;
 
-public abstract class GraphController<T extends GraphicalNode, V extends GraphicalLink>{
+public abstract class GraphController<T extends GNode, V extends GLink>{
 
     protected final List<T> nodes;
     protected final List<V> links;

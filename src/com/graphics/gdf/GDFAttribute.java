@@ -1,9 +1,9 @@
 package com.graphics.gdf;
 
-import com.graphics.GraphicalNode;
+import com.graphics.GNode;
 import java.awt.*;
 
-public class GDFAttribute extends GraphicalNode{
+public class GDFAttribute extends GNode {
     protected int width;
     protected int height;
 

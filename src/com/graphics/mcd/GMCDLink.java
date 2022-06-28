@@ -1,27 +1,27 @@
 package com.graphics.mcd;
 
 import com.graphics.GLinkText;
-import com.graphics.GraphicalLink;
-import com.graphics.GraphicalNode;
+import com.graphics.GLink;
+import com.graphics.GNode;
 
 import java.awt.*;
 
-public class GraphicalMCDLink extends GraphicalLink implements GLinkText {
+public class GMCDLink extends GLink implements GLinkText {
     private String card;
     private int cardWidth;
     private int cardHeight;
     private int cardX;
     private int cardY;
 
-    public GraphicalMCDLink(EntityView a, AssociationView b) {
+    public GMCDLink(GEntity a, GAssociation b) {
         super(a, b);
     }
 
-    public GraphicalNode getEntityView() {
+    public GNode getEntityView() {
         return this.nodeA;
     }
 
-    public GraphicalNode getAssociationView() {
+    public GNode getAssociationView() {
         return this.nodeB;
     }
 

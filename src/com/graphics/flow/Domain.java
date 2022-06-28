@@ -1,7 +1,7 @@
 package com.graphics.flow;
 
-import com.graphics.GraphicalNode;
-import com.graphics.NodeSizeControl;
+import com.graphics.GNode;
+import com.graphics.NodeSizeController;
 
 import java.awt.*;
 
@@ -9,7 +9,7 @@ import java.awt.*;
  *
  * @author rpc
  */
-public class Domain extends GraphicalNode implements NodeSizeControl {
+public class Domain extends GNode implements NodeSizeController {
     private static final int DEFAULT_RESIZE = 20;
     private static final int DEFAULT_WIDTH = 100;
     private static final int DEFAULT_HEIGHT = 100;

@@ -4,16 +4,13 @@ import java.awt.*;
 import java.io.Serial;
 
 
-public class EntityView extends GraphicalMCDNode {
-
-    @Serial
-    private static final long serialVersionUID = 5396347452110584370L;
+public class GEntity extends GMCDNode {
 
     public static int entityNbr = 1;
-    public EntityView(int x, int y, String text) {
+
+    public GEntity(int x, int y, String text) {
         super(x, y, text);
         entityNbr++;
-
     }
     
     @Override

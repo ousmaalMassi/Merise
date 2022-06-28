@@ -1,6 +1,6 @@
 package com.graphics.mpd;
 
-import com.graphics.GraphicalNode;
+import com.graphics.GNode;
 import com.models.Property;
 
 import java.awt.*;
@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 
-public class GraphicalMPDTable extends GraphicalNode {
+public class GMPDTable extends GNode {
     protected List<Property> attributes;
     protected int headHeight;
     protected static int PADDING = 20;
@@ -19,7 +19,7 @@ public class GraphicalMPDTable extends GraphicalNode {
     private int sx;
     private int sy;
 
-    public GraphicalMPDTable(int x, int y, String name) {
+    public GMPDTable(int x, int y, String name) {
         super(x, y, name);
         foreignKeys = new ArrayList<>();
         attributes = new ArrayList<>();

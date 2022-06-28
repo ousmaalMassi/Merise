@@ -2,13 +2,13 @@ package com.graphics.gdf;
 
 import com.graphics.GArrow;
 import com.graphics.GLinkText;
-import com.graphics.GraphicalNode;
+import com.graphics.GNode;
 
 import java.awt.*;
 
 public class DF extends GArrow implements GLinkText {
 
-    public DF(GraphicalNode a, GraphicalNode b) {
+    public DF(GNode a, GNode b) {
         super(a, b);
     }
 

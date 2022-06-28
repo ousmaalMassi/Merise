@@ -7,7 +7,7 @@ package com.graphics;
 
 import java.awt.*;
 
-public abstract class GraphicalNode {
+public abstract class GNode {
     protected static final Font FONT_SELECT = new Font(Font.DIALOG, Font.BOLD, 16);
     protected static final Font FONT_UNSELECT = new Font(Font.DIALOG, Font.PLAIN, 16);
     protected static BasicStroke UNSELECTED_STROKE = new BasicStroke(1.5f);
@@ -23,7 +23,7 @@ public abstract class GraphicalNode {
     protected Stroke stroke;
     protected Font font;
     
-    public GraphicalNode(int x, int y, String name) {
+    public GNode(int x, int y, String name) {
         this.x = x;
         this.y = y;
         this.setName(name);
@@ -40,23 +40,7 @@ public abstract class GraphicalNode {
         this.x = x;
         this.y = y;
     }
-    
-    public int getX() {
-        return x;
-    }
 
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-    
     public String getName() {
         return name;
     }

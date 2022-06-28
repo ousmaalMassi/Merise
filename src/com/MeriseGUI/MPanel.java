@@ -1,13 +1,13 @@
 package com.MeriseGUI;
 
-import com.graphics.GraphicalLink;
-import com.graphics.GraphicalNode;
+import com.graphics.GLink;
+import com.graphics.GNode;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
-public abstract class MPanel<T extends GraphController, N extends GraphicalNode, L extends GraphicalLink>  extends JPanel {
+public abstract class MPanel<T extends GraphController, N extends GNode, L extends GLink>  extends JPanel {
     protected JPopupMenu panelPopupMenu;
     protected JPopupMenu nodePopupMenu;
     protected JPopupMenu linkPopupMenu;

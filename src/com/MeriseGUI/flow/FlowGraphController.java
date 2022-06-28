@@ -2,7 +2,7 @@ package com.MeriseGUI.flow;
 
 import com.graphics.GArrow;
 import com.MeriseGUI.GraphController;
-import com.graphics.GraphicalNode;
+import com.graphics.GNode;
 import com.graphics.flow.Actor;
 import com.graphics.flow.Domain;
 import com.graphics.flow.ExternalActor;
@@ -10,7 +10,7 @@ import com.graphics.flow.InternalActor;
 
 import java.awt.*;
 
-public class FlowGraphController extends GraphController<GraphicalNode, GArrow> {
+public class FlowGraphController extends GraphController<GNode, GArrow> {
 
     public FlowGraphController() {
     }
@@ -32,34 +32,34 @@ public class FlowGraphController extends GraphController<GraphicalNode, GArrow> 
     }
 
     @Override
-    public void remove(GraphicalNode graphicalNode) {
-        if (graphicalNode == null)
+    public void remove(GNode gNode) {
+        if (gNode == null)
             return;
-        this.nodes.remove(graphicalNode);
+        this.nodes.remove(gNode);
     }
 
     @Override
-    public void rename(GraphicalNode graphicalNode, String newName) {
-        if (graphicalNode == null)
+    public void rename(GNode gNode, String newName) {
+        if (gNode == null)
             return;
         System.out.println(newName);
-        graphicalNode.setName(newName);
+        gNode.setName(newName);
     }
 
     @Override
-    public void addLink(GraphicalNode t1, GraphicalNode t2) {
+    public void addLink(GNode t1, GNode t2) {
         // TODO verify duplicated flows
         GArrow flow = new GArrow(t1, t2);
         this.links.add(flow);
     }
 
     @Override
-    public void addNode(GraphicalNode graphicalNode) {
-        switch (graphicalNode){
+    public void addNode(GNode gNode) {
+        switch (gNode){
             case InternalActor internalActor -> addInternalActor( internalActor);
             case ExternalActor externalActor -> addExternalActor( externalActor);
             case Domain domain -> addDomain(domain);
-            default -> throw new IllegalStateException("Unexpected value: " + graphicalNode);
+            default -> throw new IllegalStateException("Unexpected value: " + gNode);
         }
     }
 

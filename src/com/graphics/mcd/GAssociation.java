@@ -2,11 +2,11 @@ package com.graphics.mcd;
 
 import java.awt.*;
 
-public class AssociationView extends GraphicalMCDNode {
+public class GAssociation extends GMCDNode {
     
     public static int associationNbr = 1;
     
-    public AssociationView(int x, int y, String text) {
+    public GAssociation(int x, int y, String text) {
         super(x, y, text);
         super.arc = 30;
         associationNbr++;

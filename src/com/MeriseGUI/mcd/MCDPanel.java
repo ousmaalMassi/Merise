@@ -2,10 +2,10 @@ package com.MeriseGUI.mcd;
 
 import com.MeriseGUI.MPanel;
 import com.MeriseGUI.ddd.DDPanel;
-import com.graphics.mcd.AssociationView;
-import com.graphics.mcd.EntityView;
-import com.graphics.mcd.GraphicalMCDLink;
-import com.graphics.mcd.GraphicalMCDNode;
+import com.graphics.mcd.GAssociation;
+import com.graphics.mcd.GEntity;
+import com.graphics.mcd.GMCDLink;
+import com.graphics.mcd.GMCDNode;
 import com.models.mcd.*;
 
 import javax.swing.*;
@@ -15,10 +15,10 @@ import java.awt.event.MouseMotionListener;
 import java.util.List;
 import java.util.Vector;
 
-public class MCDPanel extends MPanel<MCDGraphController, GraphicalMCDNode, GraphicalMCDLink> implements MouseListener, MouseMotionListener {
+public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> implements MouseListener, MouseMotionListener {
     private MCDGraph mcdGraph;
-    private AssociationView associationToLink;
-    private EntityView entityToLink;
+    private GAssociation associationToLink;
+    private GEntity entityToLink;
     private boolean creatingLink;
     private Vector<String> dictionaryData;
     private final JList<Object> jListAttribute;
@@ -108,7 +108,7 @@ public class MCDPanel extends MPanel<MCDGraphController, GraphicalMCDNode, Graph
         JMenuItem addEntityMenuItem = new JMenuItem("Ajouter une Entité");
         this.panelPopupMenu.add(addEntityMenuItem);
         addEntityMenuItem.addActionListener((action) -> {
-            EntityView entity = createEntity();
+            GEntity entity = createEntity();
             graphDrawer.addNode(entity);
             setNodeAsSelected(entity);
             repaint();
@@ -117,7 +117,7 @@ public class MCDPanel extends MPanel<MCDGraphController, GraphicalMCDNode, Graph
         JMenuItem addAssociationMenuItem = new JMenuItem("Ajouter une Association");
         this.panelPopupMenu.add(addAssociationMenuItem);
         addAssociationMenuItem.addActionListener((action) -> {
-            AssociationView association = createAssociation();
+            GAssociation association = createAssociation();
             graphDrawer.addNode(association);
             setNodeAsSelected(association);
             repaint();
@@ -157,16 +157,16 @@ public class MCDPanel extends MPanel<MCDGraphController, GraphicalMCDNode, Graph
             repaint();
     }
 
-    private EntityView createEntity() {
+    private GEntity createEntity() {
         int x = (int) this.getMousePosition().getX();
         int y = (int) this.getMousePosition().getY();
-        return new EntityView(x, y, "");
+        return new GEntity(x, y, "");
     }
 
-    private AssociationView createAssociation() {
+    private GAssociation createAssociation() {
         int x = (int) this.getMousePosition().getX();
         int y = (int) this.getMousePosition().getY();
-        return new AssociationView(x, y, "");
+        return new GAssociation(x, y, "");
     }
 
     public MCDGraph getMcdGraph() {
@@ -193,10 +193,10 @@ public class MCDPanel extends MPanel<MCDGraphController, GraphicalMCDNode, Graph
         }
 
         if (creatingLink) {
-            if (nodeUnderCursor instanceof EntityView entityView)
-                entityToLink = entityView;
-            else if (nodeUnderCursor instanceof AssociationView associationView)
-                associationToLink = associationView;
+            if (nodeUnderCursor instanceof GEntity GEntity)
+                entityToLink = GEntity;
+            else if (nodeUnderCursor instanceof GAssociation GAssociation)
+                associationToLink = GAssociation;
             if (entityToLink != null && associationToLink != null) {
                 graphDrawer.addLink(entityToLink, associationToLink);
                 repaint();

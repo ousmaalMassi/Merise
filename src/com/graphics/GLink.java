@@ -2,12 +2,12 @@ package com.graphics;
 
 import java.awt.*;
 
-public class GraphicalLink {
+public class GLink {
     protected static final int TOLERANCE = 7;
     protected static BasicStroke UNSELECTED_STROKE = new BasicStroke(1.2f);
     protected static BasicStroke SELECTED_STROKE = new BasicStroke(2);
-    protected GraphicalNode nodeA;
-    protected GraphicalNode nodeB;
+    protected GNode nodeA;
+    protected GNode nodeB;
     private Color strokeColor;
     private Stroke stroke;
     public int xa;
@@ -15,7 +15,7 @@ public class GraphicalLink {
     public int xb;
     public int yb;
 
-    public GraphicalLink(GraphicalNode nodeA, GraphicalNode nodeB) {
+    public GLink(GNode nodeA, GNode nodeB) {
         this.nodeA = nodeA;
         this.nodeB = nodeB;
         
@@ -25,10 +25,10 @@ public class GraphicalLink {
 
     public boolean contains(double mx, double my) {
 
-        int nodeAX = nodeA.getX();
-        int nodeAY = nodeA.getY();
-        int nodeBX = nodeB.getX();
-        int nodeBY = nodeB.getY();
+        int nodeAX = nodeA.x;
+        int nodeAY = nodeA.y;
+        int nodeBX = nodeB.x;
+        int nodeBY = nodeB.y;
 
         if (mx < Math.min(nodeAX, nodeBX) ||
                 mx > Math.max(nodeAX, nodeBX)) {
@@ -41,19 +41,19 @@ public class GraphicalLink {
         return Math.abs(A * mx - B * my + nodeBX * nodeAY - nodeBY * nodeAX) / Math.sqrt(A * A + B * B) <= TOLERANCE;
     }
 
-    public GraphicalNode getNodeA() {
+    public GNode getNodeA() {
         return this.nodeA;
     }
 
-    public GraphicalNode getNodeB() {
+    public GNode getNodeB() {
         return this.nodeB;
     }
 
     public void draw(Graphics2D g) {
-        xa = this.nodeA.getX();
-        ya = this.nodeA.getY();
-        xb = this.nodeB.getX();
-        yb = this.nodeB.getY();
+        xa = this.nodeA.x;
+        ya = this.nodeA.y;
+        xb = this.nodeB.x;
+        yb = this.nodeB.y;
             
         g.setColor(strokeColor);
         g.setStroke(stroke);

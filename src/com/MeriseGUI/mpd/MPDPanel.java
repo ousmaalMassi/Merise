@@ -1,7 +1,7 @@
 package com.MeriseGUI.mpd;
 
 import com.models.mpd.MPDGraph;
-import com.graphics.mpd.GraphicalMPDTable;
+import com.graphics.mpd.GMPDTable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,7 +10,7 @@ import java.awt.event.MouseMotionListener;
 
 public class MPDPanel extends JPanel implements MouseMotionListener {
     MPDGraphController graphDrawer;
-    private GraphicalMPDTable nodeUnderCursor;
+    private GMPDTable nodeUnderCursor;
 
     public MPDPanel() {
         graphDrawer = new MPDGraphController();

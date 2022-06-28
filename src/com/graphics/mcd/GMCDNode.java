@@ -1,6 +1,6 @@
 package com.graphics.mcd;
 
-import com.graphics.GraphicalNode;
+import com.graphics.GNode;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author rpc
  */
-public class GraphicalMCDNode extends GraphicalNode {
+public class GMCDNode extends GNode {
     protected List<String> attributes;
     protected int arc;
     protected int headHeight;
@@ -18,7 +18,7 @@ public class GraphicalMCDNode extends GraphicalNode {
     private FontMetrics fm;
     private int attrNbr;
 
-    public GraphicalMCDNode(int x, int y, String name) {
+    public GMCDNode(int x, int y, String name) {
         super(x, y, name);
         
         this.arc = 0;
@@ -81,7 +81,7 @@ public class GraphicalMCDNode extends GraphicalNode {
         g.drawString(name, sx, nameY);
 
         if (attrNbr>0) {
-            if (this instanceof EntityView) {
+            if (this instanceof GEntity) {
                 g.setFont(new Font("Thoma", Font.BOLD, 13));
                 g.drawString(attributes.get(0), sx, sy);
                 g.drawLine(sx, sy+5, sx+fm.stringWidth(attributes.get(0)), sy+5);
