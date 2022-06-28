@@ -8,11 +8,11 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 
 public class MPDPanel extends JPanel implements MouseMotionListener {
-    MPDGraphDrawer graphDrawer;
+    MPDGraphController graphDrawer;
     private GraphicalMPDTable nodeUnderCursor;
 
     public MPDPanel() {
-        graphDrawer = new MPDGraphDrawer();
+        graphDrawer = new MPDGraphController();
         this.addMouseMotionListener(this);
         System.out.println("\uD83D\uDE00");
     }
