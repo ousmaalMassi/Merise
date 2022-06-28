@@ -1,5 +1,6 @@
 package com.MeriseGUI.mcd;
 
+import com.MeriseGUI.GraphController;
 import com.MeriseGUI.GraphicalNode;
 import com.MeriseGUI.ddd.DDPanel;
 import com.model.MeriseObject;
@@ -9,29 +10,86 @@ import com.model.mcd.*;
 
 import java.awt.*;
 import java.util.*;
-import java.util.List;
 
-public class MCDGraphDrawer {
-
-    private final List<GraphicalMCDNode> nodes;
-    private final List<GraphicalMCDLink> edges;
+public class MCDGraphController extends GraphController<GraphicalMCDNode, GraphicalMCDLink> {
     private MCDGraph mcdGraph;
 
-    public MCDGraphDrawer() {
-        this.nodes = new LinkedList<>();
-        this.edges = new LinkedList<>();
+    public MCDGraphController() {
     }
 
     public void setMcdGraph(MCDGraph mcdGraph) {
         this.mcdGraph = mcdGraph;
     }
 
+    @Override
     public void draw(Graphics2D graphics2D) {
-        this.edges.forEach(edge -> edge.draw(graphics2D));
+        this.links.forEach(edge -> edge.draw(graphics2D));
         this.nodes.forEach(node -> node.draw(graphics2D));
     }
 
-    public void addEntity(EntityView entityGUI) {
+    @Override
+    public void remove(GraphicalMCDNode graphicalNode) {
+        if (graphicalNode == null)
+            return;
+        if (graphicalNode instanceof EntityView)
+            mcdGraph.removeEntity(mcdGraph.containsEntity(graphicalNode.getName()));
+        else
+            mcdGraph.removeAssociation(mcdGraph.containsAssociation(graphicalNode.getName()));
+        this.nodes.remove(graphicalNode);
+        this.removeAttachedLinks(graphicalNode);
+        System.out.println(mcdGraph);
+    }
+
+    @Override
+    public void rename(GraphicalMCDNode node, String newName) {
+        if (node == null)
+            return;
+        MeriseObject meriseObject;
+        if (node instanceof EntityView)
+            meriseObject = mcdGraph.containsEntity(node.getName());
+        else
+            meriseObject = mcdGraph.containsAssociation(node.getName());
+        meriseObject.setName(newName);
+        node.setName(newName);
+
+        System.out.println(mcdGraph);
+    }
+
+    @Override
+    public void addLink(GraphicalMCDNode gn1, GraphicalMCDNode gn2) {
+        Entity entity = mcdGraph.containsEntity(gn1.getName());
+        Association association = mcdGraph.containsAssociation(gn2.getName());
+
+        mcdGraph.link(entity, association);
+
+        GraphicalMCDLink graphicalLink = new GraphicalMCDLink((EntityView) gn1, (AssociationView) gn2);
+        graphicalLink.setText(Cardinality.DEFAULT_CARDINALITY.toString());
+        this.links.add(graphicalLink);
+
+        System.out.println(mcdGraph);
+    }
+
+    @Override
+    public void addNode(GraphicalMCDNode node) {
+        switch (node){
+            case EntityView entityView -> addEntity(entityView);
+            case AssociationView associationView -> addAssociation(associationView);
+            default -> throw new IllegalStateException("Unexpected value: " + node);
+        }
+    }
+
+    @Override
+    public void removeLink(GraphicalMCDLink link) {
+        GraphicalNode associationView = link.getAssociationView();
+        GraphicalNode entityView = link.getEntityView();
+
+        this.mcdGraph.unlink(associationView.getName(), entityView.getName());
+        this.links.remove(link);
+
+        System.out.println(mcdGraph);
+    }
+
+    private void addEntity(EntityView entityGUI) {
         int entityNo = mcdGraph.getEntities().size();
         String entityName = "Entity "+entityNo;
         Entity entity = new Entity(entityName);
@@ -81,37 +139,11 @@ public class MCDGraphDrawer {
         mcdNodeView.getAttributes().remove(property.name);
     }
 
-    public void remove(GraphicalMCDNode mcdNodeView) {
-        if (mcdNodeView == null)
-            return;
-        if (mcdNodeView instanceof EntityView)
-            mcdGraph.removeEntity(mcdGraph.containsEntity(mcdNodeView.getName()));
-        else
-            mcdGraph.removeAssociation(mcdGraph.containsAssociation(mcdNodeView.getName()));
-        this.nodes.remove(mcdNodeView);
-        this.removeAttachedLinks(mcdNodeView);
-        System.out.println(mcdGraph);
+    private void removeAttachedLinks(GraphicalMCDNode nodeUnderCursor) {
+        this.links.removeIf(e -> e.getNodeA().equals(nodeUnderCursor) || e.getNodeB().equals(nodeUnderCursor) );
     }
 
-    protected void removeAttachedLinks(GraphicalMCDNode nodeUnderCursor) {
-        this.edges.removeIf(e -> e.getNodeA().equals(nodeUnderCursor) || e.getNodeB().equals(nodeUnderCursor) );
-    }
-
-    public void rename(GraphicalMCDNode mcdNodeView, String newName) {
-        if (mcdNodeView == null)
-            return;
-        MeriseObject meriseObject;
-        if (mcdNodeView instanceof EntityView)
-            meriseObject = mcdGraph.containsEntity(mcdNodeView.getName());
-        else
-            meriseObject = mcdGraph.containsAssociation(mcdNodeView.getName());
-        meriseObject.setName(newName);
-        mcdNodeView.setName(newName);
-
-        System.out.println(mcdGraph);
-    }
-
-    public void addAssociation(AssociationView associationView) {
+    private void addAssociation(AssociationView associationView) {
         int AssociationNo = mcdGraph.getAssociations().size();
         String associationName = "Association "+AssociationNo;
         Association association = new Association(associationName);
@@ -125,54 +157,9 @@ public class MCDGraphDrawer {
         System.out.println(mcdGraph);
     }
 
-    public GraphicalMCDNode contains(int x, int y) {
-//        return this.nodes.stream().filter(node -> node.contains(x, y))
-//                .findAny()
-//                .orElse(null);
-        int lastIndex = this.nodes.size() - 1;
-        for (int i = lastIndex; i >= 0; i--) {
-            GraphicalMCDNode graphicalNode = nodes.get(i);
-            if (graphicalNode.contains(x, y)) {
-                nodes.remove(graphicalNode);
-                nodes.add(graphicalNode);
-                return graphicalNode;
-            }
-        }
-        return null;
-    }
-
-    public GraphicalMCDLink containsLink(int x, int y) {
-        return this.edges.stream().filter(edge -> edge.contains(x, y))
-                .findAny()
-                .orElse(null);
-    }
-
-    public void addLink(EntityView entityToLink, AssociationView associationToLink) {
-        Entity entity = mcdGraph.containsEntity(entityToLink.getName());
-        Association association = mcdGraph.containsAssociation(associationToLink.getName());
-
-        mcdGraph.link(entity, association);
-
-        GraphicalMCDLink graphicalLink = new GraphicalMCDLink(entityToLink, associationToLink);
-        graphicalLink.setCard(Cardinality.DEFAULT_CARDINALITY.toString());
-        this.edges.add(graphicalLink);
-
-        System.out.println(mcdGraph);
-    }
-
-    public void removeLink(GraphicalMCDLink linkUnderCursor) {
-        GraphicalNode associationView = linkUnderCursor.getAssociationView();
-        GraphicalNode entityView = linkUnderCursor.getEntityView();
-
-        this.mcdGraph.unlink(associationView.getName(), entityView.getName());
-        this.edges.remove(linkUnderCursor);
-
-        System.out.println(mcdGraph);
-    }
-
     public void editCard(GraphicalMCDLink linkUnderCursor, int cardIndex) {
         Cardinality[] cardinalities = Cardinality.values();
-        linkUnderCursor.setCard(cardinalities[cardIndex].toString());
+        linkUnderCursor.setText(cardinalities[cardIndex].toString());
 
         String associationName = linkUnderCursor.getAssociationView().getName();
         Entity entity = mcdGraph.containsEntity(linkUnderCursor.getEntityView().getName());
@@ -182,4 +169,5 @@ public class MCDGraphDrawer {
 
         System.out.println(mcdGraph);
     }
+
 }

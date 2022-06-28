@@ -1,6 +1,8 @@
 package com.MeriseGUI.flow;
 
+import com.MeriseGUI.GArrow;
 import com.MeriseGUI.GraphicalNode;
+import com.MeriseGUI.MPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,43 +10,24 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
-public class FlowPanel extends JPanel implements MouseListener, MouseMotionListener {
-    private JPopupMenu panelPopupMenu;
-    private JPopupMenu nodePopupMenu;
-    private JPopupMenu linkPopupMenu;
-    private final FlowGraphDrawer graphDrawer;
+public class FlowPanel extends MPanel<FlowGraphController, GraphicalNode, GArrow> implements MouseListener, MouseMotionListener {
     private Actor sourceActor;
     private Actor targetActor;
-    private GraphicalNode nodeUnderCursor;
-    private GraphicalNode lastSelectedNode;
-    private Flow linkUnderCursor;
     private boolean creatingLink;
 
     public FlowPanel() {
+        super(new FlowGraphController());
         createPanelPopupMenu();
         createNodePopupMenu();
         createLinkPopupMenu();
 
         addMouseListener(this);
         addMouseMotionListener(this);
-        this.graphDrawer = new FlowGraphDrawer();
+        this.graphDrawer= new FlowGraphController();
         creatingLink = false;
     }
 
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2d.setStroke(new BasicStroke(1.2f));
-
-        if (graphDrawer != null)
-            graphDrawer.draw(g2d);
-    }
-
-    private void createNodePopupMenu() {
+    public void createNodePopupMenu() {
         this.nodePopupMenu = new JPopupMenu();
 
         JMenuItem renameNodeMenuItem = new JMenuItem("Renommer");
@@ -65,7 +48,8 @@ public class FlowPanel extends JPanel implements MouseListener, MouseMotionListe
         });
     }
 
-    private void createPanelPopupMenu() {
+    @Override
+    protected void createPanelPopupMenu() {
         this.panelPopupMenu = new JPopupMenu();
 
         JMenuItem addInternalActorMenuItem = new JMenuItem("Ajouter une acteur interne");
@@ -73,7 +57,7 @@ public class FlowPanel extends JPanel implements MouseListener, MouseMotionListe
         addInternalActorMenuItem.addActionListener((action) -> {
             InternalActor internalActor = createInternalActor();
             nodeUnderCursor = internalActor;
-            graphDrawer.addInternalActor(internalActor);
+            graphDrawer.addNode(internalActor);
             setNodeAsSelected(internalActor);
             repaint();
         });
@@ -83,7 +67,7 @@ public class FlowPanel extends JPanel implements MouseListener, MouseMotionListe
         addExternalActorMenuItem.addActionListener((action) -> {
             ExternalActor externalActor = createExternalActor();
             nodeUnderCursor = externalActor;
-            graphDrawer.addExternalActor(externalActor);
+            graphDrawer.addNode(externalActor);
             setNodeAsSelected(externalActor);
             repaint();
         });
@@ -93,7 +77,7 @@ public class FlowPanel extends JPanel implements MouseListener, MouseMotionListe
         addDomainMenuItem.addActionListener((action) -> {
             Domain domain = createDomain();
             nodeUnderCursor = domain;
-            graphDrawer.addDomain(domain);
+            graphDrawer.addNode(domain);
             setNodeAsSelected(domain);
             repaint();
         });
@@ -104,7 +88,8 @@ public class FlowPanel extends JPanel implements MouseListener, MouseMotionListe
 
     }
 
-    private void createLinkPopupMenu() {
+    @Override
+    protected void createLinkPopupMenu() {
         this.linkPopupMenu = new JPopupMenu();
 
         JMenuItem removeLinkMenuItem = new JMenuItem("Supprimer");
@@ -135,20 +120,7 @@ public class FlowPanel extends JPanel implements MouseListener, MouseMotionListe
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        nodeUnderCursor = graphDrawer.contains(e.getX(), e.getY());
-        linkUnderCursor = graphDrawer.containsLink(e.getX(), e.getY());
-
-        setNodeAsSelected(nodeUnderCursor);
-
-        if (e.getButton() == MouseEvent.BUTTON3 || e.getClickCount() == 2) {
-            if (nodeUnderCursor != null)
-                this.nodePopupMenu.show(e.getComponent(), e.getX(), e.getY());
-            else if (linkUnderCursor != null)
-                this.linkPopupMenu.show(e.getComponent(), e.getX(), e.getY());
-            else
-                this.panelPopupMenu.show(e.getComponent(), e.getX(), e.getY());
-            return;
-        }
+        super.mouseClicked(e);
 
         if (!creatingLink || nodeUnderCursor instanceof Domain)
             return;
@@ -215,29 +187,5 @@ public class FlowPanel extends JPanel implements MouseListener, MouseMotionListe
         }
 
         nodeUnderCursor = null;
-    }
-
-    private void setNodeAsSelected(GraphicalNode nodeUnderCursor) {
-
-        if (nodeUnderCursor != null && lastSelectedNode == null) {
-            lastSelectedNode = nodeUnderCursor;
-            lastSelectedNode.setSelected(true);
-            repaint();
-        }
-        if (nodeUnderCursor == null && lastSelectedNode != null) {
-            lastSelectedNode.setSelected(false);
-            repaint();
-        } else if (nodeUnderCursor != null) {
-            lastSelectedNode.setSelected(false);
-            lastSelectedNode = nodeUnderCursor;
-            lastSelectedNode.setSelected(true);
-            repaint();
-        }
-
-    }
-
-    private void moveNodeUnderCursor(int x, int y) {
-        nodeUnderCursor.move(x, y);
-        repaint();
     }
 }

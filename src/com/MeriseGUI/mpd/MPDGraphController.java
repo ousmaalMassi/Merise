@@ -1,30 +1,50 @@
 package com.MeriseGUI.mpd;
 
+import com.MeriseGUI.GraphController;
+import com.MeriseGUI.GraphicalLink;
 import com.model.mpd.MPDGraph;
 
 import java.awt.*;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MPDGraphDrawer {
-
-    private List<GraphicalMPDTable> graphicalMPDTables;
-    private List<GraphicalMPDLink> graphicalMPDLinks;
-
-    public MPDGraphDrawer() {
-        graphicalMPDTables = new LinkedList<>();
-        graphicalMPDLinks = new LinkedList<>();
+public class MPDGraphController  extends GraphController<GraphicalMPDTable, GraphicalLink> {
+    
+    public MPDGraphController() {
     }
 
     public void draw(Graphics2D graphics2D) {
-        graphicalMPDLinks.forEach(edge -> edge.draw(graphics2D));
-        graphicalMPDTables.forEach(node -> node.draw(graphics2D));
+        nodes.forEach(edge -> edge.draw(graphics2D));
+        links.forEach(node -> node.draw(graphics2D));
+    }
+
+    @Override
+    public void remove(GraphicalMPDTable node) {
+
+    }
+
+    @Override
+    public void rename(GraphicalMPDTable node, String newName) {
+
+    }
+
+    @Override
+    public void addLink(GraphicalMPDTable node1, GraphicalMPDTable node2) {
+
+    }
+
+    @Override
+    public void addNode(GraphicalMPDTable node) {
+
+    }
+
+    @Override
+    public void removeLink(GraphicalLink link) {
+
     }
 
     public void printMPD(MPDGraph mpdGraph){
-        graphicalMPDTables.clear();
-        graphicalMPDLinks.clear();
+        nodes.clear();
+        links.clear();
 
         AtomicInteger x1 = new AtomicInteger(30);
         AtomicInteger y1 = new AtomicInteger(30);
@@ -42,24 +62,17 @@ public class MPDGraphDrawer {
                 GraphicalMPDTable gTbl = getGraphicalMPDTable(table1.getName());
                 if (gTbl == null)
                     gTbl = new GraphicalMPDTable(500, 500, table1.getName());
-                GraphicalMPDLink graphicalMPDLink = new GraphicalMPDLink(graphicalMPDTable, gTbl);
-                graphicalMPDLinks.add(graphicalMPDLink);
+                GraphicalLink graphicalLink = new GraphicalLink(graphicalMPDTable, gTbl);
+                links.add(graphicalLink);
                 graphicalMPDTable.addForeignKeys(foreignKey);
             });
-            graphicalMPDTables.add(graphicalMPDTable);
+            nodes.add(graphicalMPDTable);
         });
     }
 
-
     public GraphicalMPDTable getGraphicalMPDTable(String name) {
-        return this.graphicalMPDTables.stream().filter(table -> table.getName().equals(name))
-                .findAny()
-                .orElse(null);
+        return this.nodes.stream().filter(table -> table.getName().equals(name))
+                .findAny().orElse(null);
     }
 
-    public GraphicalMPDTable contains(int x, int y) {
-        return this.graphicalMPDTables.stream().filter(table -> table.contains(x, y))
-                .findAny()
-                .orElse(null);
     }
-}
