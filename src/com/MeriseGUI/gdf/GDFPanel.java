@@ -2,7 +2,9 @@ package com.MeriseGUI.gdf;
 
 import com.MeriseGUI.MPanel;
 import com.MeriseGUI.ddd.DDPanel;
-import com.model.gdf.GDFGraph;
+import com.graphics.gdf.DF;
+import com.graphics.gdf.GDFAttribute;
+import com.models.gdf.GDFGraph;
 
 import javax.swing.*;
 import java.awt.event.MouseEvent;

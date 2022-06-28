@@ -1,12 +1,16 @@
 package com.MeriseGUI.mcd;
 
 import com.MeriseGUI.GraphController;
-import com.MeriseGUI.GraphicalNode;
+import com.graphics.GraphicalNode;
 import com.MeriseGUI.ddd.DDPanel;
-import com.model.MeriseObject;
-import com.model.Property;
-import com.exception.DuplicateMeriseObject;
-import com.model.mcd.*;
+import com.graphics.mcd.AssociationView;
+import com.graphics.mcd.EntityView;
+import com.graphics.mcd.GraphicalMCDLink;
+import com.graphics.mcd.GraphicalMCDNode;
+import com.models.MeriseObject;
+import com.models.Property;
+import com.exceptions.DuplicateMeriseObject;
+import com.models.mcd.*;
 
 import java.awt.*;
 import java.util.*;
@@ -82,8 +86,9 @@ public class MCDGraphController extends GraphController<GraphicalMCDNode, Graphi
     public void removeLink(GraphicalMCDLink link) {
         GraphicalNode associationView = link.getAssociationView();
         GraphicalNode entityView = link.getEntityView();
+        Entity entity = mcdGraph.containsEntity(entityView.getName());
 
-        this.mcdGraph.unlink(associationView.getName(), entityView.getName());
+        this.mcdGraph.unlink(associationView.getName(), entity);
         this.links.remove(link);
 
         System.out.println(mcdGraph);
@@ -120,7 +125,7 @@ public class MCDGraphController extends GraphController<GraphicalMCDNode, Graphi
         Property property =  new Property(name, type, length);
         meriseObject.addProperty(property);
 
-        mcdNodeView.getAttributes().add(property.name);
+        mcdNodeView.getAttributes().add(property.getCode());
         System.out.println(mcdGraph);
 //        System.out.println(System.currentTimeMillis() - currentTimeMillis+" ms");
     }
@@ -136,7 +141,7 @@ public class MCDGraphController extends GraphController<GraphicalMCDNode, Graphi
         if (property == null)
             return;
         meriseObject.removeProperty(property);
-        mcdNodeView.getAttributes().remove(property.name);
+        mcdNodeView.getAttributes().remove(property.getCode());
     }
 
     private void removeAttachedLinks(GraphicalMCDNode nodeUnderCursor) {

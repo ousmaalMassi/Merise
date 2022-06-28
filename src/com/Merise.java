@@ -7,11 +7,12 @@ import com.MeriseGUI.mld.MLDPanel;
 import com.MeriseGUI.mpd.MPDPanel;
 import com.MeriseGUI.rules.ManagementRulesPanel;
 import com.MeriseGUI.sql.SQLPanel;
-import com.model.gdf.GDFGraph;
-import com.model.mcd.MCDGraph;
+import com.models.Transform;
+import com.models.gdf.GDFGraph;
+import com.models.mcd.MCDGraph;
 import com.MeriseGUI.mcd.MCDPanel;
-import com.model.mld.MLDGraph;
-import com.model.mpd.MPDGraph;
+import com.models.mld.MLDGraph;
+import com.models.mpd.MPDGraph;
 
 import javax.swing.*;
 import java.awt.*;

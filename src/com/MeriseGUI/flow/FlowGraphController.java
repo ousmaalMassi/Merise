@@ -1,8 +1,12 @@
 package com.MeriseGUI.flow;
 
-import com.MeriseGUI.GArrow;
+import com.graphics.GArrow;
 import com.MeriseGUI.GraphController;
-import com.MeriseGUI.GraphicalNode;
+import com.graphics.GraphicalNode;
+import com.graphics.flow.Actor;
+import com.graphics.flow.Domain;
+import com.graphics.flow.ExternalActor;
+import com.graphics.flow.InternalActor;
 
 import java.awt.*;
 

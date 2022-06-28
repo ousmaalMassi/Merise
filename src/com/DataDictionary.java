@@ -1,6 +1,6 @@
 package com;
 
-import com.model.Property;
+import com.models.Property;
 
 import java.util.ArrayList;
 import java.util.List;

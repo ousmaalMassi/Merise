@@ -1,13 +1,13 @@
 package com.MeriseGUI.mld;
 
-import com.model.mld.MLDGraph;
+import com.models.mld.MLDGraph;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class MLDPanel extends JPanel {
-    private JTextArea textArea;
+    private final JTextArea textArea;
     private MLDGraph mldGraph;
 
     public MLDPanel() {

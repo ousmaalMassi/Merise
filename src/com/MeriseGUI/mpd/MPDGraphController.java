@@ -1,8 +1,9 @@
 package com.MeriseGUI.mpd;
 
 import com.MeriseGUI.GraphController;
-import com.MeriseGUI.GraphicalLink;
-import com.model.mpd.MPDGraph;
+import com.graphics.GraphicalLink;
+import com.models.mpd.MPDGraph;
+import com.graphics.mpd.GraphicalMPDTable;
 
 import java.awt.*;
 import java.util.concurrent.atomic.AtomicInteger;

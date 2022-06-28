@@ -1,5 +1,8 @@
 package com.MeriseGUI;
 
+import com.graphics.GraphicalLink;
+import com.graphics.GraphicalNode;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;

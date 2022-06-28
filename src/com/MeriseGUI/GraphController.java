@@ -1,5 +1,8 @@
 package com.MeriseGUI;
 
+import com.graphics.GraphicalLink;
+import com.graphics.GraphicalNode;
+
 import java.awt.*;
 import java.util.LinkedList;
 import java.util.List;

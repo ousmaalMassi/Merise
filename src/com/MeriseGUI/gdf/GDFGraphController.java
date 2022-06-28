@@ -1,9 +1,11 @@
 package com.MeriseGUI.gdf;
 
 import com.MeriseGUI.GraphController;
-import com.MeriseGUI.GraphicalNode;
-import com.model.gdf.GDFGraph;
-import com.model.gdf.GDFNode;
+import com.graphics.GraphicalNode;
+import com.graphics.gdf.DF;
+import com.graphics.gdf.GDFAttribute;
+import com.models.gdf.GDFGraph;
+import com.models.gdf.GDFNode;
 
 import java.awt.*;
 

@@ -2,7 +2,11 @@ package com.MeriseGUI.mcd;
 
 import com.MeriseGUI.MPanel;
 import com.MeriseGUI.ddd.DDPanel;
-import com.model.mcd.*;
+import com.graphics.mcd.AssociationView;
+import com.graphics.mcd.EntityView;
+import com.graphics.mcd.GraphicalMCDLink;
+import com.graphics.mcd.GraphicalMCDNode;
+import com.models.mcd.*;
 
 import javax.swing.*;
 import java.awt.event.MouseEvent;
