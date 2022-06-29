@@ -1,9 +1,14 @@
 package com.models.gdf;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GDFGraph {
+public class GDFGraph implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     List<GDFNode> dfNodes;
 

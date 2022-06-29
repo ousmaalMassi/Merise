@@ -33,7 +33,7 @@ public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> imp
         addMouseMotionListener(this);
 
         this.mcdGraph = new MCDGraph();
-        this.graphDrawer.setMcdGraph(this.mcdGraph);
+        this.graphController.setMcdGraph(this.mcdGraph);
         this.creatingLink = false;
         this.jListAttribute = new JList<>();
     }
@@ -53,14 +53,14 @@ public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> imp
             String newName = JOptionPane.showInputDialog(this, "Veuillez entrer le nouveau nom");
             if (newName == null || newName.trim().isEmpty())
                 return;
-            graphDrawer.rename(nodeUnderCursor, newName);
+            graphController.rename(nodeUnderCursor, newName);
             repaint();
         });
 
         JMenuItem removeNodeMenuItem = new JMenuItem("Supprimer");
         this.nodePopupMenu.add(removeNodeMenuItem);
         removeNodeMenuItem.addActionListener((action) -> {
-            graphDrawer.remove(nodeUnderCursor);
+            graphController.remove(nodeUnderCursor);
             repaint();
         });
 
@@ -78,7 +78,7 @@ public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> imp
             for (Object o : selectedValuesList) {
                 String attributeName = o.toString();
                 DDPanel.setUsedInMCD(attributeName, nodeUnderCursor.getName());
-                graphDrawer.addProperty(attributeName, nodeUnderCursor);
+                graphController.addProperty(attributeName, nodeUnderCursor);
             }
             repaint();
         });
@@ -95,7 +95,7 @@ public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> imp
             for (Object o : selectedValuesList) {
                 String attributeName = o.toString();
                 DDPanel.setUsedInMCD(attributeName, "");
-                graphDrawer.removeProperty(attributeName, nodeUnderCursor);
+                graphController.removeProperty(attributeName, nodeUnderCursor);
             }
             repaint();
         });
@@ -109,7 +109,7 @@ public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> imp
         this.panelPopupMenu.add(addEntityMenuItem);
         addEntityMenuItem.addActionListener((action) -> {
             GEntity entity = createEntity();
-            graphDrawer.addNode(entity);
+            graphController.addNode(entity);
             setNodeAsSelected(entity);
             repaint();
         });
@@ -118,7 +118,7 @@ public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> imp
         this.panelPopupMenu.add(addAssociationMenuItem);
         addAssociationMenuItem.addActionListener((action) -> {
             GAssociation association = createAssociation();
-            graphDrawer.addNode(association);
+            graphController.addNode(association);
             setNodeAsSelected(association);
             repaint();
         });
@@ -138,14 +138,14 @@ public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> imp
         editCardMenuItem.addActionListener((action) -> {
             JComboBox<Cardinality> card = new JComboBox<>(Cardinality.values());
             JOptionPane.showMessageDialog(null, new JScrollPane(card));
-            graphDrawer.editCard(linkUnderCursor, card.getSelectedIndex());
+            graphController.editCard(linkUnderCursor, card.getSelectedIndex());
             repaint();
         });
 
         JMenuItem removeLinkMenuItem = new JMenuItem("Supprimer");
         this.linkPopupMenu.add(removeLinkMenuItem);
         removeLinkMenuItem.addActionListener((action) -> {
-            graphDrawer.removeLink(linkUnderCursor);
+            graphController.removeLink(linkUnderCursor);
             repaint();
         });
     }
@@ -153,7 +153,7 @@ public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> imp
     private void editCard() {
             JComboBox<Cardinality> card = new JComboBox<>(Cardinality.values());
             JOptionPane.showMessageDialog(null, new JScrollPane(card));
-            graphDrawer.editCard(linkUnderCursor, card.getSelectedIndex());
+            graphController.editCard(linkUnderCursor, card.getSelectedIndex());
             repaint();
     }
 
@@ -169,14 +169,10 @@ public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> imp
         return new GAssociation(x, y, "");
     }
 
-    public MCDGraph getMcdGraph() {
-        return mcdGraph;
-    }
-
     @Override
     public void mouseClicked(MouseEvent e) {
-        nodeUnderCursor = graphDrawer.contains(e.getX(), e.getY());
-        linkUnderCursor = graphDrawer.containsLink(e.getX(), e.getY());
+        nodeUnderCursor = graphController.contains(e.getX(), e.getY());
+        linkUnderCursor = graphController.containsLink(e.getX(), e.getY());
 
         setNodeAsSelected(nodeUnderCursor);
 
@@ -198,7 +194,7 @@ public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> imp
             else if (nodeUnderCursor instanceof GAssociation GAssociation)
                 associationToLink = GAssociation;
             if (entityToLink != null && associationToLink != null) {
-                graphDrawer.addLink(entityToLink, associationToLink);
+                graphController.addLink(entityToLink, associationToLink);
                 repaint();
                 entityToLink = null;
                 associationToLink = null;
@@ -224,7 +220,7 @@ public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> imp
     @Override
     public void mouseDragged(MouseEvent e) {
         if (nodeUnderCursor == null)
-            nodeUnderCursor = graphDrawer.contains(e.getX(), e.getY());
+            nodeUnderCursor = graphController.contains(e.getX(), e.getY());
         else
             this.moveNodeUnderCursor(e.getX(), e.getY());
 
@@ -233,7 +229,14 @@ public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> imp
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        nodeUnderCursor = graphDrawer.contains(e.getX(), e.getY());
+        nodeUnderCursor = graphController.contains(e.getX(), e.getY());
     }
 
+    public MCDGraph getGraph() {
+        return this.mcdGraph;
+    }
+
+    public void setGraph(MCDGraph mcdGraph) {
+        this.mcdGraph = mcdGraph;
+    }
 }

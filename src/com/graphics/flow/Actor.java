@@ -13,7 +13,6 @@ public class Actor extends GNode {
             10.0f,
             new float[]{10.0f},
             0.0f);
-    protected static BasicStroke DEFAULT_STROKE = new BasicStroke(1.5f);
     
     protected int totalPadding;
     protected static int actorNbr = 1;
@@ -43,20 +42,6 @@ public class Actor extends GNode {
         
         g.drawOval(shiftedX, shiftedY, width, height);
         g.drawString(name, textX, textY);
-    }
-
-    @Override
-    public void setSelected(boolean selected) {
-        if (selected) {
-            strokeColor = Color.red;
-            stroke = SELECTED_STROKE;
-            font = FONT_SELECT;
-        }
-        else{
-            strokeColor = Color.black;
-            stroke = UNSELECTED_STROKE;
-            font = FONT_UNSELECT;
-        }
     }
 
     @Override

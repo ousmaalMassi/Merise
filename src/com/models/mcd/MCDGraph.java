@@ -2,13 +2,15 @@ package com.models.mcd;
 
 import com.exceptions.DuplicateMeriseObject;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- */
-public class MCDGraph {
+public class MCDGraph implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private final List<Entity> entities;
     private final List<Association> associations;

@@ -1,16 +1,21 @@
 package com.MeriseGUI;
 
+import com.graphics.GArrow;
 import com.graphics.GLink;
 import com.graphics.GNode;
 
 import java.awt.*;
+import java.io.*;
 import java.util.LinkedList;
 import java.util.List;
 
-public abstract class GraphController<T extends GNode, V extends GLink>{
+public abstract class GraphController<N extends GNode, L extends GLink> implements Serializable {
 
-    protected final List<T> nodes;
-    protected final List<V> links;
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    protected List<N> nodes;
+    protected List<L> links;
 
     public GraphController() {
         nodes = new LinkedList<>();
@@ -19,20 +24,20 @@ public abstract class GraphController<T extends GNode, V extends GLink>{
 
     public abstract void draw(Graphics2D graphics2D);
 
-    public abstract void remove(T node);
+    public abstract void remove(N node);
 
-    public abstract void rename(T node, String newName);
+    public abstract void rename(N node, String newName);
 
-    public abstract void addLink(T node1, T node2);
+    public abstract void addLink(N node1, N node2);
 
-    public abstract void addNode(T node);
+    public abstract void addNode(N node);
 
-    public abstract void removeLink(V link);
+    public abstract void removeLink(L link);
 
-    public T contains(int x, int y) {
+    public N contains(int x, int y) {
         int lastIndex = this.nodes.size() - 1;
         for (int i = lastIndex; i >= 0; i--) {
-            T graphicalNode = nodes.get(i);
+            N graphicalNode = nodes.get(i);
             if (graphicalNode.contains(x, y)) {
                 nodes.remove(graphicalNode);
                 nodes.add(graphicalNode);
@@ -42,9 +47,26 @@ public abstract class GraphController<T extends GNode, V extends GLink>{
         return null;
     }
 
-    public V containsLink(int x, int y) {
+    public L containsLink(int x, int y) {
         return this.links.stream().filter(link -> link.contains(x, y))
                 .findAny()
                 .orElse(null);
+    }
+
+
+    public List<N> getNodes() {
+        return this.nodes;
+    }
+
+    public List<L> getLinks() {
+        return this.links;
+    }
+
+    public void setNodes(List<N> flowNodes) {
+        this.nodes = flowNodes;
+    }
+
+    public void setLinks(List<L> flowLinks) {
+        this.links = flowLinks;
     }
 }

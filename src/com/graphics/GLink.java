@@ -2,25 +2,22 @@ package com.graphics;
 
 import java.awt.*;
 
-public class GLink {
+public class GLink extends GObject {
+
     protected static final int TOLERANCE = 7;
-    protected static BasicStroke UNSELECTED_STROKE = new BasicStroke(1.2f);
-    protected static BasicStroke SELECTED_STROKE = new BasicStroke(2);
     protected GNode nodeA;
     protected GNode nodeB;
     private Color strokeColor;
-    private Stroke stroke;
-    public int xa;
-    public int ya;
-    public int xb;
-    public int yb;
+    protected int xa;
+    protected int ya;
+    protected int xb;
+    protected int yb;
 
     public GLink(GNode nodeA, GNode nodeB) {
         this.nodeA = nodeA;
         this.nodeB = nodeB;
-        
+
         this.strokeColor = Color.black;
-        this.stroke = UNSELECTED_STROKE;
     }
 
     public boolean contains(double mx, double my) {
@@ -49,17 +46,19 @@ public class GLink {
         return this.nodeB;
     }
 
+    @Override
     public void draw(Graphics2D g) {
         xa = this.nodeA.x;
         ya = this.nodeA.y;
         xb = this.nodeB.x;
         yb = this.nodeB.y;
-            
+
         g.setColor(strokeColor);
-        g.setStroke(stroke);
+//        g.setStroke(stroke);
         g.drawLine(xa, ya, xb, yb);
     }
 
+    @Override
     public void setSelected(boolean selected) {
         if (selected) {
             strokeColor = Color.red;
@@ -67,7 +66,7 @@ public class GLink {
         }
         else{
             strokeColor = Color.black;
-            stroke = UNSELECTED_STROKE;
+            stroke = DEFAULT_STROKE;
         }
     }
 }

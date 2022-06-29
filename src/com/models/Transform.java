@@ -127,7 +127,7 @@ public class Transform {
      * @param node to convert to table
      * @return MLD table
      */
-    private MLDTable createMLDTable(MeriseObject node) {
+    private MLDTable createMLDTable(EntityObject node) {
         MLDTable table = new MLDTable(node.getName());
         table.setPropertyList(node.getPropertyList());
         if (node instanceof Entity entity) {

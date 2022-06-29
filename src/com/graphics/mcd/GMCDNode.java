@@ -58,7 +58,7 @@ public class GMCDNode extends GNode {
             g.fillRoundRect(shiftedX, shiftedY, width, height, arc, arc);
 
             g.setColor(strokeColor);
-            g.setStroke(stroke);
+//            g.setStroke(stroke);
 
             g.drawRoundRect(shiftedX, shiftedY, width, height, arc, arc);
             g.drawLine(shiftedX, shiftedY +headHeight, shiftedX +width, shiftedY +headHeight);
@@ -109,20 +109,6 @@ public class GMCDNode extends GNode {
         
         return maxWidth;
         
-    }
-
-    @Override
-    public void setSelected(boolean selected) {
-        if (selected) {
-            strokeColor = Color.red;
-            stroke = SELECTED_STROKE;
-            font = FONT_SELECT;
-        }
-        else{
-            strokeColor = Color.black;
-            stroke = UNSELECTED_STROKE;
-            font = FONT_UNSELECT;
-        }
     }
 
 }

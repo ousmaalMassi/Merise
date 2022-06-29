@@ -8,6 +8,8 @@ import com.graphics.flow.Domain;
 import com.graphics.flow.ExternalActor;
 import com.graphics.flow.InternalActor;
 
+import java.util.List;
+
 import java.awt.*;
 
 public class FlowGraphController extends GraphController<GNode, GArrow> {

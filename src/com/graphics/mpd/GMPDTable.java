@@ -146,20 +146,6 @@ public class GMPDTable extends GNode {
     }
 
     @Override
-    public void setSelected(boolean selected) {
-        if (selected) {
-            strokeColor = Color.red;
-            stroke = SELECTED_STROKE;
-            font = FONT_SELECT;
-        }
-        else{
-            strokeColor = Color.black;
-            stroke = UNSELECTED_STROKE;
-            font = FONT_UNSELECT;
-        }
-    }
-
-    @Override
     public String toString() {
         return """
                 name: %s,

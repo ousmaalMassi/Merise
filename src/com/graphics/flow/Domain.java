@@ -29,24 +29,10 @@ public class Domain extends GNode implements NodeSizeController {
         g.fillRect(shiftedX, shiftedY, width, height);
         
         g.setColor(strokeColor);
-        g.setStroke(stroke);
+//        g.setStroke(stroke);
         
         g.drawRect(shiftedX, shiftedY, width, height);
         g.drawString(name, shiftedX, shiftedY -5);
-    }
-
-    @Override
-    public void setSelected(boolean selected) {
-        if (selected) {
-            strokeColor = Color.red;
-            stroke = SELECTED_STROKE;
-            font = FONT_SELECT;
-        }
-        else{
-            strokeColor = Color.black;
-            stroke = UNSELECTED_STROKE;
-            font = FONT_UNSELECT;
-        }
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.graphics.GNode;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 public abstract class MPanel<T extends GraphController, N extends GNode, L extends GLink>  extends JPanel {
     protected JPopupMenu panelPopupMenu;
@@ -15,13 +16,13 @@ public abstract class MPanel<T extends GraphController, N extends GNode, L exten
     protected N lastSelectedNode;
     protected L linkUnderCursor;
     protected L lastSelectedLink;
-    protected T graphDrawer;
+    protected T graphController;
 
-    public MPanel(T graphDrawer) {
+    public MPanel(T graphController) {
         createPanelPopupMenu();
         createNodePopupMenu();
 
-        this.graphDrawer = graphDrawer;
+        this.graphController = graphController;
     }
 
     protected abstract void createPanelPopupMenu();
@@ -38,13 +39,13 @@ public abstract class MPanel<T extends GraphController, N extends GNode, L exten
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setStroke(new BasicStroke(1.2f));
 
-        if (graphDrawer != null)
-            graphDrawer.draw(g2d);
+        if (graphController != null)
+            graphController.draw(g2d);
     }
 
     public void mouseClicked(MouseEvent e) {
-        nodeUnderCursor = (N) graphDrawer.contains(e.getX(), e.getY());
-        linkUnderCursor = (L) graphDrawer.containsLink(e.getX(), e.getY());
+        nodeUnderCursor = (N) graphController.contains(e.getX(), e.getY());
+        linkUnderCursor = (L) graphController.containsLink(e.getX(), e.getY());
 
         setNodeAsSelected(nodeUnderCursor);
         setLinkAsSelected(linkUnderCursor);
@@ -98,5 +99,21 @@ public abstract class MPanel<T extends GraphController, N extends GNode, L exten
             lastSelectedLink.setSelected(true);
             repaint();
         }
+    }
+
+    public List<N> getNodes() {
+        return graphController.getNodes();
+    }
+
+    public List<L> getLinks() {
+        return graphController.getLinks();
+    }
+
+    public void setNodes(List<N> flowNodes) {
+        this.graphController.setNodes(flowNodes);
+    }
+
+    public void setLinks(List<L> flowLinks) {
+        this.graphController.setLinks(flowLinks);
     }
 }

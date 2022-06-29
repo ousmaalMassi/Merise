@@ -1,12 +1,12 @@
 package com.models.mcd;
 
-import com.models.MeriseObject;
+import com.models.EntityObject;
 import com.models.Property;
 
 /**
  * 
  */
-public class Entity extends MeriseObject {
+public class Entity extends EntityObject {
 
     /**
      * @param name of the entity

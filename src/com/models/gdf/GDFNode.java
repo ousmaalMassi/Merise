@@ -1,24 +1,19 @@
 package com.models.gdf;
 
+import com.Merise;
+import com.exceptions.DuplicateMeriseObject;
+import com.models.MeriseObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class GDFNode {
+public class GDFNode extends MeriseObject {
 
-    private String name;
     private List<String> targets;
 
     public GDFNode(String name) {
         this.name = name;
         this.targets = new ArrayList<>();
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public List<String> getTargets() {

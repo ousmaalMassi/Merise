@@ -7,7 +7,7 @@ import com.graphics.mcd.GAssociation;
 import com.graphics.mcd.GEntity;
 import com.graphics.mcd.GMCDLink;
 import com.graphics.mcd.GMCDNode;
-import com.models.MeriseObject;
+import com.models.EntityObject;
 import com.models.Property;
 import com.exceptions.DuplicateMeriseObject;
 import com.models.mcd.*;
@@ -48,12 +48,12 @@ public class MCDGraphController extends GraphController<GMCDNode, GMCDLink> {
     public void rename(GMCDNode node, String newName) {
         if (node == null)
             return;
-        MeriseObject meriseObject;
+        EntityObject entityObject;
         if (node instanceof GEntity)
-            meriseObject = mcdGraph.containsEntity(node.getName());
+            entityObject = mcdGraph.containsEntity(node.getName());
         else
-            meriseObject = mcdGraph.containsAssociation(node.getName());
-        meriseObject.setName(newName);
+            entityObject = mcdGraph.containsAssociation(node.getName());
+        entityObject.setName(newName);
         node.setName(newName);
 
         System.out.println(mcdGraph);
@@ -111,11 +111,11 @@ public class MCDGraphController extends GraphController<GMCDNode, GMCDLink> {
     public void addProperty(String propertyName, GMCDNode mcdNodeView) {
 
 //        long currentTimeMillis = System.currentTimeMillis();
-        MeriseObject meriseObject;
+        EntityObject entityObject;
         if (mcdNodeView instanceof GEntity)
-            meriseObject = mcdGraph.containsEntity(mcdNodeView.getName());
+            entityObject = mcdGraph.containsEntity(mcdNodeView.getName());
         else
-            meriseObject = mcdGraph.containsAssociation(mcdNodeView.getName());
+            entityObject = mcdGraph.containsAssociation(mcdNodeView.getName());
 
         Map<String, String> map = DDPanel.getProperty(propertyName);
         String name = map.get("name");
@@ -123,7 +123,7 @@ public class MCDGraphController extends GraphController<GMCDNode, GMCDLink> {
         int length = Integer.parseInt(map.get("length"));
 
         Property property =  new Property(name, type, length);
-        meriseObject.addProperty(property);
+        entityObject.addProperty(property);
 
         mcdNodeView.getAttributes().add(property.getCode());
         System.out.println(mcdGraph);
@@ -132,15 +132,15 @@ public class MCDGraphController extends GraphController<GMCDNode, GMCDLink> {
 
     public void removeProperty(String name, GMCDNode mcdNodeView) {
 
-        MeriseObject meriseObject;
+        EntityObject entityObject;
         if (mcdNodeView instanceof GEntity)
-            meriseObject = mcdGraph.containsEntity(mcdNodeView.getName());
+            entityObject = mcdGraph.containsEntity(mcdNodeView.getName());
         else
-            meriseObject = mcdGraph.containsAssociation(mcdNodeView.getName());
-        Property property = meriseObject.getPropertyList().stream().filter(p -> p.getName().equals(name)).findAny().orElse(null);
+            entityObject = mcdGraph.containsAssociation(mcdNodeView.getName());
+        Property property = entityObject.getPropertyList().stream().filter(p -> p.getName().equals(name)).findAny().orElse(null);
         if (property == null)
             return;
-        meriseObject.removeProperty(property);
+        entityObject.removeProperty(property);
         mcdNodeView.getAttributes().remove(property.getCode());
     }
 

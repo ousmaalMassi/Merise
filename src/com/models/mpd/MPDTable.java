@@ -1,6 +1,6 @@
 package com.models.mpd;
 
-import com.models.MeriseObject;
+import com.models.EntityObject;
 import com.models.Property;
 
 import java.util.ArrayList;
@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MPDTable extends MeriseObject {
+public class MPDTable extends EntityObject {
     List<String> primaryKeys;
     Map<String, MPDTable> foreignKeys;
 

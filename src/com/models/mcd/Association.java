@@ -1,6 +1,6 @@
 package com.models.mcd;
 
-import com.models.MeriseObject;
+import com.models.EntityObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * 
  */
-public class Association extends MeriseObject {
+public class Association extends EntityObject {
 
     private Map<Entity, Cardinality> links;
 

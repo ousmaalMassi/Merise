@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.MeriseGUI.ddd;
 
 import com.models.Property;
@@ -39,80 +34,14 @@ public class DDPanel extends JPanel {
 
     public DDPanel() {
         initComponents();
-        showExample();
-    }
-
-    private static String normalize(String name) {
-        return name.replace(" ", "_");
-    }
-
-    /**************** GDF methods start ****************/
-    public static Vector<String> getAttributeList() {
-        int nRow = tableModel.getRowCount();
-        Vector<String> attrList = new Vector<>();
-        for (int i = 0; i < nRow; i++) {
-            attrList.add(tableModel.getValueAt(i, CODE_COL_INDEX).toString());
-        }
-        attrList.removeIf(item -> item.equals(""));
-        return attrList;
-    }
-
-    public static Vector<String> getGDFAttributes() {
-        int nRow = tableModel.getRowCount();
-        Vector<String> attrList = new Vector<>();
-        for (int i = 0; i < nRow; i++) {
-            if (tableModel.getValueAt(i, GDF_COL_INDEX).toString().equals("false"))
-                attrList.add(tableModel.getValueAt(i, NAME_COL_INDEX).toString());
-
-        }
-        attrList.removeIf(item -> item.equals(""));
-        return attrList;
-    }
-
-    public static void setUsedInGDF(String attributeName, boolean used) {
-        int row = getAttributeList().indexOf(normalize(attributeName));
-        tableModel.setValueAt(used, row, GDF_COL_INDEX);
-    }
-
-    /**************** MCD methods start ****************/
-    public static Vector<String> getMCDAttributes() {
-        int nRow = tableModel.getRowCount();
-        Vector<String> attrList = new Vector<>();
-        for (int i = 0; i < nRow; i++) {
-            if (tableModel.getValueAt(i, MCD_COL_INDEX).toString().isEmpty())
-                attrList.add(tableModel.getValueAt(i, NAME_COL_INDEX).toString());
-        }
-        attrList.removeIf(item -> item.equals(""));
-        return attrList;
-    }
-
-    public static void setUsedInMCD(String attributeName, String name) {
-        int row = getAttributeList().indexOf(normalize(attributeName));
-        tableModel.setValueAt(name, row, MCD_COL_INDEX);
-    }
-
-    /**************** end ****************/
-
-    public static Map<String, String> getProperty(String string) {
-        int nRow = tableModel.getRowCount();
-        Map<String, String> prop = new HashMap<>();
-        for (int i = 0; i < nRow; i++) {
-            if (tableModel.getValueAt(i, NAME_COL_INDEX).toString().equals(string)) {
-                prop.put("name", tableModel.getValueAt(i, NAME_COL_INDEX).toString());
-                prop.put("type", tableModel.getValueAt(i, TYPE_COL_INDEX).toString());
-                prop.put("length", tableModel.getValueAt(i, LENGTH_COL_INDEX).toString());
-                break;
-            }
-        }
-        return prop;
+//        loadData(tableModel.getData());
     }
 
     private void initComponents() {
-        Object[][] data = new Object[][]{createEmptyDataRow("", "")};
         Property.Types[] comboData = new Property.Types[]{Property.Types.ALPHABETICAL, Property.Types.ALPHANUMERIC, Property.Types.DATE, Property.Types.NUMERIC, Property.Types.LOGIC};
         combo = new JComboBox(comboData);
 
-        tableModel = new TableModel(data, new String[]{NAME, CODE, TYPE, LENGTH, MCD, GDF, DELETE});
+        tableModel = new TableModel(new String[]{NAME, CODE, TYPE, LENGTH, MCD, GDF, DELETE});
         ddTable = new JTable(tableModel);
 
         NAME_COL_INDEX = ddTable.getColumn(NAME).getModelIndex();
@@ -157,9 +86,74 @@ public class DDPanel extends JPanel {
         this.add(jScrollPane, BorderLayout.CENTER);
         this.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        tableModel.setValueAt(combo.getItemAt(0), ddTable.getRowCount() - 1, TYPE_COL_INDEX);
+//        tableModel.setValueAt(combo.getItemAt(0), ddTable.getRowCount() - 1, TYPE_COL_INDEX);
+    }
+
+    private static String normalize(String name) {
+        return name.replace(" ", "_");
+    }
+
+    /**************** GDF methods start ****************/
+    public static Vector<String> getAttributeList() {
+        int nRow = tableModel.getRowCount();
+        Vector<String> attrList = new Vector<>();
+        for (int i = 0; i < nRow; i++) {
+            attrList.add(tableModel.getValueAt(i, CODE_COL_INDEX).toString());
+        }
+        attrList.removeIf(item -> item.equals(""));
+        return attrList;
+    }
+
+    public static Vector<String> getGDFAttributes() {
+        int nRow = tableModel.getRowCount();
+        Vector<String> attrList = new Vector<>();
+        for (int i = 0; i < nRow; i++) {
+            if (tableModel.getValueAt(i, GDF_COL_INDEX).toString().equals("false"))
+                attrList.add(tableModel.getValueAt(i, NAME_COL_INDEX).toString());
+
+        }
+        attrList.removeIf(item -> item.equals(""));
+        return attrList;
+    }
+
+    public static void setUsedInGDF(String attributeName, boolean used) {
+        int row = getAttributeList().indexOf(normalize(attributeName));
+        tableModel.setValueAt(used, row, GDF_COL_INDEX);
     }
     /**************** end ****************/
+
+    /**************** MCD methods start ****************/
+    public static Vector<String> getMCDAttributes() {
+        int nRow = tableModel.getRowCount();
+        Vector<String> attrList = new Vector<>();
+        for (int i = 0; i < nRow; i++) {
+            if (tableModel.getValueAt(i, MCD_COL_INDEX).toString().isEmpty())
+                attrList.add(tableModel.getValueAt(i, NAME_COL_INDEX).toString());
+        }
+        attrList.removeIf(item -> item.equals(""));
+        return attrList;
+    }
+
+    public static void setUsedInMCD(String attributeName, String name) {
+        int row = getAttributeList().indexOf(normalize(attributeName));
+        tableModel.setValueAt(name, row, MCD_COL_INDEX);
+    }
+
+    /**************** end ****************/
+
+    public static Map<String, String> getProperty(String string) {
+        int nRow = tableModel.getRowCount();
+        Map<String, String> prop = new HashMap<>();
+        for (int i = 0; i < nRow; i++) {
+            if (tableModel.getValueAt(i, NAME_COL_INDEX).toString().equals(string)) {
+                prop.put("name", tableModel.getValueAt(i, NAME_COL_INDEX).toString());
+                prop.put("type", tableModel.getValueAt(i, TYPE_COL_INDEX).toString());
+                prop.put("length", tableModel.getValueAt(i, LENGTH_COL_INDEX).toString());
+                break;
+            }
+        }
+        return prop;
+    }
 
     private void addAttribute() {
         String name = JOptionPane.showInputDialog(this, "Veuillez entrer le nom de la donnée", "fgjhgjh");
@@ -186,33 +180,21 @@ public class DDPanel extends JPanel {
         return !tableModel.getValueAt(selectedRow, MCD_COL_INDEX).toString().isEmpty();
     }
 
-    private void showExample() {
-        tableModel.removeRow(0);
-        Object[][] dataExample = new Object[][]{
-                {"id client", "id_client", "", "11", "", false, ""},
-                {"nom", "nom", "", "50", "", false, ""},
-                {"prénom", "prénom", "", "50", "", false, ""},
-                {"adresse", "adresse", "", "256", "", false, ""},
-                {"id article", "id_article", "", "11", "", false, ""},
-                {"prix achat", "prix_achat", "", "10", "", false, ""},
-                {"prix vente", "prix_vente", "", "10", "", false, ""},
-                {"designation", "designation", "", "256", "", false, ""},
-                {"quantity", "quantity", "", "2", "", false, ""},
-        };
-
-        for (Object[] dataRow : dataExample) {
-            tableModel.addRow(dataRow);
-            tableModel.setValueAt(combo.getItemAt(0), ddTable.getRowCount() - 1, TYPE_COL_INDEX);
-        }
-    }
-
     void PrintDataTable() {
-        Object[][] tableData = tableModel.getTableData();
+        Object[][] tableData = tableModel.getData();
         for (Object[] tableRow : tableData) {
             for (Object tableColumn : tableRow) {
                 System.out.println(tableColumn);
             }
         }
+    }
+
+    public Object[][] getData() {
+        return tableModel.getData();
+    }
+
+    public void setData(Object[][] dataDictionary) {
+        tableModel.setData(dataDictionary);
     }
 }
 

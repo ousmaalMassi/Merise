@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Vector;
 
 public class GDFPanel extends MPanel<GDFGraphController, GDFAttribute, DF> implements MouseListener, MouseMotionListener {
-    private final GDFGraph gdfGraph;
+    private GDFGraph gdfGraph;
     private final JList<Object> jListAttribute;
     private GDFAttribute gdfAttribute1;
     private GDFAttribute gdfAttribute2;
@@ -32,7 +32,7 @@ public class GDFPanel extends MPanel<GDFGraphController, GDFAttribute, DF> imple
         addMouseMotionListener(this);
 
         this.gdfGraph = new GDFGraph();
-        this.graphDrawer.setGraph(this.gdfGraph);
+        this.graphController.setGraph(this.gdfGraph);
         this.creatingLink = false;
         this.jListAttribute = new JList<>();
     }
@@ -44,14 +44,14 @@ public class GDFPanel extends MPanel<GDFGraphController, GDFAttribute, DF> imple
         JMenuItem renameNodeMenuItem = new JMenuItem("Renommer");
         this.nodePopupMenu.add(renameNodeMenuItem);
         renameNodeMenuItem.addActionListener((action) -> {
-            graphDrawer.rename(nodeUnderCursor, "new Name");
+            graphController.rename(nodeUnderCursor, "new Name");
             repaint();
         });
 
         JMenuItem removeNodeMenuItem = new JMenuItem("Supprimer");
         this.nodePopupMenu.add(removeNodeMenuItem);
         removeNodeMenuItem.addActionListener((action) -> {
-            graphDrawer.remove(nodeUnderCursor);
+            graphController.remove(nodeUnderCursor);
             DDPanel.setUsedInGDF(nodeUnderCursor.getName(), false);
             repaint();
         });
@@ -75,7 +75,7 @@ public class GDFPanel extends MPanel<GDFGraphController, GDFAttribute, DF> imple
                 String attributeName = o.toString();
                 DDPanel.setUsedInGDF(attributeName, true);
                 GDFAttribute gdfAttribute = createAttribute(MousePositionX, MousePositionY, attributeName);
-                graphDrawer.addNode(gdfAttribute);
+                graphController.addNode(gdfAttribute);
                 setNodeAsSelected(gdfAttribute);
 
             }
@@ -95,7 +95,7 @@ public class GDFPanel extends MPanel<GDFGraphController, GDFAttribute, DF> imple
         JMenuItem removeLinkMenuItem = new JMenuItem("Supprimer");
         this.linkPopupMenu.add(removeLinkMenuItem);
         removeLinkMenuItem.addActionListener((action) -> {
-            graphDrawer.removeLink(linkUnderCursor);
+            graphController.removeLink(linkUnderCursor);
             repaint();
         });
     }
@@ -104,10 +104,6 @@ public class GDFPanel extends MPanel<GDFGraphController, GDFAttribute, DF> imple
         int x = (int) MousePositionX;
         int y = (int) MousePositionY;
         return new GDFAttribute(x, y, name);
-    }
-
-    public GDFGraph getGraph() {
-        return gdfGraph;
     }
 
     @Override
@@ -121,7 +117,7 @@ public class GDFPanel extends MPanel<GDFGraphController, GDFAttribute, DF> imple
                 gdfAttribute2 = nodeUnderCursor;
             }
             if (gdfAttribute2 != null && gdfAttribute1 != null) {
-                graphDrawer.addLink(gdfAttribute1, gdfAttribute2);
+                graphController.addLink(gdfAttribute1, gdfAttribute2);
                 repaint();
                 gdfAttribute2 = null;
                 gdfAttribute1 = null;
@@ -154,7 +150,7 @@ public class GDFPanel extends MPanel<GDFGraphController, GDFAttribute, DF> imple
     @Override
     public void mouseDragged(MouseEvent e) {
         if (nodeUnderCursor == null)
-            nodeUnderCursor = graphDrawer.contains(e.getX(), e.getY());
+            nodeUnderCursor = graphController.contains(e.getX(), e.getY());
         else
             this.moveNodeUnderCursor(e.getX(), e.getY());
 
@@ -166,4 +162,11 @@ public class GDFPanel extends MPanel<GDFGraphController, GDFAttribute, DF> imple
 
     }
 
+    public GDFGraph getGraph() {
+        return this.gdfGraph;
+    }
+
+    public void setGraph(GDFGraph gdfGraph) {
+        this.gdfGraph = gdfGraph;
+    }
 }

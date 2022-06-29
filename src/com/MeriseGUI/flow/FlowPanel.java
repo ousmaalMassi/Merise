@@ -13,6 +13,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.List;
 
 public class FlowPanel extends MPanel<FlowGraphController, GNode, GArrow> implements MouseListener, MouseMotionListener {
     private Actor sourceActor;
@@ -27,7 +28,7 @@ public class FlowPanel extends MPanel<FlowGraphController, GNode, GArrow> implem
 
         addMouseListener(this);
         addMouseMotionListener(this);
-        this.graphDrawer= new FlowGraphController();
+        this.graphController = new FlowGraphController();
         creatingLink = false;
     }
 
@@ -40,14 +41,14 @@ public class FlowPanel extends MPanel<FlowGraphController, GNode, GArrow> implem
             String newName = JOptionPane.showInputDialog(this, "Veuillez entrer le nouveau nom");
             if (newName == null || newName.trim().isEmpty())
                 return;
-            graphDrawer.rename(nodeUnderCursor, newName);
+            graphController.rename(nodeUnderCursor, newName);
             repaint();
         });
 
         JMenuItem removeNodeMenuItem = new JMenuItem("Supprimer");
         this.nodePopupMenu.add(removeNodeMenuItem);
         removeNodeMenuItem.addActionListener((action) -> {
-            graphDrawer.remove(nodeUnderCursor);
+            graphController.remove(nodeUnderCursor);
             repaint();
         });
     }
@@ -61,7 +62,7 @@ public class FlowPanel extends MPanel<FlowGraphController, GNode, GArrow> implem
         addInternalActorMenuItem.addActionListener((action) -> {
             InternalActor internalActor = createInternalActor();
             nodeUnderCursor = internalActor;
-            graphDrawer.addNode(internalActor);
+            graphController.addNode(internalActor);
             setNodeAsSelected(internalActor);
             repaint();
         });
@@ -71,7 +72,7 @@ public class FlowPanel extends MPanel<FlowGraphController, GNode, GArrow> implem
         addExternalActorMenuItem.addActionListener((action) -> {
             ExternalActor externalActor = createExternalActor();
             nodeUnderCursor = externalActor;
-            graphDrawer.addNode(externalActor);
+            graphController.addNode(externalActor);
             setNodeAsSelected(externalActor);
             repaint();
         });
@@ -81,7 +82,7 @@ public class FlowPanel extends MPanel<FlowGraphController, GNode, GArrow> implem
         addDomainMenuItem.addActionListener((action) -> {
             Domain domain = createDomain();
             nodeUnderCursor = domain;
-            graphDrawer.addNode(domain);
+            graphController.addNode(domain);
             setNodeAsSelected(domain);
             repaint();
         });
@@ -99,7 +100,7 @@ public class FlowPanel extends MPanel<FlowGraphController, GNode, GArrow> implem
         JMenuItem removeLinkMenuItem = new JMenuItem("Supprimer");
         this.linkPopupMenu.add(removeLinkMenuItem);
         removeLinkMenuItem.addActionListener((action) -> {
-            graphDrawer.removeLink(linkUnderCursor);
+            graphController.removeLink(linkUnderCursor);
             repaint();
         });
     }
@@ -140,7 +141,7 @@ public class FlowPanel extends MPanel<FlowGraphController, GNode, GArrow> implem
         if ((sourceActor.getClass() == targetActor.getClass()) && (targetActor instanceof ExternalActor)) {
             JOptionPane.showMessageDialog(this, "Vous ne pouvez pas attacher deux acteurs externes entre eux");
         } else {
-            graphDrawer.addLink(sourceActor, targetActor);
+            graphController.addLink(sourceActor, targetActor);
             repaint();
         }
         targetActor = null;
@@ -167,7 +168,7 @@ public class FlowPanel extends MPanel<FlowGraphController, GNode, GArrow> implem
     public void mouseDragged(MouseEvent e) {
 
         if (nodeUnderCursor == null) {
-            nodeUnderCursor = graphDrawer.contains(e.getX(), e.getY());
+            nodeUnderCursor = graphController.contains(e.getX(), e.getY());
         }
         else if (nodeUnderCursor instanceof Domain domain && domain.inCorner(e.getX(), e.getY())) {
             domain.resize(e.getX(), e.getY());
@@ -182,7 +183,7 @@ public class FlowPanel extends MPanel<FlowGraphController, GNode, GArrow> implem
     @Override
     public void mouseMoved(MouseEvent e) {
         if (nodeUnderCursor == null) {
-            nodeUnderCursor = graphDrawer.contains(e.getX(), e.getY());
+            nodeUnderCursor = graphController.contains(e.getX(), e.getY());
         }
         if (nodeUnderCursor instanceof Domain domain) {
             if ( domain.inCorner(e.getX(), e.getY()))
@@ -193,4 +194,6 @@ public class FlowPanel extends MPanel<FlowGraphController, GNode, GArrow> implem
 
         nodeUnderCursor = null;
     }
+
+
 }

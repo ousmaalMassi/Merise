@@ -1,10 +1,16 @@
 package com.models;
 
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
  * 
  */
-public class Property {
+public class Property implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private String code;
 
