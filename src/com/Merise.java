@@ -19,6 +19,7 @@ import com.models.gdf.GDFGraph;
 import com.models.mcd.MCDGraph;
 import com.models.mld.MLDGraph;
 import com.models.mpd.MPDGraph;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -259,7 +260,7 @@ public class Merise extends JFrame {
         System.out.println("File Saved as: " + fileName);
     }
 
-    private String normalizeFileName(String fileName) {
+    private @NotNull String normalizeFileName(String fileName) {
         String suffix = "." + FILE_EXTENSION;
         fileName = fileName.trim();
         if (!fileName.endsWith(suffix))
@@ -267,6 +268,7 @@ public class Merise extends JFrame {
         return fileName;
     }
 
+    @NotNull
     private Map<String, Object> getMeriseData() {
 
         Map<String, Object> meriseData = new HashMap<>();
@@ -288,7 +290,7 @@ public class Merise extends JFrame {
     }
 
     @SuppressWarnings("unchecked")
-    public void loadMeriseData(Map<String, Object> meriseData) throws IOException, ClassNotFoundException {
+    public void loadMeriseData(@NotNull Map<String, Object> meriseData) throws IOException, ClassNotFoundException {
 
         System.out.println("opening ...");
 
