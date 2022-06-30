@@ -36,7 +36,6 @@ public class Merise extends JFrame {
     private JFileChooser fc;
     private static final String FILE_EXTENSION = "merise";
     private static final String AUTO_SAVE_FILE = "merise_auto_saved";
-    private JMenuBar jMenuBar;
     private FlowPanel flowPanel;
     private ManagementRulesPanel managementRulesPanel;
     private DDPanel ddPanel;
@@ -49,7 +48,6 @@ public class Merise extends JFrame {
     private JButton btnNew;
     private JButton btnOpen;
     private JButton btnSaveAs;
-    private JButton btnExit;
     private JButton btnGenerate;
     private JButton btnGdfToMcd;
     private JButton btnGrid;
@@ -69,7 +67,7 @@ public class Merise extends JFrame {
 
     private void initComponents() {
         createToolBar();
-        addBtnActionListener();
+        AddButtonActionListeners();
 
         fc = new JFileChooser();
         fc.setAcceptAllFileFilterUsed(false);
@@ -112,7 +110,7 @@ public class Merise extends JFrame {
                 }
 
                 try {
-                    serialize(getMeriseData(), normalizeName(AUTO_SAVE_FILE));
+                    serialize(getMeriseData(), normalizeFileName(AUTO_SAVE_FILE));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -138,17 +136,17 @@ public class Merise extends JFrame {
 
     private void createToolBar() {
         toolBar = new JToolBar();
-        btnNew = initToolBarBtn("new_file", "nouveau fichier (CTRL+N)", true);
-        btnOpen = initToolBarBtn("open_folder", "Ouvrir un nouveau projet (CTRL+O)", true);
-        btnSaveAs = initToolBarBtn("save_as", "Enregistrer sous (CTRL+SHIFT+S)", true);
-        btnGdfToMcd = initToolBarBtn("generate2", "Générer MCD à partir de GDF", true);
-        btnGenerate = initToolBarBtn("generate", "Générer le MLD & le MPD (F6)", true);
-        btnGrid = initToolBarBtn("grid", "Grille (CTRL+G)", false);
+        btnNew = createToolBarBtn("new_file", "nouveau fichier (CTRL+N)", true);
+        btnOpen = createToolBarBtn("open_folder", "Ouvrir un nouveau projet (CTRL+O)", true);
+        btnSaveAs = createToolBarBtn("save_as", "Enregistrer sous (CTRL+SHIFT+S)", true);
+        btnGdfToMcd = createToolBarBtn("generate2", "Générer MCD à partir de GDF", true);
+        btnGenerate = createToolBarBtn("generate", "Générer le MLD & le MPD (F6)", true);
+        btnGrid = createToolBarBtn("grid", "Grille (CTRL+G)", false);
 
         toolBar.setOrientation(SwingConstants.HORIZONTAL);
     }
 
-    private JButton initToolBarBtn(String icon, String toolTip, Boolean separator) {
+    private JButton createToolBarBtn(String icon, String toolTip, Boolean separator) {
         JButton btn = new JButton(new ImageIcon("icons/" + icon + ".png"));
         btn.setFocusable(false);
         btn.setToolTipText(toolTip);
@@ -158,10 +156,10 @@ public class Merise extends JFrame {
         return btn;
     }
 
-    private void addBtnActionListener() {
+    private void AddButtonActionListeners() {
 
         btnNew.addActionListener((ActionEvent e) -> {
-            if (emptyDiagrams())
+            if (diagramsAreEmpty())
                 return;
 
             int confirmDialog = JOptionPane.showConfirmDialog(
@@ -199,7 +197,7 @@ public class Merise extends JFrame {
 
     }
 
-    private boolean emptyDiagrams() {
+    private boolean diagramsAreEmpty() {
         // TODO check if no data in all diagrams
         return false;
     }
@@ -251,7 +249,7 @@ public class Merise extends JFrame {
         }
 
         String fileName = fc.getSelectedFile().getAbsolutePath();
-        fileName = normalizeName(fileName);
+        fileName = normalizeFileName(fileName);
         try {
             Map<String, Object> meriseData = getMeriseData();
             serialize(meriseData, fileName);
@@ -261,7 +259,7 @@ public class Merise extends JFrame {
         System.out.println("File Saved as: " + fileName);
     }
 
-    private String normalizeName(String fileName) {
+    private String normalizeFileName(String fileName) {
         String suffix = "." + FILE_EXTENSION;
         fileName = fileName.trim();
         if (!fileName.endsWith(suffix))
@@ -289,6 +287,7 @@ public class Merise extends JFrame {
         return meriseData;
     }
 
+    @SuppressWarnings("unchecked")
     public void loadMeriseData(Map<String, Object> meriseData) throws IOException, ClassNotFoundException {
 
         System.out.println("opening ...");
@@ -316,6 +315,7 @@ public class Merise extends JFrame {
         oos.close();
     }
 
+    @SuppressWarnings("unchecked")
     private Map<String, Object> deserialize(File file) throws IOException, ClassNotFoundException {
         ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)));
         Map<String, Object> meriseData = (Map<String, Object>) ois.readObject();
