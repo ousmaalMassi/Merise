@@ -21,7 +21,11 @@ public class MCDGraphController extends GraphController<GMCDNode, GMCDLink> {
     public MCDGraphController() {
     }
 
-    public void setMcdGraph(MCDGraph mcdGraph) {
+    public MCDGraph getGraph() {
+        return mcdGraph;
+    }
+
+    public void setGraph(MCDGraph mcdGraph) {
         this.mcdGraph = mcdGraph;
     }
 

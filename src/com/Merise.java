@@ -180,7 +180,7 @@ public class Merise extends JFrame {
         btnGdfToMcd.addActionListener((ActionEvent e) -> {
             GDFGraph gdfGraph = gdfPanel.getGraph();
             MCDGraph mcdGraph = transform.gdfToMcd(gdfGraph);
-            mcdPanel.setMcdGraph(mcdGraph);
+            mcdPanel.setGraph(mcdGraph);
             JOptionPane.showMessageDialog(this, "Terminé!");
         });
 
@@ -302,7 +302,7 @@ public class Merise extends JFrame {
 
         gdfPanel.setNodes((List<GDFAttribute>) meriseData.get("gdfNodes"));
         gdfPanel.setLinks((List<GSimpleDF>) meriseData.get("gdfLinks"));
-        gdfPanel.setGraph((GDFGraph) meriseData.get("flowGraph"));
+        gdfPanel.setGraph((GDFGraph) meriseData.get("gdfGraph"));
         gdfPanel.repaint();
 
         mcdPanel.setNodes((List<GMCDNode>) meriseData.get("mcdNodes"));

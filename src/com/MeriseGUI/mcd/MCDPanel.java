@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Vector;
 
 public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> implements MouseListener, MouseMotionListener {
-    private MCDGraph mcdGraph;
+
     private GAssociation associationToLink;
     private GEntity entityToLink;
     private boolean creatingLink;
@@ -32,16 +32,10 @@ public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> imp
         addMouseListener(this);
         addMouseMotionListener(this);
 
-        this.mcdGraph = new MCDGraph();
-        this.graphController.setMcdGraph(this.mcdGraph);
+        this.graphController.setGraph(new MCDGraph());
         this.creatingLink = false;
         this.jListAttribute = new JList<>();
     }
-
-    public void setMcdGraph(MCDGraph mcdGraph) {
-        this.mcdGraph = mcdGraph;
-    }
-
 
     @Override
     protected void createNodePopupMenu() {
@@ -232,11 +226,13 @@ public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> imp
         nodeUnderCursor = graphController.contains(e.getX(), e.getY());
     }
 
+
+
     public MCDGraph getGraph() {
-        return this.mcdGraph;
+        return this.graphController.getGraph();
     }
 
-    public void setGraph(MCDGraph mcdGraph) {
-        this.mcdGraph = mcdGraph;
+    public void setGraph(MCDGraph gdfGraph) {
+        this.graphController.setGraph(gdfGraph);
     }
 }
