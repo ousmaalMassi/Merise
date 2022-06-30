@@ -8,11 +8,13 @@ public class ManagementRulesPanel extends JPanel{
 
     private final JTable table;
     private final RulesTableModel rulesTableModel;
+
+    private String[][] data;
     public ManagementRulesPanel() {
 
-        String[][] data = {
-                { "1", "Chaque professeur est caractérisé par son code, son nom, son prénom, son adresse, son grade et son nombre d’heures d’enseignement selon son grade." },
-                { "2", "Un professeur peut enseigner plusieurs modules" }
+        data = new String[][]{
+                {"1", "Chaque professeur est caractérisé par son code, son nom, son prénom, son adresse, son grade et son nombre d’heures d’enseignement selon son grade."},
+                {"2", "Un professeur peut enseigner plusieurs modules"}
         };
 
         // Column Names
@@ -30,7 +32,7 @@ public class ManagementRulesPanel extends JPanel{
         JButton removeRowBtn = new JButton();
         removeRowBtn.setText("Supprimer");
         removeRowBtn.setFont(new Font("Tahoma", Font.BOLD, 15));
-        removeRowBtn.addActionListener(e -> removeAttribute());
+        removeRowBtn.addActionListener(e -> removeRule());
 
         JScrollPane jScrollPane1 = new JScrollPane();
         jScrollPane1.setViewportView(table);
@@ -61,8 +63,15 @@ public class ManagementRulesPanel extends JPanel{
         return new Object[]{index, rule};
     }
 
-    private void removeAttribute() {
+    private void removeRule() {
         rulesTableModel.removeRow(table.getSelectedRow());
     }
 
+    public String[][] getData() {
+        return data;
+    }
+
+    public void setData(String[][] data) {
+        this.data = data;
+    }
 }
