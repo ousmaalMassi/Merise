@@ -1,70 +1,62 @@
 package com.MeriseGUI.rules;
 
+import com.MeriseGUI.DeleteButtonRenderer;
+import com.MeriseGUI.MTableModel;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class ManagementRulesPanel extends JPanel{
 
-    private final JTable table;
-    private final RulesTableModel rulesTableModel;
+    private final MTableModel tableModel;
 
     public ManagementRulesPanel() {
         // Column Names
-        String[] titles = { "num", "Régles de gestion"};
+        String[] titles = { "num", "Régles de gestion", ""};
 
-        rulesTableModel = new RulesTableModel(titles);
-        this.table = new JTable(rulesTableModel);
-
-
-        JButton addRowBtn = new JButton();
-        addRowBtn.setText("Ajouter une régle de gestion");
-        addRowBtn.setFont(new Font("Tahoma", Font.BOLD, 15));
-        addRowBtn.addActionListener(e -> addNewRule());
-
-        JButton removeRowBtn = new JButton();
-        removeRowBtn.setText("Supprimer");
-        removeRowBtn.setFont(new Font("Tahoma", Font.BOLD, 15));
-        removeRowBtn.addActionListener(e -> removeRule());
-
-        JScrollPane jScrollPane1 = new JScrollPane();
-        jScrollPane1.setViewportView(table);
-
-        JPanel footer = new JPanel();
-        footer.add(addRowBtn);
-        footer.add(removeRowBtn);
+        tableModel = new RulesTableModel(titles);
+        JTable table = new JTable(tableModel);
 
         table.setRowHeight(30);
         table.getColumnModel().getColumn(0).setMaxWidth(50);
+        table.getColumn("").setCellRenderer(new DeleteButtonRenderer(table));
+        table.getColumn("").setCellEditor(new DeleteButtonRenderer(table));
+        table.getColumn("").setMaxWidth(50);
+
+        JButton addRowBtn = new JButton();
+        addRowBtn.setText("Ajouter");
+        addRowBtn.setFont(new Font(Font.DIALOG, Font.BOLD, 15));
+        addRowBtn.addActionListener(e -> addData());
+
+        JPanel footer = new JPanel();
+        footer.setLayout(new BorderLayout());
+        footer.add(addRowBtn, BorderLayout.EAST);
+
+        JScrollPane jScrollPane = new JScrollPane();
+        jScrollPane.setViewportView(table);
 
         this.setLayout(new BorderLayout());
-        this.add(jScrollPane1, BorderLayout.CENTER);
         this.add(footer, BorderLayout.SOUTH);
+        this.add(jScrollPane, BorderLayout.CENTER);
         this.setBorder(new EmptyBorder(10, 10, 10, 10));
 
     }
 
-    private void addNewRule() {
-//        String inputDialog = JOptionPane.showInputDialog(this, "Veuillez entrer le nom de l'attribut");
-//        if (inputDialog == null)
-//            return;
-        rulesTableModel.addRow(this.createEmptyDataRow());
+    private void addData() {
+        tableModel.addRow(this.createEmptyDataRow());
     }
 
     private Object[] createEmptyDataRow() {
-        int index = rulesTableModel.getRowCount()+1;
-        return new Object[]{index, ""};
-    }
-
-    private void removeRule() {
-        rulesTableModel.removeRow(table.getSelectedRow());
+        int index = tableModel.getRowCount()+1;
+        return new Object[]{index, "", ""};
     }
 
     public Object[][] getData() {
-        return rulesTableModel.getData();
+        return tableModel.getData();
     }
 
     public void setData(Object[][] data) {
-        this.rulesTableModel.setData(data);
+        this.tableModel.setData(data);
     }
 }

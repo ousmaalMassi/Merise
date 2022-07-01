@@ -1,4 +1,4 @@
-package com.MeriseGUI.ddd;
+package com.MeriseGUI;
 
 import javax.swing.*;
 import javax.swing.event.CellEditorListener;
@@ -7,14 +7,14 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.util.EventObject;
 
-class DeleteButtonRenderer implements TableCellRenderer, TableCellEditor {
+public class DeleteButtonRenderer implements TableCellRenderer, TableCellEditor {
     private final JButton btn;
     private int row;
 
-    DeleteButtonRenderer(JTable table) {
+    public DeleteButtonRenderer(JTable table) {
         btn = new JButton(new ImageIcon( "icons/delete.png"));
         btn.addActionListener(e -> {
-            TableModel model = (TableModel) table.getModel();
+            MTableModel model = (MTableModel) table.getModel();
 //                if (isUsedInMCD(row) || isUsedInGDF(row))
 //                    JOptionPane.showMessageDialog(this, "Cet Attribut est en cours d'utilisation!");
 //                else
