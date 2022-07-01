@@ -65,16 +65,16 @@ class TableModel extends AbstractTableModel implements Serializable {
             index++;
         }
         data = temp;
-        this.fireTableDataChanged();
+        this.fireTableRowsDeleted(0, nbCol);
     }
 
     public void addRow(Object[] data) {
-        int indice = 0, nbRow = this.getRowCount(), nbCol = this.getColumnCount();
+        int index = 0, nbRow = this.getRowCount(), nbCol = this.getColumnCount();
         Object[][] temp = this.data;
         this.data = new Object[nbRow + 1][nbCol];
         for (Object[] value : temp)
-            this.data[indice++] = value;
-        this.data[indice] = data;
+            this.data[index++] = value;
+        this.data[index] = data;
         this.fireTableDataChanged();
     }
 

@@ -67,7 +67,7 @@ public class DDPanel extends JPanel {
         JButton addRowBtn = new JButton();
         addRowBtn.setText("Ajouter une donnée");
         addRowBtn.setFont(new Font(Font.DIALOG, Font.BOLD, 15));
-        addRowBtn.addActionListener(e -> addAttribute());
+        addRowBtn.addActionListener(e -> addData());
 
 
         JPanel header = new JPanel();
@@ -94,7 +94,7 @@ public class DDPanel extends JPanel {
     }
 
     /**************** GDF methods start ****************/
-    public static Vector<String> getAttributeList() {
+    public static Vector<String> getDataList() {
         int nRow = tableModel.getRowCount();
         Vector<String> attrList = new Vector<>();
         for (int i = 0; i < nRow; i++) {
@@ -104,7 +104,7 @@ public class DDPanel extends JPanel {
         return attrList;
     }
 
-    public static Vector<String> getGDFAttributes() {
+    public static Vector<String> getDataForGDF() {
         int nRow = tableModel.getRowCount();
         Vector<String> attrList = new Vector<>();
         for (int i = 0; i < nRow; i++) {
@@ -116,14 +116,14 @@ public class DDPanel extends JPanel {
         return attrList;
     }
 
-    public static void setUsedInGDF(String attributeName, boolean used) {
-        int row = getAttributeList().indexOf(normalize(attributeName));
+    public static void setUsedInGDF(String dataName, boolean used) {
+        int row = getDataList().indexOf(normalize(dataName));
         tableModel.setValueAt(used, row, GDF_COL_INDEX);
     }
     /**************** end ****************/
 
     /**************** MCD methods start ****************/
-    public static Vector<String> getMCDAttributes() {
+    public static Vector<String> getDataForMCD() {
         int nRow = tableModel.getRowCount();
         Vector<String> attrList = new Vector<>();
         for (int i = 0; i < nRow; i++) {
@@ -134,8 +134,8 @@ public class DDPanel extends JPanel {
         return attrList;
     }
 
-    public static void setUsedInMCD(String attributeName, String name) {
-        int row = getAttributeList().indexOf(normalize(attributeName));
+    public static void setUsedInMCD(String dataName, String name) {
+        int row = getDataList().indexOf(normalize(dataName));
         tableModel.setValueAt(name, row, MCD_COL_INDEX);
     }
 
@@ -155,13 +155,13 @@ public class DDPanel extends JPanel {
         return prop;
     }
 
-    private void addAttribute() {
+    private void addData() {
         String name = JOptionPane.showInputDialog(this, "Veuillez entrer le nom de la donnée", "fgjhgjh");
         if (name == null)
             return;
         String code = normalize(name);
-        if (getAttributeList().contains(code)) {
-            JOptionPane.showMessageDialog(this, "Cet attribut existe déjà!");
+        if (getDataList().contains(code)) {
+            JOptionPane.showMessageDialog(this, "Cette donnée existe déjà!");
             return;
         }
         tableModel.addRow(this.createEmptyDataRow(name, code));
