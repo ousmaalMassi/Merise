@@ -276,6 +276,7 @@ public class Merise extends JFrame {
         meriseData.put("flowNodes", flowPanel.getNodes());
         meriseData.put("flowLinks", flowPanel.getLinks());
 
+        meriseData.put("managementRules", managementRulesPanel.getData());
         meriseData.put("DataDictionary", ddPanel.getData());
 
         meriseData.put("gdfNodes", gdfPanel.getNodes());
@@ -297,6 +298,8 @@ public class Merise extends JFrame {
         flowPanel.setNodes((List<GNode>) meriseData.get("flowNodes"));
         flowPanel.setLinks((List<GArrow>)meriseData.get("flowLinks"));
         flowPanel.repaint();
+
+        managementRulesPanel.setData((Object[][]) meriseData.get("managementRules"));
 
         ddPanel.setData((Object[][]) meriseData.get("DataDictionary"));
 

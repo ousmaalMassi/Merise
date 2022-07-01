@@ -9,18 +9,11 @@ public class ManagementRulesPanel extends JPanel{
     private final JTable table;
     private final RulesTableModel rulesTableModel;
 
-    private String[][] data;
     public ManagementRulesPanel() {
-
-        data = new String[][]{
-                {"1", "Chaque professeur est caractérisé par son code, son nom, son prénom, son adresse, son grade et son nombre d’heures d’enseignement selon son grade."},
-                {"2", "Un professeur peut enseigner plusieurs modules"}
-        };
-
         // Column Names
         String[] titles = { "num", "Régles de gestion"};
 
-        rulesTableModel = new RulesTableModel(data, titles);
+        rulesTableModel = new RulesTableModel(titles);
         this.table = new JTable(rulesTableModel);
 
 
@@ -55,23 +48,23 @@ public class ManagementRulesPanel extends JPanel{
 //        String inputDialog = JOptionPane.showInputDialog(this, "Veuillez entrer le nom de l'attribut");
 //        if (inputDialog == null)
 //            return;
-        rulesTableModel.addRow(this.createEmptyDataRow(""));
+        rulesTableModel.addRow(this.createEmptyDataRow());
     }
 
-    private Object[] createEmptyDataRow(String rule) {
+    private Object[] createEmptyDataRow() {
         int index = rulesTableModel.getRowCount()+1;
-        return new Object[]{index, rule};
+        return new Object[]{index, ""};
     }
 
     private void removeRule() {
         rulesTableModel.removeRow(table.getSelectedRow());
     }
 
-    public String[][] getData() {
-        return data;
+    public Object[][] getData() {
+        return rulesTableModel.getData();
     }
 
-    public void setData(String[][] data) {
-        this.data = data;
+    public void setData(Object[][] data) {
+        this.rulesTableModel.setData(data);
     }
 }

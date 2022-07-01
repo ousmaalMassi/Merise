@@ -1,14 +1,23 @@
 package com.MeriseGUI.rules;
 
 import javax.swing.table.AbstractTableModel;
+import java.io.Serial;
+import java.io.Serializable;
 
-public class RulesTableModel  extends AbstractTableModel {
+public class RulesTableModel extends AbstractTableModel implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
     private Object[][] data;
     private final String[] titles;
 
-    public RulesTableModel(Object[][] data, String[] titles) {
-        this.data = data;
+    public RulesTableModel(String[] titles) {
         this.titles = titles;
+        this.data = new Object[][]{};
+//        this.data = new Object[][]{
+//                {"1", "Chaque professeur est caractérisé par son code, son nom, son prénom, son adresse, son grade et son nombre d’heures d’enseignement selon son grade."},
+//                {"2", "Un professeur peut enseigner plusieurs modules"}
+//        };
     }
 
     @Override
@@ -42,12 +51,12 @@ public class RulesTableModel  extends AbstractTableModel {
     }
 
     public void addRow(Object[] data) {
-        int indice = 0, nbRow = this.getRowCount(), nbCol = this.getColumnCount();
+        int index = 0, nbRow = this.getRowCount(), nbCol = this.getColumnCount();
         Object[][] temp = this.data;
         this.data = new Object[nbRow + 1][nbCol];
         for (Object[] value : temp)
-            this.data[indice++] = value;
-        this.data[indice] = data;
+            this.data[index++] = value;
+        this.data[index] = data;
         this.fireTableDataChanged();
     }
 
@@ -57,17 +66,25 @@ public class RulesTableModel  extends AbstractTableModel {
     }
 
     public void removeRow(int position) {
-        int indice = 0, indice2 = 0, nbRow = this.getRowCount() - 1, nbCol = this.getColumnCount();
+        int index = 0, index2 = 0, nbRow = this.getRowCount() - 1, nbCol = this.getColumnCount();
         Object[][] temp = new Object[nbRow][nbCol];
         for (Object[] value : this.data) {
-            if (indice != position) {
-                temp[indice2++] = value;
+            if (index != position) {
+                temp[index2++] = value;
             }
-            indice++;
+            index++;
         }
         data = temp;
         this.fireTableDataChanged();
     }
 
+    public Object[][] getData() {
+        return this.data;
+    }
+
+    public void setData(Object[][] data) {
+        this.data = data;
+        this.fireTableDataChanged();
+    }
 
 }
