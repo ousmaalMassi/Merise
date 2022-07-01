@@ -47,6 +47,8 @@ public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> imp
             String newName = JOptionPane.showInputDialog(this, "Veuillez entrer le nouveau nom");
             if (newName == null || newName.trim().isEmpty())
                 return;
+            for (String attributeName : nodeUnderCursor.getAttributes())
+                DDPanel.setUsedInMCD(attributeName, newName);
             graphController.rename(nodeUnderCursor, newName);
             repaint();
         });
@@ -54,6 +56,8 @@ public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> imp
         JMenuItem removeNodeMenuItem = new JMenuItem("Supprimer");
         this.nodePopupMenu.add(removeNodeMenuItem);
         removeNodeMenuItem.addActionListener((action) -> {
+            for (String attributeName : nodeUnderCursor.getAttributes())
+                DDPanel.setUsedInMCD(attributeName, "");
             graphController.remove(nodeUnderCursor);
             repaint();
         });
@@ -64,7 +68,7 @@ public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> imp
         this.nodePopupMenu.add(editAttributeMenuItem);
         editAttributeMenuItem.addActionListener((action) -> {
 
-            dictionaryData = DDPanel.getMCDAttributes();
+            dictionaryData = DDPanel.getDataForMCD();
             jListAttribute.setListData(dictionaryData);
             JOptionPane.showMessageDialog(null, new JScrollPane(jListAttribute));
             List<Object> selectedValuesList = jListAttribute.getSelectedValuesList();
@@ -225,8 +229,6 @@ public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> imp
     public void mouseMoved(MouseEvent e) {
         nodeUnderCursor = graphController.contains(e.getX(), e.getY());
     }
-
-
 
     public MCDGraph getGraph() {
         return this.graphController.getGraph();
