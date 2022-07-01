@@ -1,5 +1,7 @@
 package com.MeriseGUI.ddd;
 
+import com.MeriseGUI.DeleteButtonRenderer;
+import com.MeriseGUI.MTableModel;
 import com.models.Property;
 
 import javax.swing.*;
@@ -29,19 +31,19 @@ public class DDPanel extends JPanel {
     public static int GDF_COL_INDEX;
     public static int MCD_COL_INDEX;
     private static JTable ddTable;
-    private static TableModel tableModel;
+    private static MTableModel tableModel;
     private JComboBox<Property.Types> combo;
 
     public DDPanel() {
         initComponents();
-//        loadData(tableModel.getData());
+//        loadData(DDTableModel.getData());
     }
 
     private void initComponents() {
         Property.Types[] comboData = new Property.Types[]{Property.Types.ALPHABETICAL, Property.Types.ALPHANUMERIC, Property.Types.DATE, Property.Types.NUMERIC, Property.Types.LOGIC};
         combo = new JComboBox(comboData);
 
-        tableModel = new TableModel(new String[]{NAME, CODE, TYPE, LENGTH, MCD, GDF, DELETE});
+        tableModel = new DDTableModel(new String[]{NAME, CODE, TYPE, LENGTH, MCD, GDF, DELETE});
         ddTable = new JTable(tableModel);
 
         NAME_COL_INDEX = ddTable.getColumn(NAME).getModelIndex();
@@ -70,23 +72,21 @@ public class DDPanel extends JPanel {
         addRowBtn.addActionListener(e -> addData());
 
 
-        JPanel header = new JPanel();
-        header.setLayout(new BorderLayout());
-//        header.add(name);
-//        header.add(code);
-//        header.add(length);
-//        header.add(combo);
-        header.add(addRowBtn, BorderLayout.EAST);
+        JPanel footer = new JPanel();
+        footer.setLayout(new BorderLayout());
+//        footer.add(name);
+//        footer.add(code);
+//        footer.add(length);
+//        footer.add(combo);
+        footer.add(addRowBtn, BorderLayout.EAST);
 
         JScrollPane jScrollPane = new JScrollPane();
         jScrollPane.setViewportView(ddTable);
 
         this.setLayout(new BorderLayout());
-        this.add(header, BorderLayout.SOUTH);
+        this.add(footer, BorderLayout.SOUTH);
         this.add(jScrollPane, BorderLayout.CENTER);
         this.setBorder(new EmptyBorder(10, 10, 10, 10));
-
-//        tableModel.setValueAt(combo.getItemAt(0), ddTable.getRowCount() - 1, TYPE_COL_INDEX);
     }
 
     private static String normalize(String name) {
@@ -120,6 +120,7 @@ public class DDPanel extends JPanel {
         int row = getDataList().indexOf(normalize(dataName));
         tableModel.setValueAt(used, row, GDF_COL_INDEX);
     }
+
     /**************** end ****************/
 
     /**************** MCD methods start ****************/
