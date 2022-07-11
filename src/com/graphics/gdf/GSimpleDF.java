@@ -6,9 +6,9 @@ import com.graphics.GNode;
 
 import java.awt.*;
 
-public class DF extends GArrow implements GLinkText {
+public class GSimpleDF extends GArrow implements GLinkText {
 
-    public DF(GNode a, GNode b) {
+    public GSimpleDF(GNode a, GNode b) {
         super(a, b);
     }
 

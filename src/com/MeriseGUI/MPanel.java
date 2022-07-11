@@ -51,8 +51,9 @@ public abstract class MPanel<T extends GraphController, N extends GNode, L exten
         setLinkAsSelected(linkUnderCursor);
 
         if (e.getButton() == MouseEvent.BUTTON3 || e.getClickCount() == 2) {
-            if (nodeUnderCursor != null)
+            if (nodeUnderCursor != null) {
                 this.nodePopupMenu.show(e.getComponent(), e.getX(), e.getY());
+            }
             else if (linkUnderCursor != null)
                 this.linkPopupMenu.show(e.getComponent(), e.getX(), e.getY());
             else

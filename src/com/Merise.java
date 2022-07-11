@@ -10,6 +10,7 @@ import com.MeriseGUI.rules.ManagementRulesPanel;
 import com.MeriseGUI.sql.SQLPanel;
 import com.graphics.GArrow;
 import com.graphics.GNode;
+import com.graphics.gdf.GNodeGDF;
 import com.graphics.gdf.GSimpleDF;
 import com.graphics.gdf.GDFAttribute;
 import com.graphics.mcd.GMCDLink;
@@ -303,7 +304,7 @@ public class Merise extends JFrame {
 
         ddPanel.setData((Object[][]) meriseData.get("DataDictionary"));
 
-        gdfPanel.setNodes((List<GDFAttribute>) meriseData.get("gdfNodes"));
+        gdfPanel.setNodes((List<GNodeGDF>) meriseData.get("gdfNodes"));
         gdfPanel.setLinks((List<GSimpleDF>) meriseData.get("gdfLinks"));
         gdfPanel.setGraph((GDFGraph) meriseData.get("gdfGraph"));
         gdfPanel.repaint();

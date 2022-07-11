@@ -57,7 +57,7 @@ public class FlowPanel extends MPanel<FlowGraphController, GNode, GArrow> implem
     protected void createPanelPopupMenu() {
         this.panelPopupMenu = new JPopupMenu();
 
-        JMenuItem addInternalActorMenuItem = new JMenuItem("Ajouter une acteur interne");
+        JMenuItem addInternalActorMenuItem = new JMenuItem("Ajouter un acteur interne");
         this.panelPopupMenu.add(addInternalActorMenuItem);
         addInternalActorMenuItem.addActionListener((action) -> {
             InternalActor internalActor = createInternalActor();
@@ -67,7 +67,7 @@ public class FlowPanel extends MPanel<FlowGraphController, GNode, GArrow> implem
             repaint();
         });
 
-        JMenuItem addExternalActorMenuItem = new JMenuItem("Ajouter une acteur externe");
+        JMenuItem addExternalActorMenuItem = new JMenuItem("Ajouter un acteur externe");
         this.panelPopupMenu.add(addExternalActorMenuItem);
         addExternalActorMenuItem.addActionListener((action) -> {
             ExternalActor externalActor = createExternalActor();
@@ -77,7 +77,7 @@ public class FlowPanel extends MPanel<FlowGraphController, GNode, GArrow> implem
             repaint();
         });
 
-        JMenuItem addDomainMenuItem = new JMenuItem("Ajouter une domaine");
+        JMenuItem addDomainMenuItem = new JMenuItem("Ajouter un domaine");
         this.panelPopupMenu.add(addDomainMenuItem);
         addDomainMenuItem.addActionListener((action) -> {
             Domain domain = createDomain();

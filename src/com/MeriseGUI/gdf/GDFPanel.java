@@ -2,7 +2,8 @@ package com.MeriseGUI.gdf;
 
 import com.MeriseGUI.MPanel;
 import com.MeriseGUI.ddd.DDPanel;
-import com.graphics.gdf.DF;
+import com.graphics.gdf.GNodeGDF;
+import com.graphics.gdf.GSimpleDF;
 import com.graphics.gdf.GDFAttribute;
 import com.models.gdf.GDFGraph;
 
@@ -13,14 +14,13 @@ import java.awt.event.MouseMotionListener;
 import java.util.List;
 import java.util.Vector;
 
-public class GDFPanel extends MPanel<GDFGraphController, GDFAttribute, DF> implements MouseListener, MouseMotionListener {
-    private GDFGraph gdfGraph;
+public class GDFPanel extends MPanel<GDFGraphController, GNodeGDF, GSimpleDF> implements MouseListener, MouseMotionListener {
     private final JList<Object> jListAttribute;
-    private GDFAttribute gdfAttribute1;
-    private GDFAttribute gdfAttribute2;
+    private GNodeGDF gNodeGDF1;
+    private GNodeGDF gNodeGDF2;
     private boolean creatingLink;
-
     private Vector<String> dictionaryData;
+    private String dfType;
 
     public GDFPanel() {
         super(new GDFGraphController());
@@ -31,8 +31,7 @@ public class GDFPanel extends MPanel<GDFGraphController, GDFAttribute, DF> imple
         addMouseListener(this);
         addMouseMotionListener(this);
 
-        this.gdfGraph = new GDFGraph();
-        this.graphController.setGraph(this.gdfGraph);
+        this.graphController.setGraph(new GDFGraph());
         this.creatingLink = false;
         this.jListAttribute = new JList<>();
     }
@@ -41,13 +40,6 @@ public class GDFPanel extends MPanel<GDFGraphController, GDFAttribute, DF> imple
     protected void createNodePopupMenu() {
         this.nodePopupMenu = new JPopupMenu();
 
-        JMenuItem renameNodeMenuItem = new JMenuItem("Renommer");
-        this.nodePopupMenu.add(renameNodeMenuItem);
-        renameNodeMenuItem.addActionListener((action) -> {
-            graphController.rename(nodeUnderCursor, "new Name");
-            repaint();
-        });
-
         JMenuItem removeNodeMenuItem = new JMenuItem("Supprimer");
         this.nodePopupMenu.add(removeNodeMenuItem);
         removeNodeMenuItem.addActionListener((action) -> {
@@ -55,18 +47,39 @@ public class GDFPanel extends MPanel<GDFGraphController, GDFAttribute, DF> imple
             DDPanel.setUsedInGDF(nodeUnderCursor.getName(), false);
             repaint();
         });
+
+        JMenuItem addSimpleDFMenuItem = new JMenuItem("Ajouter une DF simple");
+        this.nodePopupMenu.add(addSimpleDFMenuItem);
+        addSimpleDFMenuItem.addActionListener((action) -> {
+            this.dfType = "GSimpleDF";
+            this.creatingLink = true;
+        });
+
+        JMenuItem addComposedDFMenuItem = new JMenuItem("Ajouter une DF composée");
+        this.nodePopupMenu.add(addComposedDFMenuItem);
+        addComposedDFMenuItem.addActionListener((action) -> {
+            this.dfType = "GComposedDF";
+            this.creatingLink = true;
+        });
+
+        JMenuItem addTrivialDFMenuItem = new JMenuItem("Ajouter une DF trivial");
+        this.nodePopupMenu.add(addTrivialDFMenuItem);
+        addTrivialDFMenuItem.addActionListener((action) -> {
+            this.dfType = "GTrivialDF";
+            this.creatingLink = true;
+        });
     }
     @Override
     protected void createPanelPopupMenu() {
         this.panelPopupMenu = new JPopupMenu();
 
-        JMenuItem addEntityMenuItem = new JMenuItem("Ajouter un nœud");
-        this.panelPopupMenu.add(addEntityMenuItem);
-        addEntityMenuItem.addActionListener((action) -> {
+        JMenuItem addAttributeMenuItem = new JMenuItem("Ajouter un attribut");
+        this.panelPopupMenu.add(addAttributeMenuItem);
+        addAttributeMenuItem.addActionListener((action) -> {
             double MousePositionX = this.getMousePosition().getX();
             double MousePositionY = this.getMousePosition().getY();
 
-            dictionaryData = DDPanel.getGDFAttributes();
+            dictionaryData = DDPanel.getDataForGDF();
             jListAttribute.setListData(dictionaryData);
             JOptionPane.showMessageDialog(null, new JScrollPane(jListAttribute));
             List<Object> selectedValuesList = jListAttribute.getSelectedValuesList();
@@ -81,11 +94,6 @@ public class GDFPanel extends MPanel<GDFGraphController, GDFAttribute, DF> imple
             }
             repaint();
         });
-
-        JMenuItem addLinkMenuItem = new JMenuItem("Ajouter un lien");
-        this.panelPopupMenu.add(addLinkMenuItem);
-        addLinkMenuItem.addActionListener((action) -> this.creatingLink = true);
-
     }
 
     @Override
@@ -111,16 +119,20 @@ public class GDFPanel extends MPanel<GDFGraphController, GDFAttribute, DF> imple
         super.mouseClicked(e);
 
         if (creatingLink) {
-            if (gdfAttribute1 == null) {
-                gdfAttribute1 = nodeUnderCursor;
-            } else if (gdfAttribute2 == null) {
-                gdfAttribute2 = nodeUnderCursor;
+            if (gNodeGDF1 == null) {
+                gNodeGDF1 = nodeUnderCursor;
+            } else if (gNodeGDF2 == null) {
+                gNodeGDF2 = nodeUnderCursor;
             }
-            if (gdfAttribute2 != null && gdfAttribute1 != null) {
-                graphController.addLink(gdfAttribute1, gdfAttribute2);
+            if (gNodeGDF2 != null && gNodeGDF1 != null) {
+                switch (dfType){
+                    case "GSimpleDF" -> graphController.addLink(gNodeGDF1, gNodeGDF2);
+                    case "GTrivialDF" -> graphController.addComposedTrivialDF(gNodeGDF1,gNodeGDF2);
+//                    case "GComposedDF" -> graphController.addGComposedDF(gdfAttribute1, gdfAttribute2);
+                }
                 repaint();
-                gdfAttribute2 = null;
-                gdfAttribute1 = null;
+                gNodeGDF2 = null;
+                gNodeGDF1 = null;
                 nodeUnderCursor = null;
                 creatingLink = false;
             }
@@ -159,14 +171,13 @@ public class GDFPanel extends MPanel<GDFGraphController, GDFAttribute, DF> imple
 
     @Override
     public void mouseMoved(MouseEvent e) {
-
     }
 
     public GDFGraph getGraph() {
-        return this.gdfGraph;
+        return this.graphController.getGraph();
     }
 
     public void setGraph(GDFGraph gdfGraph) {
-        this.gdfGraph = gdfGraph;
+        this.graphController.setGraph(gdfGraph);
     }
 }

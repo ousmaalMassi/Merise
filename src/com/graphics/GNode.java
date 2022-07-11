@@ -30,12 +30,20 @@ public abstract class GNode extends GObject {
         this.y = y;
     }
 
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
-        this.name = name.equals("") ?  this.name : name;
+        this.name = name;
     }
 
     @Override

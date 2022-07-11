@@ -118,7 +118,8 @@ public class DDPanel extends JPanel {
 
     public static void setUsedInGDF(String dataName, boolean used) {
         int row = getDataList().indexOf(normalize(dataName));
-        tableModel.setValueAt(used, row, GDF_COL_INDEX);
+        if (row != -1)
+            tableModel.setValueAt(used, row, GDF_COL_INDEX);
     }
 
     /**************** end ****************/

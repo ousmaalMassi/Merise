@@ -9,7 +9,7 @@ import java.util.List;
 
 public class GDFNode extends MeriseObject {
 
-    private List<String> targets;
+    protected List<String> targets;
 
     public GDFNode(String name) {
         this.name = name;
