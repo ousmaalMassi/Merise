@@ -18,6 +18,7 @@ public class MLDPanel extends JPanel {
         textArea.setBorder(new EmptyBorder(10,10,10,10));
         textArea.setEditable(false);
 
+        mldGraph = new MLDGraph();
         this.setLayout(new BorderLayout());
         this.add(textArea, BorderLayout.CENTER);
         this.setBorder(new EmptyBorder(10,10,10,10));
