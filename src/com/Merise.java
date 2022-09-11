@@ -35,9 +35,9 @@ import java.util.Map;
 
 public class Merise extends JFrame {
     private static final String WINDOW_TITLE = "New Merise_v2_pfe";
-    private JFileChooser fc;
     private static final String FILE_EXTENSION = "merise";
     private static final String AUTO_SAVE_FILE = "merise_auto_saved";
+    private JFileChooser fc;
     private FlowPanel flowPanel;
     private ManagementRulesPanel managementRulesPanel;
     private DDPanel ddPanel;
@@ -54,6 +54,7 @@ public class Merise extends JFrame {
     private JButton btnGdfToMcd;
     private JButton btnGrid;
     private JToolBar toolBar;
+    private File currentFile;
 
     public Merise() {
         initComponents();
@@ -161,6 +162,7 @@ public class Merise extends JFrame {
     private void AddButtonActionListeners() {
 
         btnNew.addActionListener((ActionEvent e) -> {
+            currentFile = null;
             if (diagramsAreEmpty())
                 return;
 
@@ -232,11 +234,11 @@ public class Merise extends JFrame {
         if (fc.showOpenDialog(this) == JFileChooser.CANCEL_OPTION)
             return;
 
-        File file = fc.getSelectedFile();
-        System.out.println("Opening: " + file.getName());
-        this.setTitle(file.getName());
+        currentFile = fc.getSelectedFile();
+        System.out.println("Opening: " + currentFile.getName());
+        this.setTitle(currentFile.getName());
         try {
-            meriseData = deserialize(file);
+            meriseData = deserialize(currentFile);
             this.loadMeriseData(meriseData);
         } catch (IOException | ClassNotFoundException ex) {
             throw new RuntimeException(ex);
@@ -244,14 +246,20 @@ public class Merise extends JFrame {
     }
 
     private void saveFile() {
-        fc.setDialogTitle("Specifier le nom de fichier");
+        String fileName;
+        if (currentFile != null)
+            fileName = currentFile.getAbsolutePath();
+        else {
+            fc.setDialogTitle("Specifier le nom de fichier");
 
-        if(fc.showSaveDialog(this) == JFileChooser.CANCEL_OPTION){
-            System.out.println("Save command canceled");
-            return;
+            if (fc.showSaveDialog(this) == JFileChooser.CANCEL_OPTION) {
+                System.out.println("Save command canceled");
+                return;
+            }
+
+            fileName = fc.getSelectedFile().getAbsolutePath();
         }
 
-        String fileName = fc.getSelectedFile().getAbsolutePath();
         fileName = normalizeFileName(fileName);
         try {
             Map<String, Object> meriseData = getMeriseData();
@@ -266,7 +274,7 @@ public class Merise extends JFrame {
         String suffix = "." + FILE_EXTENSION;
         fileName = fileName.trim();
         if (!fileName.endsWith(suffix))
-            return fileName+suffix;
+            return fileName + suffix;
         return fileName;
     }
 
@@ -298,7 +306,7 @@ public class Merise extends JFrame {
         System.out.println("opening ...");
 
         flowPanel.setNodes((List<GNode>) meriseData.get("flowNodes"));
-        flowPanel.setLinks((List<GArrow>)meriseData.get("flowLinks"));
+        flowPanel.setLinks((List<GArrow>) meriseData.get("flowLinks"));
         flowPanel.repaint();
 
         managementRulesPanel.setData((Object[][]) meriseData.get("managementRules"));
