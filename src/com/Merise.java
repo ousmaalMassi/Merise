@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Merise extends JFrame {
+    private static final String WINDOW_TITLE = "New Merise_v2_pfe";
     private JFileChooser fc;
     private static final String FILE_EXTENSION = "merise";
     private static final String AUTO_SAVE_FILE = "merise_auto_saved";
@@ -56,7 +57,7 @@ public class Merise extends JFrame {
 
     public Merise() {
         initComponents();
-        setTitle("Merise_v2_pfe");
+        setTitle(WINDOW_TITLE);
         setSize(1200, 800);
         setLocationRelativeTo(null);
         addWindowListener(getWindowAdapter());
@@ -171,6 +172,7 @@ public class Merise extends JFrame {
                 saveFile();
             resetDiagrams();
             repaint();
+            this.setTitle(WINDOW_TITLE);
         });
 
         btnOpen.addActionListener((ActionEvent e) -> openFile());
