@@ -12,7 +12,6 @@ import com.graphics.GArrow;
 import com.graphics.GNode;
 import com.graphics.gdf.GNodeGDF;
 import com.graphics.gdf.GSimpleDF;
-import com.graphics.gdf.GDFAttribute;
 import com.graphics.mcd.GMCDLink;
 import com.graphics.mcd.GMCDNode;
 import com.models.Transform;
@@ -233,7 +232,7 @@ public class Merise extends JFrame {
 
         File file = fc.getSelectedFile();
         System.out.println("Opening: " + file.getName());
-
+        this.setTitle(file.getName());
         try {
             meriseData = deserialize(file);
             this.loadMeriseData(meriseData);
