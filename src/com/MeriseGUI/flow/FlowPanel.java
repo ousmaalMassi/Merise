@@ -10,26 +10,58 @@ import com.graphics.flow.InternalActor;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.util.List;
 
 public class FlowPanel extends MPanel<FlowGraphController, GNode, GArrow> implements MouseListener, MouseMotionListener {
     private Actor sourceActor;
     private Actor targetActor;
     private boolean creatingLink;
+    private JToolBar toolBar;
+    private JButton btnInternalActor;
+    private JButton btnExternalActor;
+    private JButton btnDomain;
+    private JButton btnFlow;
 
     public FlowPanel() {
         super(new FlowGraphController());
         createPanelPopupMenu();
         createNodePopupMenu();
         createLinkPopupMenu();
-
+        setLayout(new BorderLayout());
+        createToolBar();
+        add(toolBar, BorderLayout.NORTH);
         addMouseListener(this);
         addMouseMotionListener(this);
         this.graphController = new FlowGraphController();
         creatingLink = false;
+    }
+
+    private void createToolBar() {
+        toolBar = new JToolBar();
+        btnInternalActor = createToolBarBtn("Screenshot", "nouveau fichier (CTRL+N)");
+        btnExternalActor = createToolBarBtn("extern", "Ouvrir un nouveau projet (CTRL+O)");
+        btnDomain = createToolBarBtn("domain", "Enregistrer sous (CTRL+SHIFT+S)");
+        btnFlow = createToolBarBtn("flow", "Générer MCD à partir de GDF");
+        toolBar.setOrientation(SwingConstants.HORIZONTAL);
+        AddButtonActionListeners();
+    }
+
+    private JButton createToolBarBtn(String icon, String toolTip) {
+        JButton btn = new JButton(new ImageIcon("icons/" + icon + ".png"));
+        btn.setFocusable(false);
+        btn.setToolTipText(toolTip);
+        toolBar.add(btn);
+        return btn;
+    }
+
+    private void AddButtonActionListeners() {
+        btnInternalActor.addActionListener((ActionEvent e) -> createActor("INTERNAL_ACTOR"));
+        btnExternalActor.addActionListener((ActionEvent e) -> createActor("EXTERNAL_ACTOR"));
+        btnDomain.addActionListener((ActionEvent e) -> createActor("DOMAIN"));
+        btnFlow.addActionListener((ActionEvent e) -> createFlow());
     }
 
     public void createNodePopupMenu() {
@@ -59,38 +91,39 @@ public class FlowPanel extends MPanel<FlowGraphController, GNode, GArrow> implem
 
         JMenuItem addInternalActorMenuItem = new JMenuItem("Ajouter un acteur interne");
         this.panelPopupMenu.add(addInternalActorMenuItem);
-        addInternalActorMenuItem.addActionListener((action) -> {
-            InternalActor internalActor = createInternalActor();
-            nodeUnderCursor = internalActor;
-            graphController.addNode(internalActor);
-            setNodeAsSelected(internalActor);
-            repaint();
-        });
+        addInternalActorMenuItem.addActionListener((action) -> createActor("INTERNAL_ACTOR"));
 
         JMenuItem addExternalActorMenuItem = new JMenuItem("Ajouter un acteur externe");
         this.panelPopupMenu.add(addExternalActorMenuItem);
-        addExternalActorMenuItem.addActionListener((action) -> {
-            ExternalActor externalActor = createExternalActor();
-            nodeUnderCursor = externalActor;
-            graphController.addNode(externalActor);
-            setNodeAsSelected(externalActor);
-            repaint();
-        });
+        addExternalActorMenuItem.addActionListener((action) -> createActor("EXTERNAL_ACTOR"));
 
         JMenuItem addDomainMenuItem = new JMenuItem("Ajouter un domaine");
         this.panelPopupMenu.add(addDomainMenuItem);
-        addDomainMenuItem.addActionListener((action) -> {
-            Domain domain = createDomain();
-            nodeUnderCursor = domain;
-            graphController.addNode(domain);
-            setNodeAsSelected(domain);
-            repaint();
-        });
+        addDomainMenuItem.addActionListener((action) -> createActor("DOMAIN"));
 
         JMenuItem addLinkMenuItem = new JMenuItem("Ajouter un lien");
         this.panelPopupMenu.add(addLinkMenuItem);
-        addLinkMenuItem.addActionListener((action) -> this.creatingLink = true);
+        addLinkMenuItem.addActionListener((action) -> createFlow());
+    }
 
+    public void createActor(String type) {
+        int x = (int) this.getMousePosition().getX();
+        int y = (int) this.getMousePosition().getY();
+        GNode gNode = null;
+        switch (type) {
+            case "INTERNAL_ACTOR" -> gNode = new InternalActor(x, y, "InternalActor");
+            case "EXTERNAL_ACTOR" -> gNode = new ExternalActor(x, y, "ExternalActor");
+            case "DOMAIN" -> gNode = new Domain(x, y, "Domain");
+        }
+        nodeUnderCursor = gNode;
+        assert gNode != null;
+        graphController.addNode(gNode);
+        setNodeAsSelected(gNode);
+        repaint();
+    }
+
+    public void createFlow() {
+        this.creatingLink = true;
     }
 
     @Override
@@ -103,24 +136,6 @@ public class FlowPanel extends MPanel<FlowGraphController, GNode, GArrow> implem
             graphController.removeLink(linkUnderCursor);
             repaint();
         });
-    }
-
-    private InternalActor createInternalActor() {
-        int x = (int) this.getMousePosition().getX();
-        int y = (int) this.getMousePosition().getY();
-        return new InternalActor(x, y, "InternalActor");
-    }
-
-    private ExternalActor createExternalActor() {
-        int x = (int) this.getMousePosition().getX();
-        int y = (int) this.getMousePosition().getY();
-        return new ExternalActor(x, y, "ExternalActor");
-    }
-
-    private Domain createDomain() {
-        int x = (int) this.getMousePosition().getX();
-        int y = (int) this.getMousePosition().getY();
-        return new Domain(x, y,"Domain");
     }
 
     @Override
