@@ -41,10 +41,10 @@ public class FlowPanel extends MPanel<FlowGraphController, GNode, GArrow> implem
 
     private void createToolBar() {
         toolBar = new JToolBar();
-        btnInternalActor = createToolBarBtn("Screenshot", "nouveau fichier (CTRL+N)");
-        btnExternalActor = createToolBarBtn("extern", "Ouvrir un nouveau projet (CTRL+O)");
-        btnDomain = createToolBarBtn("domain", "Enregistrer sous (CTRL+SHIFT+S)");
-        btnFlow = createToolBarBtn("flow", "Générer MCD à partir de GDF");
+        btnInternalActor = createToolBarBtn("intern", "Ajouter un acteur interne");
+        btnExternalActor = createToolBarBtn("extern", "Ajouter un acteur externe");
+        btnDomain = createToolBarBtn("domain", "Ajouter un domaine");
+        btnFlow = createToolBarBtn("flow", "Ajouter un flux");
         toolBar.setOrientation(SwingConstants.HORIZONTAL);
         AddButtonActionListeners();
     }
