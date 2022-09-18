@@ -9,6 +9,8 @@ import com.graphics.gdf.GDFAttribute;
 import com.models.gdf.GDFGraph;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -26,19 +28,51 @@ public class GDFPanel extends MPanel<GDFGraphController, GNodeGDF, GSimpleDF> im
     private GArrow gTmpArrow;
 
     private GDFAttribute tmpGDFAttribute;
+    private JToolBar toolBar;
+    private JButton btnSimpleDF;
+    private JButton btnTrivialDF;
+    private JButton btnNonTrivialDF;
+    private JButton btnAttribute;
 
     public GDFPanel() {
         super(new GDFGraphController());
         createPanelPopupMenu();
         createNodePopupMenu();
         createLinkPopupMenu();
-
+        setLayout(new BorderLayout());
+        createToolBar();
+        add(toolBar, BorderLayout.NORTH);
         addMouseListener(this);
         addMouseMotionListener(this);
 
         this.graphController.setGraph(new GDFGraph());
         this.creatingLink = false;
         this.jListAttribute = new JList<>();
+    }
+
+    private void createToolBar() {
+        toolBar = new JToolBar();
+        btnSimpleDF = createToolBarBtn("intern2", "Ajouter un acteur interne");
+        btnTrivialDF = createToolBarBtn("extern", "Ajouter un acteur externe");
+        btnNonTrivialDF = createToolBarBtn("domain", "Ajouter un domaine");
+        btnAttribute = createToolBarBtn("flow", "Ajouter un flux");
+        toolBar.setOrientation(SwingConstants.HORIZONTAL);
+        AddButtonActionListeners();
+    }
+
+    private JButton createToolBarBtn(String icon, String toolTip) {
+        JButton btn = new JButton(new ImageIcon(new ImageIcon("icons/" + icon + ".png").getImage().getScaledInstance(100, 35, Image.SCALE_SMOOTH)));
+        btn.setFocusable(false);
+        btn.setToolTipText(toolTip);
+        toolBar.add(btn);
+        return btn;
+    }
+
+    private void AddButtonActionListeners() {
+        btnSimpleDF.addActionListener((ActionEvent e) -> createLink("GSimpleDF"));
+        btnTrivialDF.addActionListener((ActionEvent e) -> createLink("GComposedTrivialDF"));
+        btnNonTrivialDF.addActionListener((ActionEvent e) -> createLink("GComposedNonTrivialDF"));
+        btnAttribute.addActionListener((ActionEvent e) -> addAttribute());
     }
 
     @Override
@@ -55,50 +89,49 @@ public class GDFPanel extends MPanel<GDFGraphController, GNodeGDF, GSimpleDF> im
 
         JMenuItem addSimpleDFMenuItem = new JMenuItem("Ajouter une DF simple");
         this.nodePopupMenu.add(addSimpleDFMenuItem);
-        addSimpleDFMenuItem.addActionListener((action) -> {
-            this.dfType = "GSimpleDF";
-            this.creatingLink = true;
-        });
+        addSimpleDFMenuItem.addActionListener((action) -> createLink("GSimpleDF"));
 
-        JMenuItem addComposedDFMenuItem = new JMenuItem("Ajouter une DF composée trivial");
-        this.nodePopupMenu.add(addComposedDFMenuItem);
-        addComposedDFMenuItem.addActionListener((action) -> {
-            this.dfType = "GComposedTrivialDF";
-            this.creatingLink = true;
-        });
-
-        JMenuItem addTrivialDFMenuItem = new JMenuItem("Ajouter une DF composée non-trivial");
+        JMenuItem addTrivialDFMenuItem = new JMenuItem("Ajouter une DF composée trivial");
         this.nodePopupMenu.add(addTrivialDFMenuItem);
-        addTrivialDFMenuItem.addActionListener((action) -> {
-            this.dfType = "GComposedNonTrivialDF";
-            this.creatingLink = true;
-        });
+        addTrivialDFMenuItem.addActionListener((action) -> createLink("GComposedTrivialDF"));
+
+        JMenuItem addNonTrivialDFMenuItem = new JMenuItem("Ajouter une DF composée non-trivial");
+        this.nodePopupMenu.add(addNonTrivialDFMenuItem);
+        addNonTrivialDFMenuItem.addActionListener((action) -> createLink("GComposedNonTrivialDF"));
     }
+
+    public void createLink(String type) {
+        this.dfType = type;
+        this.creatingLink = true;
+    }
+
     @Override
     protected void createPanelPopupMenu() {
         this.panelPopupMenu = new JPopupMenu();
 
         JMenuItem addAttributeMenuItem = new JMenuItem("Ajouter un attribut");
         this.panelPopupMenu.add(addAttributeMenuItem);
-        addAttributeMenuItem.addActionListener((action) -> {
-            double MousePositionX = this.getMousePosition().getX();
-            double MousePositionY = this.getMousePosition().getY();
+        addAttributeMenuItem.addActionListener((action) -> addAttribute());
+    }
 
-            dictionaryData = DDPanel.getDataForGDF();
-            jListAttribute.setListData(dictionaryData);
-            JOptionPane.showMessageDialog(null, new JScrollPane(jListAttribute));
-            List<Object> selectedValuesList = jListAttribute.getSelectedValuesList();
+    private void addAttribute() {
+        double MousePositionX = this.getMousePosition().getX();
+        double MousePositionY = this.getMousePosition().getY();
 
-            for (Object o : selectedValuesList) {
-                String attributeName = o.toString();
-                DDPanel.setUsedInGDF(attributeName, true);
-                GDFAttribute gdfAttribute = createAttribute(MousePositionX, MousePositionY, attributeName);
-                graphController.addNode(gdfAttribute);
-                setNodeAsSelected(gdfAttribute);
+        dictionaryData = DDPanel.getDataForGDF();
+        jListAttribute.setListData(dictionaryData);
+        JOptionPane.showMessageDialog(null, new JScrollPane(jListAttribute));
+        List<Object> selectedValuesList = jListAttribute.getSelectedValuesList();
 
-            }
-            repaint();
-        });
+        for (Object o : selectedValuesList) {
+            String attributeName = o.toString();
+            DDPanel.setUsedInGDF(attributeName, true);
+            GDFAttribute gdfAttribute = createAttribute(MousePositionX, MousePositionY, attributeName);
+            graphController.addNode(gdfAttribute);
+            setNodeAsSelected(gdfAttribute);
+
+        }
+        repaint();
     }
 
     @Override
