@@ -9,6 +9,8 @@ import com.graphics.mcd.GMCDNode;
 import com.models.mcd.*;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -22,19 +24,48 @@ public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> imp
     private boolean creatingLink;
     private Vector<String> dictionaryData;
     private final JList<Object> jListAttribute;
+    private JToolBar toolBar;
+    private JButton btnEntity;
+    private JButton btnAssociation;
+    private JButton btnLink;
 
     public MCDPanel() {
         super(new MCDGraphController());
         createPanelPopupMenu();
         createNodePopupMenu();
         createLinkPopupMenu();
-
+        setLayout(new BorderLayout());
+        createToolBar();
+        add(toolBar, BorderLayout.NORTH);
         addMouseListener(this);
         addMouseMotionListener(this);
 
         this.graphController.setGraph(new MCDGraph());
         this.creatingLink = false;
         this.jListAttribute = new JList<>();
+    }
+
+    private void createToolBar() {
+        toolBar = new JToolBar();
+        btnEntity = createToolBarBtn("entity", "Ajouter un acteur interne");
+        btnAssociation = createToolBarBtn("association", "Ajouter un acteur externe");
+        btnLink = createToolBarBtn("link", "Ajouter un domaine");
+        toolBar.setOrientation(SwingConstants.HORIZONTAL);
+        AddButtonActionListeners();
+    }
+
+    private JButton createToolBarBtn(String icon, String toolTip) {
+        JButton btn = new JButton(new ImageIcon(new ImageIcon("icons/" + icon + ".png").getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
+        btn.setFocusable(false);
+        btn.setToolTipText(toolTip);
+        toolBar.add(btn);
+        return btn;
+    }
+
+    private void AddButtonActionListeners() {
+        btnEntity.addActionListener((ActionEvent e) -> createMcdObject("GEntity"));
+        btnAssociation.addActionListener((ActionEvent e) -> createMcdObject("GAssociation"));
+        btnLink.addActionListener((ActionEvent e) -> creatingLink());
     }
 
     @Override
@@ -105,26 +136,36 @@ public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> imp
 
         JMenuItem addEntityMenuItem = new JMenuItem("Ajouter une Entité");
         this.panelPopupMenu.add(addEntityMenuItem);
-        addEntityMenuItem.addActionListener((action) -> {
-            GEntity entity = createEntity();
-            graphController.addNode(entity);
-            setNodeAsSelected(entity);
-            repaint();
-        });
+        addEntityMenuItem.addActionListener((action) -> createMcdObject("GEntity"));
 
         JMenuItem addAssociationMenuItem = new JMenuItem("Ajouter une Association");
         this.panelPopupMenu.add(addAssociationMenuItem);
-        addAssociationMenuItem.addActionListener((action) -> {
-            GAssociation association = createAssociation();
-            graphController.addNode(association);
-            setNodeAsSelected(association);
-            repaint();
-        });
+        addAssociationMenuItem.addActionListener((action) -> createMcdObject("GAssociation"));
 
         JMenuItem addLinkMenuItem = new JMenuItem("Ajouter un lien");
         this.panelPopupMenu.add(addLinkMenuItem);
-        addLinkMenuItem.addActionListener((action) -> this.creatingLink = true);
+        addLinkMenuItem.addActionListener((action) -> creatingLink());
 
+    }
+
+    private void creatingLink() {
+        this.creatingLink = true;
+    }
+
+    public void createMcdObject(String type) {
+
+        int x = (int) this.getMousePosition().getX();
+        int y = (int) this.getMousePosition().getY();
+        GMCDNode gmcdNode = null;
+        switch (type) {
+            case "GEntity" -> gmcdNode = new GEntity(x, y, "");
+            case "GAssociation" -> gmcdNode = new GAssociation(x, y, "");
+        }
+        nodeUnderCursor = gmcdNode;
+        assert gmcdNode != null;
+        graphController.addNode(gmcdNode);
+        setNodeAsSelected(gmcdNode);
+        repaint();
     }
 
     @Override
@@ -153,18 +194,6 @@ public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> imp
             JOptionPane.showMessageDialog(null, new JScrollPane(card));
             graphController.editCard(linkUnderCursor, card.getSelectedIndex());
             repaint();
-    }
-
-    private GEntity createEntity() {
-        int x = (int) this.getMousePosition().getX();
-        int y = (int) this.getMousePosition().getY();
-        return new GEntity(x, y, "");
-    }
-
-    private GAssociation createAssociation() {
-        int x = (int) this.getMousePosition().getX();
-        int y = (int) this.getMousePosition().getY();
-        return new GAssociation(x, y, "");
     }
 
     @Override
