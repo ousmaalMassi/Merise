@@ -41,7 +41,7 @@ public class FlowPanel extends MPanel<FlowGraphController, GNode, GArrow> implem
 
     private void createToolBar() {
         toolBar = new JToolBar();
-        btnInternalActor = createToolBarBtn("intern", "Ajouter un acteur interne");
+        btnInternalActor = createToolBarBtn("intern2", "Ajouter un acteur interne");
         btnExternalActor = createToolBarBtn("extern", "Ajouter un acteur externe");
         btnDomain = createToolBarBtn("domain", "Ajouter un domaine");
         btnFlow = createToolBarBtn("flow", "Ajouter un flux");
@@ -50,7 +50,7 @@ public class FlowPanel extends MPanel<FlowGraphController, GNode, GArrow> implem
     }
 
     private JButton createToolBarBtn(String icon, String toolTip) {
-        JButton btn = new JButton(new ImageIcon("icons/" + icon + ".png"));
+        JButton btn = new JButton(new ImageIcon(new ImageIcon("icons/" + icon + ".png").getImage().getScaledInstance(100, 35, Image.SCALE_SMOOTH)));
         btn.setFocusable(false);
         btn.setToolTipText(toolTip);
         toolBar.add(btn);
