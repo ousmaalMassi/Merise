@@ -37,6 +37,8 @@ public class Merise extends JFrame {
     private static final String WINDOW_TITLE = "New Merise_v2_pfe";
     private static final String FILE_EXTENSION = "merise";
     private static final String AUTO_SAVE_FILE = "merise_auto_saved";
+    private static final int DEFAULT_SAVE = 0;
+    private static final int SAVE_AS = 1;
     private JFileChooser fc;
     private FlowPanel flowPanel;
     private ManagementRulesPanel managementRulesPanel;
@@ -49,6 +51,7 @@ public class Merise extends JFrame {
     private Transform transform;
     private JButton btnNew;
     private JButton btnOpen;
+    private JButton btnSave;
     private JButton btnSaveAs;
     private JButton btnGenerate;
     private JButton btnGdfToMcd;
@@ -64,8 +67,6 @@ public class Merise extends JFrame {
         addWindowListener(getWindowAdapter());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setVisible(true);
-
-        System.out.println("\uD83D\uDE00");
     }
 
     private void initComponents() {
@@ -141,7 +142,8 @@ public class Merise extends JFrame {
         toolBar = new JToolBar();
         btnNew = createToolBarBtn("new_file", "nouveau fichier (CTRL+N)", true);
         btnOpen = createToolBarBtn("open_folder", "Ouvrir un nouveau projet (CTRL+O)", true);
-        btnSaveAs = createToolBarBtn("save_as", "Enregistrer sous (CTRL+SHIFT+S)", true);
+        btnSave = createToolBarBtn("save_as", "Enregistrer (CTRL+S)", true);
+        btnSaveAs = createToolBarBtn("save_all", "Enregistrer sous (CTRL+SHIFT+S)", true);
         btnGdfToMcd = createToolBarBtn("generate2", "Générer MCD à partir de GDF", true);
         btnGenerate = createToolBarBtn("generate", "Générer le MLD & le MPD (F6)", true);
         btnGrid = createToolBarBtn("grid", "Grille (CTRL+G)", false);
@@ -171,7 +173,7 @@ public class Merise extends JFrame {
                     "Voulez vous enregistrer les modifications?",
                     "Enregistrer?", JOptionPane.YES_NO_OPTION);
             if (confirmDialog == JOptionPane.YES_OPTION)
-                saveFile();
+                saveFile(DEFAULT_SAVE);
             resetDiagrams();
             repaint();
             this.setTitle(WINDOW_TITLE);
@@ -179,7 +181,7 @@ public class Merise extends JFrame {
 
         btnOpen.addActionListener((ActionEvent e) -> openFile());
 
-        btnSaveAs.addActionListener((ActionEvent e) -> saveFile());
+        btnSaveAs.addActionListener((ActionEvent e) -> saveFile(SAVE_AS));
 
         btnGdfToMcd.addActionListener((ActionEvent e) -> {
             GDFGraph gdfGraph = gdfPanel.getGraph();
@@ -197,8 +199,7 @@ public class Merise extends JFrame {
             JOptionPane.showMessageDialog(this, "Terminé!");
         });
 
-        btnGrid.addActionListener((ActionEvent e) -> {
-        });
+        btnSave.addActionListener((ActionEvent e) -> saveFile(DEFAULT_SAVE));
 
     }
 
@@ -226,6 +227,10 @@ public class Merise extends JFrame {
         mcdPanel.setGraph(new MCDGraph());
 
         mldPanel.setMldGraph(new MLDGraph());
+
+        mpdPanel.setMpdGraph(new MPDGraph());
+
+        sqlPanel.setSQLScript("");
     }
 
     private void openFile() {
@@ -245,9 +250,9 @@ public class Merise extends JFrame {
         }
     }
 
-    private void saveFile() {
+    private void saveFile(int type) {
         String fileName;
-        if (currentFile != null)
+        if (currentFile != null && type == DEFAULT_SAVE)
             fileName = currentFile.getAbsolutePath();
         else {
             fc.setDialogTitle("Specifier le nom de fichier");
