@@ -2,14 +2,26 @@ package com.graphics.gdf;
 
 import java.awt.*;
 
-public class GEmptyNode extends GTrivialDF {
+public class GEmptyNode extends GNodeGDF {
+
+    int ovalRadius = 20;
     public GEmptyNode(int x, int y) {
-        super(x, y);
+        super(x, y, "");
     }
 
     @Override
     public void draw(Graphics2D g) {
-        super.draw(g);
-        g.drawLine(shiftedX, shiftedY,shiftedX+ovalRadius, shiftedY+ovalRadius);
+        shiftedX = x - ovalRadius/2;
+        shiftedY = y - ovalRadius/2;
+        g.setColor(Color.WHITE);
+        g.fillOval(shiftedX, shiftedY, ovalRadius, ovalRadius);
+        g.setColor(Color.BLACK);
+        g.drawOval(shiftedX, shiftedY, ovalRadius, ovalRadius);
+    }
+
+    @Override
+    public boolean contains(double x, double y) {
+        return (Math.pow((x- shiftedX)/ovalRadius-0.5, 2) + Math.pow((y- shiftedY)/ovalRadius-0.5, 2)) < 0.25;
     }
 }
+

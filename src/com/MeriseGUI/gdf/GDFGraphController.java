@@ -4,8 +4,8 @@ import com.MeriseGUI.GraphController;
 import com.MeriseGUI.ddd.DDPanel;
 import com.graphics.GLink;
 import com.graphics.GNode;
-import com.graphics.gdf.GComposedDF;
-import com.graphics.gdf.GDFAttribute;
+import com.graphics.gdf.GComposedNonTrivialDF;
+import com.graphics.gdf.GComposedTrivialDF;
 import com.graphics.gdf.GNodeGDF;
 import com.graphics.gdf.GSimpleDF;
 import com.models.gdf.ComposedNode;
@@ -90,20 +90,20 @@ public class GDFGraphController extends GraphController<GNodeGDF, GLink> {
 ////        GDFNode gdfNodeGdfAttribute2 =  gdfGraph.contains(gdfAttribute2.getName());
 //
 ////        gdfNodeGdfAttribute1.addTarget(gdfNodeGdfAttribute2.getName());
-//        GComposedDF gComposedDF = new GComposedDF(gdfAttribute1, gdfAttribute2);
+//        GComposedTrivialDF gComposedDF = new GComposedTrivialDF(gdfAttribute1, gdfAttribute2);
 //
 //        this.links.add(gComposedDF);
 //
 //        System.out.println(gdfGraph);
 //    }
 
-    public void addComposedTrivialDF(GNodeGDF gNodeGDF1, GNodeGDF gNodeGDF2) {
+    public void addComposedTrivialDF(GNodeGDF gNodeGDF1, GNodeGDF gNodeGDF2, String type) {
 
-        if (gNodeGDF1 instanceof GComposedDF) {
+        if (gNodeGDF1 instanceof GComposedTrivialDF) {
             ComposedNode gdfNode = (ComposedNode) gdfGraph.contains(gNodeGDF1.getName());
             this.links.add(new GLink(gNodeGDF1, gNodeGDF2));
             gdfNode.addSource(gNodeGDF2.getName());
-        } else if (gNodeGDF2 instanceof GComposedDF) {
+        } else if (gNodeGDF2 instanceof GComposedTrivialDF) {
             ComposedNode gdfNode = (ComposedNode) gdfGraph.contains(gNodeGDF2.getName());
             this.links.add(new GLink(gNodeGDF1, gNodeGDF2));
             gdfNode.addSource(gNodeGDF1.getName());
@@ -111,8 +111,15 @@ public class GDFGraphController extends GraphController<GNodeGDF, GLink> {
 
             int x = Math.min(gNodeGDF1.getX(),gNodeGDF2.getX()) + Math.abs(gNodeGDF1.getX()-gNodeGDF2.getX()) / 2;
             int y = Math.min(gNodeGDF1.getY(),gNodeGDF2.getY()) + Math.abs(gNodeGDF1.getY()-gNodeGDF2.getY()) / 2;
-            GComposedDF node = new GComposedDF(x, y, "COMP");
 
+            GNodeGDF node = null;
+            if (type.equals("Trivial"))
+                node = new GComposedTrivialDF(x, y, "COMP");
+            else if (type.equals("Non_trivial")) {
+                node = new GComposedNonTrivialDF(x, y, "COMP");
+            }
+
+            assert node != null;
             ComposedNode gdfNode = new ComposedNode(node.getName());
 
             gdfGraph.addDfNodes(gdfNode);
