@@ -52,16 +52,16 @@ public class GDFPanel extends MPanel<GDFGraphController, GNodeGDF, GSimpleDF> im
 
     private void createToolBar() {
         toolBar = new JToolBar();
-        btnSimpleDF = createToolBarBtn("intern2", "Ajouter un acteur interne");
-        btnTrivialDF = createToolBarBtn("extern", "Ajouter un acteur externe");
-        btnNonTrivialDF = createToolBarBtn("domain", "Ajouter un domaine");
-        btnAttribute = createToolBarBtn("flow", "Ajouter un flux");
+        btnSimpleDF = createToolBarBtn("simple", "DF Simple");
+        btnTrivialDF = createToolBarBtn("trivial", "DF Composé triviale");
+        btnNonTrivialDF = createToolBarBtn("non_trivial", "DF Composé non triviale");
+        btnAttribute = createToolBarBtn("attribute", "Ajouter un attribut");
         toolBar.setOrientation(SwingConstants.HORIZONTAL);
         AddButtonActionListeners();
     }
 
     private JButton createToolBarBtn(String icon, String toolTip) {
-        JButton btn = new JButton(new ImageIcon(new ImageIcon("icons/" + icon + ".png").getImage().getScaledInstance(100, 35, Image.SCALE_SMOOTH)));
+        JButton btn = new JButton(new ImageIcon(new ImageIcon("icons/" + icon + ".png").getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH)));
         btn.setFocusable(false);
         btn.setToolTipText(toolTip);
         toolBar.add(btn);
