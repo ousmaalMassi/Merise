@@ -47,9 +47,9 @@ public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> imp
 
     private void createToolBar() {
         toolBar = new JToolBar();
-        btnEntity = createToolBarBtn("entity", "Ajouter un acteur interne");
-        btnAssociation = createToolBarBtn("association", "Ajouter un acteur externe");
-        btnLink = createToolBarBtn("link", "Ajouter un domaine");
+        btnEntity = createToolBarBtn("entity", "Ajouter une entité");
+        btnAssociation = createToolBarBtn("association", "Ajouter une association");
+        btnLink = createToolBarBtn("link", "Ajouter un lien");
         toolBar.setOrientation(SwingConstants.HORIZONTAL);
         AddButtonActionListeners();
     }
