@@ -47,7 +47,7 @@ public class Transform {
 
 
     public MLDGraph mcdToMld(MCDGraph mcdGraph) {
-
+        mldGraph.getTables().clear();
         mcdGraph.getEntities().forEach(entity -> mldGraph.getTables().add(createMLDTable(entity)));
 
         mcdGraph.getAssociations().forEach(association -> {
@@ -149,11 +149,13 @@ public class Transform {
 //
 //        });
 //        return this.mpdGraph;
+        this.mpdGraph.getTables().clear();
         this.mldGraph.getTables().forEach(mldTable -> this.mpdGraph.getTables().add(mldTable));
         return this.mpdGraph;
     }
 
     public String mpdToSQL(MPDGraph mpdGraph) {
+        this.foreignKeyConstraint.clear();
         //TODO specify the targeted DBMS
         StringBuilder stringBuilder = new StringBuilder();
         mpdGraph.getTables().forEach(table -> stringBuilder
