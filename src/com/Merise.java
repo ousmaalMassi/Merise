@@ -142,8 +142,8 @@ public class Merise extends JFrame {
         toolBar = new JToolBar();
         btnNew = createToolBarBtn("new_file", "nouveau fichier (CTRL+N)", true);
         btnOpen = createToolBarBtn("open_folder", "Ouvrir un nouveau projet (CTRL+O)", true);
-        btnSave = createToolBarBtn("save_as", "Enregistrer (CTRL+S)", true);
-        btnSaveAs = createToolBarBtn("save_all", "Enregistrer sous (CTRL+SHIFT+S)", true);
+        btnSave = createToolBarBtn("save", "Enregistrer (CTRL+S)", true);
+        btnSaveAs = createToolBarBtn("save_as", "Enregistrer sous (CTRL+SHIFT+S)", true);
         btnGdfToMcd = createToolBarBtn("generate2", "Générer MCD à partir de GDF", true);
         btnGenerate = createToolBarBtn("generate", "Générer le MLD & le MPD (F6)", true);
         btnGrid = createToolBarBtn("grid", "Grille (CTRL+G)", false);
