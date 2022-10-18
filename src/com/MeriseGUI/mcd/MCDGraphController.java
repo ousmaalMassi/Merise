@@ -30,13 +30,13 @@ public class MCDGraphController extends GraphController<GMCDNode, GMCDLink> {
     }
 
     @Override
-    public void draw(Graphics2D graphics2D) {
+    public void printGraph(Graphics2D graphics2D) {
         this.links.forEach(edge -> edge.draw(graphics2D));
         this.nodes.forEach(node -> node.draw(graphics2D));
     }
 
     @Override
-    public void remove(GMCDNode graphicalNode) {
+    public void removeNode(GMCDNode graphicalNode) {
         if (graphicalNode == null)
             return;
         if (graphicalNode instanceof GEntity)
@@ -88,8 +88,8 @@ public class MCDGraphController extends GraphController<GMCDNode, GMCDLink> {
 
     @Override
     public void removeLink(GMCDLink link) {
-        GNode associationView = link.getAssociationView();
-        GNode entityView = link.getEntityView();
+        GNode associationView = link.getGAssociation();
+        GNode entityView = link.getGEntity();
         Entity entity = mcdGraph.containsEntity(entityView.getName());
 
         this.mcdGraph.unlink(associationView.getName(), entity);
@@ -152,6 +152,7 @@ public class MCDGraphController extends GraphController<GMCDNode, GMCDLink> {
         this.links.removeIf(e -> e.getNodeA().equals(nodeUnderCursor) || e.getNodeB().equals(nodeUnderCursor) );
     }
 
+
     private void addAssociation(GAssociation GAssociation) {
         int AssociationNo = mcdGraph.getAssociations().size();
         String associationName = "Association "+AssociationNo;
@@ -170,8 +171,8 @@ public class MCDGraphController extends GraphController<GMCDNode, GMCDLink> {
         Cardinality[] cardinalities = Cardinality.values();
         linkUnderCursor.setText(cardinalities[cardIndex].toString());
 
-        String associationName = linkUnderCursor.getAssociationView().getName();
-        Entity entity = mcdGraph.containsEntity(linkUnderCursor.getEntityView().getName());
+        String associationName = linkUnderCursor.getGAssociation().getName();
+        Entity entity = mcdGraph.containsEntity(linkUnderCursor.getGEntity().getName());
 
         Association association = this.mcdGraph.containsAssociation(associationName);
         association.setCard(entity, cardinalities[cardIndex]);

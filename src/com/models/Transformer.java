@@ -15,13 +15,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Transform {
+public class Transformer {
 
     private final MLDGraph mldGraph;
     private final MPDGraph mpdGraph;
     private final List<String> foreignKeyConstraint;
 
-    public Transform() {
+    public Transformer() {
         mldGraph = new MLDGraph();
         mpdGraph = new MPDGraph();
         foreignKeyConstraint = new ArrayList<>();
@@ -30,7 +30,7 @@ public class Transform {
     public MCDGraph gdfToMcd(GDFGraph gdfGraph) {
         MCDGraph mcdGraph = new MCDGraph();
         AtomicInteger num = new AtomicInteger();
-        gdfGraph.getDfNodes().stream().filter(gdfNode -> gdfNode.getTargets().isEmpty()).forEach(gdfNode -> {
+        gdfGraph.getDfNodes().stream().filter(gdfNode -> !gdfNode.getTargets().isEmpty()).forEach(gdfNode -> {
             num.getAndIncrement();
             Entity entity = new Entity("entity "+num);
             entity.addProperty(new Property(gdfNode.getName(), Property.Types.ALPHABETICAL, 11));
@@ -91,17 +91,17 @@ public class Transform {
         return cardinality1.equals(Cardinality.ZERO_MANY) || cardinality1.equals(Cardinality.ONE_MANY);
     }
 
-    private Relationships getRelationShipType(Cardinality cardinality1, Cardinality cardinality2) {
+    private Relationship getRelationShipType(Cardinality cardinality1, Cardinality cardinality2) {
 
-        Relationships relationShip;
+        Relationship relationShip;
         if ((cardinality1 == Cardinality.ZERO_MANY || cardinality1 == Cardinality.ONE_MANY) &&
                 (cardinality2 == Cardinality.ZERO_MANY || cardinality2 == Cardinality.ONE_MANY))
-            relationShip = Relationships.MANY_TO_MANY;
+            relationShip = Relationship.MANY_TO_MANY;
         else if ((cardinality1 == Cardinality.ONE_ONE || cardinality1 == Cardinality.ZERO_ONE) &&
                 (cardinality2 == Cardinality.ONE_ONE || cardinality2 == Cardinality.ZERO_ONE))
-            relationShip = Relationships.ONE_TO_ONE;
+            relationShip = Relationship.ONE_TO_ONE;
         else
-            relationShip = Relationships.ONE_TO_MANY;
+            relationShip = Relationship.ONE_TO_MANY;
 
         return relationShip;
     }

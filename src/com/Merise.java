@@ -14,7 +14,7 @@ import com.graphics.gdf.GNodeGDF;
 import com.graphics.gdf.GSimpleDF;
 import com.graphics.mcd.GMCDLink;
 import com.graphics.mcd.GMCDNode;
-import com.models.Transform;
+import com.models.Transformer;
 import com.models.gdf.GDFGraph;
 import com.models.mcd.MCDGraph;
 import com.models.mld.MLDGraph;
@@ -48,7 +48,7 @@ public class Merise extends JFrame {
     private MLDPanel mldPanel;
     private MPDPanel mpdPanel;
     private SQLPanel sqlPanel;
-    private Transform transform;
+    private Transformer transformer;
     private JButton btnNew;
     private JButton btnOpen;
     private JButton btnSave;
@@ -78,7 +78,7 @@ public class Merise extends JFrame {
         fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fc.addChoosableFileFilter(new FileNameExtensionFilter("merise diagrams", FILE_EXTENSION));
 
-        transform = new Transform();
+        transformer = new Transformer();
 
         initPanels();
 
@@ -185,17 +185,18 @@ public class Merise extends JFrame {
 
         btnGdfToMcd.addActionListener((ActionEvent e) -> {
             GDFGraph gdfGraph = gdfPanel.getGraph();
-            MCDGraph mcdGraph = transform.gdfToMcd(gdfGraph);
+            MCDGraph mcdGraph = transformer.gdfToMcd(gdfGraph);
             mcdPanel.setGraph(mcdGraph);
+            System.out.println(mcdGraph);
             JOptionPane.showMessageDialog(this, "Terminé!");
         });
 
         btnGenerate.addActionListener((ActionEvent e) -> {
-            MLDGraph mldGraph = transform.mcdToMld(mcdPanel.getGraph());
-            MPDGraph mpdGraph = transform.mldToMpd(mldGraph);
+            MLDGraph mldGraph = transformer.mcdToMld(mcdPanel.getGraph());
+            MPDGraph mpdGraph = transformer.mldToMpd(mldGraph);
             mldPanel.setMldGraph(mldGraph);
             mpdPanel.setMpdGraph(mpdGraph);
-            sqlPanel.setSQLScript(transform.mpdToSQL(mpdGraph));
+            sqlPanel.setSQLScript(transformer.mpdToSQL(mpdGraph));
             JOptionPane.showMessageDialog(this, "Terminé!");
         });
 
@@ -209,7 +210,7 @@ public class Merise extends JFrame {
     }
 
     private void resetDiagrams() {
-        transform = new Transform();
+        transformer = new Transformer();
 
         flowPanel.getNodes().clear();
         flowPanel.getLinks().clear();

@@ -13,13 +13,13 @@ public class MPDGraphController  extends GraphController<GMPDTable, GLink> {
     public MPDGraphController() {
     }
 
-    public void draw(Graphics2D graphics2D) {
+    public void printGraph(Graphics2D graphics2D) {
         links.forEach(edge -> edge.draw(graphics2D));
         nodes.forEach(node -> node.draw(graphics2D));
     }
 
     @Override
-    public void remove(GMPDTable node) {
+    public void removeNode(GMPDTable node) {
 
     }
 

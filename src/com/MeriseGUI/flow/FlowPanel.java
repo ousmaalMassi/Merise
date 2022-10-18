@@ -80,7 +80,7 @@ public class FlowPanel extends MPanel<FlowGraphController, GNode, GArrow> implem
         JMenuItem removeNodeMenuItem = new JMenuItem("Supprimer");
         this.nodePopupMenu.add(removeNodeMenuItem);
         removeNodeMenuItem.addActionListener((action) -> {
-            graphController.remove(nodeUnderCursor);
+            graphController.removeNode(nodeUnderCursor);
             repaint();
         });
     }
@@ -183,7 +183,7 @@ public class FlowPanel extends MPanel<FlowGraphController, GNode, GArrow> implem
     public void mouseDragged(MouseEvent e) {
 
         if (nodeUnderCursor == null) {
-            nodeUnderCursor = graphController.contains(e.getX(), e.getY());
+            nodeUnderCursor = graphController.containsNode(e.getX(), e.getY());
         }
         else if (nodeUnderCursor instanceof Domain domain && domain.inCorner(e.getX(), e.getY())) {
             domain.resize(e.getX(), e.getY());
@@ -198,7 +198,7 @@ public class FlowPanel extends MPanel<FlowGraphController, GNode, GArrow> implem
     @Override
     public void mouseMoved(MouseEvent e) {
         if (nodeUnderCursor == null) {
-            nodeUnderCursor = graphController.contains(e.getX(), e.getY());
+            nodeUnderCursor = graphController.containsNode(e.getX(), e.getY());
         }
         if (nodeUnderCursor instanceof Domain domain) {
             if ( domain.inCorner(e.getX(), e.getY()))

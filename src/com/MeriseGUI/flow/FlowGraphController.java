@@ -1,14 +1,12 @@
 package com.MeriseGUI.flow;
 
-import com.graphics.GArrow;
 import com.MeriseGUI.GraphController;
+import com.graphics.GArrow;
 import com.graphics.GNode;
 import com.graphics.flow.Actor;
 import com.graphics.flow.Domain;
 import com.graphics.flow.ExternalActor;
 import com.graphics.flow.InternalActor;
-
-import java.util.List;
 
 import java.awt.*;
 
@@ -18,7 +16,7 @@ public class FlowGraphController extends GraphController<GNode, GArrow> {
     }
 
     @Override
-    public void draw(Graphics2D graphics2D) {
+    public void printGraph(Graphics2D graphics2D) {
 
         this.nodes.forEach(node -> {
             if (node instanceof Domain)
@@ -34,7 +32,7 @@ public class FlowGraphController extends GraphController<GNode, GArrow> {
     }
 
     @Override
-    public void remove(GNode gNode) {
+    public void removeNode(GNode gNode) {
         if (gNode == null)
             return;
         this.nodes.remove(gNode);

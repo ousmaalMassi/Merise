@@ -89,7 +89,7 @@ public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> imp
         removeNodeMenuItem.addActionListener((action) -> {
             for (String attributeName : nodeUnderCursor.getAttributes())
                 DDPanel.setUsedInMCD(attributeName, "");
-            graphController.remove(nodeUnderCursor);
+            graphController.removeNode(nodeUnderCursor);
             repaint();
         });
 
@@ -198,7 +198,7 @@ public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> imp
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        nodeUnderCursor = graphController.contains(e.getX(), e.getY());
+        nodeUnderCursor = graphController.containsNode(e.getX(), e.getY());
         linkUnderCursor = graphController.containsLink(e.getX(), e.getY());
 
         setNodeAsSelected(nodeUnderCursor);
@@ -247,7 +247,7 @@ public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> imp
     @Override
     public void mouseDragged(MouseEvent e) {
         if (nodeUnderCursor == null)
-            nodeUnderCursor = graphController.contains(e.getX(), e.getY());
+            nodeUnderCursor = graphController.containsNode(e.getX(), e.getY());
         else
             this.moveNodeUnderCursor(e.getX(), e.getY());
 
@@ -256,7 +256,7 @@ public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> imp
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        nodeUnderCursor = graphController.contains(e.getX(), e.getY());
+        nodeUnderCursor = graphController.containsNode(e.getX(), e.getY());
     }
 
     public MCDGraph getGraph() {

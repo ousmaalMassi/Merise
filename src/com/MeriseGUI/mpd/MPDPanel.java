@@ -27,7 +27,7 @@ public class MPDPanel extends JPanel implements MouseMotionListener {
         g2d.setStroke(new BasicStroke(1.2f));
 
         if (graphDrawer != null)
-            graphDrawer.draw(g2d);
+            graphDrawer.printGraph(g2d);
     }
 
     public void setMpdGraph(MPDGraph mpdGraph) {
@@ -38,14 +38,14 @@ public class MPDPanel extends JPanel implements MouseMotionListener {
     @Override
     public void mouseDragged(MouseEvent e) {
         if (nodeUnderCursor == null)
-            nodeUnderCursor = graphDrawer.contains(e.getX(), e.getY());
+            nodeUnderCursor = graphDrawer.containsNode(e.getX(), e.getY());
         else
             this.moveNodeUnderCursor(e.getX(), e.getY());
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        nodeUnderCursor = graphDrawer.contains(e.getX(), e.getY());
+        nodeUnderCursor = graphDrawer.containsNode(e.getX(), e.getY());
     }
 
     private void moveNodeUnderCursor(int x, int y) {

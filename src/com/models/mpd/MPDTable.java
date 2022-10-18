@@ -20,7 +20,7 @@ public class MPDTable extends EntityObject {
 
     /*public Property getPrimaryKeys(){
         for (Property property : this.getPropertyList())
-            if (property.getConstraints().contains(Property.Constraints.PRIMARY_KEY))
+            if (property.getConstraints().containsNode(Property.Constraints.PRIMARY_KEY))
                 return property;
         return null;
     }*/

@@ -41,8 +41,8 @@ public class Domain extends GNode implements NodeSizeController {
         return ( Math.abs(this.x-x) <= width/2 ) && ( Math.abs(this.y-y) <= height/2 );
     }
 
-    public boolean inCorner(int x, int y) {
-        return ( Math.abs(x- shiftedX -width) <= DEFAULT_RESIZE ) && ( Math.abs(y- shiftedY -height) <= DEFAULT_RESIZE );
+    public boolean inCorner(int mx, int my) {
+        return ( Math.abs(mx - shiftedX -width) <= DEFAULT_RESIZE ) && ( Math.abs(my - shiftedY -height) <= DEFAULT_RESIZE );
     }
 
     public void resize(int x, int y) {

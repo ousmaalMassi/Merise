@@ -40,11 +40,11 @@ public abstract class MPanel<T extends GraphController, N extends GNode, L exten
         g2d.setStroke(new BasicStroke(1.2f));
 
         if (graphController != null)
-            graphController.draw(g2d);
+            graphController.printGraph(g2d);
     }
 
     public void mouseClicked(MouseEvent e) {
-        nodeUnderCursor = (N) graphController.contains(e.getX(), e.getY());
+        nodeUnderCursor = (N) graphController.containsNode(e.getX(), e.getY());
         linkUnderCursor = (L) graphController.containsLink(e.getX(), e.getY());
 
         setNodeAsSelected(nodeUnderCursor);
@@ -102,7 +102,7 @@ public abstract class MPanel<T extends GraphController, N extends GNode, L exten
         }
     }
 
-    public List<N> getNodes() {
+    public List getNodes() {
         return graphController.getNodes();
     }
 

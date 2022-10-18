@@ -1,6 +1,5 @@
 package com.MeriseGUI;
 
-import com.graphics.GArrow;
 import com.graphics.GLink;
 import com.graphics.GNode;
 
@@ -22,9 +21,9 @@ public abstract class GraphController<N extends GNode, L extends GLink> implemen
         links = new LinkedList<>();
     }
 
-    public abstract void draw(Graphics2D graphics2D);
+    public abstract void printGraph(Graphics2D graphics2D);
 
-    public abstract void remove(N node);
+    public abstract void removeNode(N node);
 
     public abstract void rename(N node, String newName);
 
@@ -34,7 +33,7 @@ public abstract class GraphController<N extends GNode, L extends GLink> implemen
 
     public abstract void removeLink(L link);
 
-    public N contains(int x, int y) {
+    public N containsNode(int x, int y) {
         int lastIndex = this.nodes.size() - 1;
         for (int i = lastIndex; i >= 0; i--) {
             N graphicalNode = nodes.get(i);

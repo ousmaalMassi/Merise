@@ -82,7 +82,7 @@ public class GDFPanel extends MPanel<GDFGraphController, GNodeGDF, GSimpleDF> im
         JMenuItem removeNodeMenuItem = new JMenuItem("Supprimer");
         this.nodePopupMenu.add(removeNodeMenuItem);
         removeNodeMenuItem.addActionListener((action) -> {
-            graphController.remove(nodeUnderCursor);
+            graphController.removeNode(nodeUnderCursor);
             DDPanel.setUsedInGDF(nodeUnderCursor.getName(), false);
             repaint();
         });
@@ -204,7 +204,7 @@ public class GDFPanel extends MPanel<GDFGraphController, GNodeGDF, GSimpleDF> im
     @Override
     public void mouseDragged(MouseEvent e) {
         if (nodeUnderCursor == null)
-            nodeUnderCursor = graphController.contains(e.getX(), e.getY());
+            nodeUnderCursor = graphController.containsNode(e.getX(), e.getY());
         else
             this.moveNodeUnderCursor(e.getX(), e.getY());
 

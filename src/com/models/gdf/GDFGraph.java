@@ -10,7 +10,7 @@ public class GDFGraph implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    List<GDFNode> dfNodes;
+    private List<GDFNode> dfNodes;
 
     public GDFGraph() {
         this.dfNodes = new ArrayList<>();
@@ -24,11 +24,11 @@ public class GDFGraph implements Serializable {
         this.dfNodes = dfNodes;
     }
 
-    public void addDfNodes(GDFNode dfNode) {
+    public void addDfNode(GDFNode dfNode) {
         this.dfNodes.add(dfNode);
     }
 
-    public void remove(GDFNode dfNode) {
+    public void removeDfNode(GDFNode dfNode) {
         this.dfNodes.remove(dfNode);
     }
 

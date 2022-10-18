@@ -17,11 +17,11 @@ public class GMCDLink extends GLink implements GLinkText {
         super(a, b);
     }
 
-    public GNode getEntityView() {
+    public GNode getGEntity() {
         return this.nodeA;
     }
 
-    public GNode getAssociationView() {
+    public GNode getGAssociation() {
         return this.nodeB;
     }
 

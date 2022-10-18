@@ -29,17 +29,17 @@ public class GDFGraphController extends GraphController<GNodeGDF, GLink> {
     }
 
     @Override
-    public void draw(Graphics2D graphics2D) {
+    public void printGraph(Graphics2D graphics2D) {
         this.links.forEach(edge -> edge.draw(graphics2D));
         this.nodes.forEach(node -> node.draw(graphics2D));
     }
 
     @Override
-    public void remove(GNodeGDF gNodeGDF) {
+    public void removeNode(GNodeGDF gNodeGDF) {
         if (gNodeGDF == null)
             return;
         DDPanel.setUsedInGDF(gNodeGDF.getName(), false);
-        gdfGraph.remove(gdfGraph.contains(gNodeGDF.getName()));
+        gdfGraph.removeDfNode(gdfGraph.contains(gNodeGDF.getName()));
         this.nodes.remove(gNodeGDF);
         this.removeAttachedLinks(gNodeGDF);
         System.out.println(gdfGraph);
@@ -59,7 +59,7 @@ public class GDFGraphController extends GraphController<GNodeGDF, GLink> {
     }
 
     @Override
-    public GNodeGDF contains(int x, int y) {
+    public GNodeGDF containsNode(int x, int y) {
         int lastIndex = this.nodes.size() - 1;
         for (int i = lastIndex; i >= 0; i--) {
             GNodeGDF graphicalNode = nodes.get(i);
@@ -86,8 +86,8 @@ public class GDFGraphController extends GraphController<GNodeGDF, GLink> {
     }
 
 //    public void addGComposedDF(GDFAttribute gdfAttribute1, GDFAttribute gdfAttribute2) {
-////        GDFNode gdfNodeGdfAttribute1 =  gdfGraph.contains(gdfAttribute1.getName());
-////        GDFNode gdfNodeGdfAttribute2 =  gdfGraph.contains(gdfAttribute2.getName());
+////        GDFNode gdfNodeGdfAttribute1 =  gdfGraph.containsNode(gdfAttribute1.getName());
+////        GDFNode gdfNodeGdfAttribute2 =  gdfGraph.containsNode(gdfAttribute2.getName());
 //
 ////        gdfNodeGdfAttribute1.addTarget(gdfNodeGdfAttribute2.getName());
 //        GComposedTrivialDF gComposedDF = new GComposedTrivialDF(gdfAttribute1, gdfAttribute2);
@@ -122,7 +122,7 @@ public class GDFGraphController extends GraphController<GNodeGDF, GLink> {
             assert node != null;
             ComposedNode gdfNode = new ComposedNode(node.getName());
 
-            gdfGraph.addDfNodes(gdfNode);
+            gdfGraph.addDfNode(gdfNode);
             this.nodes.add(node);
             GLink gLink1 = new GLink(node, gNodeGDF1);
             gdfNode.addSource(gNodeGDF1.getName());
@@ -137,7 +137,7 @@ public class GDFGraphController extends GraphController<GNodeGDF, GLink> {
     @Override
     public void addNode(GNodeGDF node) {
         GDFNode gdfNode = new GDFNode(node.getName());
-        gdfGraph.addDfNodes(gdfNode);
+        gdfGraph.addDfNode(gdfNode);
         this.nodes.add(node);
         System.out.println(gdfGraph);
     }
