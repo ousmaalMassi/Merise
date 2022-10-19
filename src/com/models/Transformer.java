@@ -17,13 +17,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Transformer {
 
-    private final MLDGraph mldGraph;
-    private final MPDGraph mpdGraph;
     private final List<String> foreignKeyConstraint;
 
     public Transformer() {
-        mldGraph = new MLDGraph();
-        mpdGraph = new MPDGraph();
         foreignKeyConstraint = new ArrayList<>();
     }
 
@@ -32,7 +28,7 @@ public class Transformer {
         AtomicInteger num = new AtomicInteger();
         gdfGraph.getDfNodes().stream().filter(gdfNode -> !gdfNode.getTargets().isEmpty()).forEach(gdfNode -> {
             num.getAndIncrement();
-            Entity entity = new Entity("entity "+num);
+            Entity entity = new Entity("entity " + num);
             entity.addProperty(new Property(gdfNode.getName(), Property.Types.ALPHABETICAL, 11));
             gdfNode.getTargets().forEach(s ->
                     entity.addProperty(new Property(s, Property.Types.ALPHABETICAL, 11)));
@@ -45,14 +41,13 @@ public class Transformer {
         return mcdGraph;
     }
 
-
     public MLDGraph mcdToMld(MCDGraph mcdGraph) {
-        mldGraph.getTables().clear();
+        MLDGraph mldGraph = new MLDGraph();
         mcdGraph.getEntities().forEach(entity -> mldGraph.getTables().add(createMLDTable(entity)));
 
         mcdGraph.getAssociations().forEach(association -> {
             if (!association.getPropertyList().isEmpty() || association.getLinks().size() > 2) {
-                mldGraph.getTables().add(createAssociationTable(association));
+                mldGraph.getTables().add(createAssociationTable(association, mldGraph));
                 return;
             }
 
@@ -74,7 +69,7 @@ public class Transformer {
 
             switch (getRelationShipType(entityCardinality1, entityCardinality2)) {
                 case ONE_TO_ONE -> table1.setForeignKey(table2);
-                case MANY_TO_MANY -> mldGraph.getTables().add(createAssociationTable(association));
+                case MANY_TO_MANY -> mldGraph.getTables().add(createAssociationTable(association, mldGraph));
                 case ONE_TO_MANY -> {
                     if (isWeak(entityCardinality1))
                         table2.setForeignKey(table1);
@@ -106,7 +101,7 @@ public class Transformer {
         return relationShip;
     }
 
-    private MLDTable createAssociationTable(Association association) {
+    private MLDTable createAssociationTable(Association association, MLDGraph mldGraph) {
         MLDTable associationTable = createMLDTable(association);
         association.getLinks().forEach((entity, cardinality) -> {
             MLDTable refTable = mldGraph.getTable(entity.getName());
@@ -149,9 +144,9 @@ public class Transformer {
 //
 //        });
 //        return this.mpdGraph;
-        this.mpdGraph.getTables().clear();
-        this.mldGraph.getTables().forEach(mldTable -> this.mpdGraph.getTables().add(mldTable));
-        return this.mpdGraph;
+        MPDGraph mpdGraph = new MPDGraph();
+        mldGraph.getTables().forEach(mldTable -> mpdGraph.getTables().add(mldTable));
+        return mpdGraph;
     }
 
     public String mpdToSQL(MPDGraph mpdGraph) {
@@ -197,5 +192,4 @@ public class Transformer {
         );
         return String.join(",\n", list);
     }
-
 }
