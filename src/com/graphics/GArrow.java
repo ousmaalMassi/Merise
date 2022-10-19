@@ -4,6 +4,9 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 
 public class GArrow extends GLink {
+
+    private int[] xHeadPoints = {0, -5, 5};
+    private int[] yHeadPoints = {0, -10, -10};
     public GArrow(GNode a, GNode b) {
         super(a, b);
     }
@@ -11,13 +14,10 @@ public class GArrow extends GLink {
     @Override
     public void draw(Graphics2D g) {
         super.draw(g);
-        drawArrow(g);
+        drawHeadArrow(g);
     }
 
-    private void drawArrow(Graphics2D g) {
-
-        int[] xPoints = {0, -5, 5};
-        int[] yPoints = {0, -10, -10};
+    private void drawHeadArrow(Graphics2D g) {
 
         int endX = nodeB.x;
         int endY = nodeB.y;
@@ -35,7 +35,7 @@ public class GArrow extends GLink {
         tx2.rotate(angle - Math.PI / 2);
 
         g.setTransform(tx2);
-        g.fill(new Polygon(xPoints, yPoints, xPoints.length));
+        g.fill(new Polygon(xHeadPoints, yHeadPoints, xHeadPoints.length));
 
         g.setTransform(tx1);
     }

@@ -1,4 +1,4 @@
-package com.MeriseGUI.ddd;
+package com.models.ddd;
 
 import com.MeriseGUI.MTableModel;
 public class DDTableModel extends MTableModel {
