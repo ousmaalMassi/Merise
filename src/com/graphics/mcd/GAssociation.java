@@ -4,12 +4,9 @@ import java.awt.*;
 
 public class GAssociation extends GMCDNode {
     
-    public static int associationNbr = 1;
-    
     public GAssociation(int x, int y, String text) {
         super(x, y, text);
-        super.arc = 30;
-        associationNbr++;
+        this.borderRadius = 30;
     }
     
     @Override

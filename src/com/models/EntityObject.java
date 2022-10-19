@@ -2,8 +2,6 @@ package com.models;
 
 import com.exceptions.DuplicateProperty;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -3,6 +3,7 @@ package com.MeriseGUI.ddd;
 import com.MeriseGUI.DeleteButtonRenderer;
 import com.MeriseGUI.MTableModel;
 import com.models.Property;
+import com.models.ddd.DDTableModel;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

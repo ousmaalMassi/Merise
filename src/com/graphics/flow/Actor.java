@@ -5,14 +5,6 @@ import com.graphics.GNode;
 import java.awt.*;
 
 public class Actor extends GNode {
-
-    protected static BasicStroke DASHED_STROKE = new BasicStroke(
-            1.5f,
-            BasicStroke.CAP_BUTT,
-            BasicStroke.JOIN_MITER,
-            10.0f,
-            new float[]{10.0f},
-            0.0f);
     
     protected int totalPadding;
     protected static int actorNbr = 1;
