@@ -1,19 +1,23 @@
 package com.MeriseGUI.mcd;
 
 import com.MeriseGUI.GraphController;
-import com.graphics.GNode;
 import com.MeriseGUI.ddd.DDPanel;
-import com.graphics.mcd.GAssociation;
-import com.graphics.mcd.GEntity;
+import com.exceptions.DuplicateMeriseObject;
+import com.graphics.GNode;
 import com.graphics.mcd.GMCDLink;
 import com.graphics.mcd.GMCDNode;
+import com.graphics.mcd.GMCDNodeType;
 import com.models.EntityObject;
 import com.models.Property;
-import com.exceptions.DuplicateMeriseObject;
-import com.models.mcd.*;
+import com.models.mcd.Association;
+import com.models.mcd.Cardinality;
+import com.models.mcd.Entity;
+import com.models.mcd.MCDGraph;
 
 import java.awt.*;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class MCDGraphController extends GraphController<GMCDNode, GMCDLink> {
     private MCDGraph mcdGraph;
@@ -29,6 +33,30 @@ public class MCDGraphController extends GraphController<GMCDNode, GMCDLink> {
         this.mcdGraph = mcdGraph;
     }
 
+    public void convertMCDGraph() {
+        this.mcdGraph.getEntities().forEach(entity -> this.nodes.add(this.convertEntity(entity)));
+
+        this.mcdGraph.getAssociations().forEach(association -> {
+            GMCDNode gAssociation = new GMCDNode(0, 0, association.getName(), GMCDNodeType.ASSOCIATION);
+            gAssociation.setAttributes(association.getPropertyList().stream().map(Property::getName).collect(Collectors.toList()));
+            this.nodes.add(gAssociation);
+            association.getLinks().forEach((entity, cardinality) -> {
+                GMCDNode gEntity = this.convertEntity(entity);
+                GMCDLink gmcdLink = new GMCDLink(gEntity, gAssociation);
+                this.nodes.add(gEntity);
+                this.links.add(gmcdLink);
+            });
+        });
+    }
+
+    public GMCDNode convertEntity(Entity entity) {
+        GMCDNode gEntity = new GMCDNode(0, 0, entity.getName(), GMCDNodeType.ENTITY);
+        List<Property> propertyList = entity.getPropertyList();
+        List<String> properties = propertyList.stream().map(Property::getName).collect(Collectors.toList());
+        gEntity.setAttributes(properties);
+        return gEntity;
+    }
+
     @Override
     public void printGraph(Graphics2D graphics2D) {
         this.links.forEach(edge -> edge.draw(graphics2D));
@@ -39,7 +67,7 @@ public class MCDGraphController extends GraphController<GMCDNode, GMCDLink> {
     public void removeNode(GMCDNode graphicalNode) {
         if (graphicalNode == null)
             return;
-        if (graphicalNode instanceof GEntity)
+        if (graphicalNode.getType().equals(GMCDNodeType.ENTITY))
             mcdGraph.removeEntity(mcdGraph.containsEntity(graphicalNode.getName()));
         else
             mcdGraph.removeAssociation(mcdGraph.containsAssociation(graphicalNode.getName()));
@@ -53,7 +81,7 @@ public class MCDGraphController extends GraphController<GMCDNode, GMCDLink> {
         if (node == null)
             return;
         EntityObject entityObject;
-        if (node instanceof GEntity)
+        if (node.getType().equals(GMCDNodeType.ENTITY))
             entityObject = mcdGraph.containsEntity(node.getName());
         else
             entityObject = mcdGraph.containsAssociation(node.getName());
@@ -70,20 +98,11 @@ public class MCDGraphController extends GraphController<GMCDNode, GMCDLink> {
 
         mcdGraph.link(entity, association);
 
-        GMCDLink graphicalLink = new GMCDLink((GEntity) gn1, (GAssociation) gn2);
+        GMCDLink graphicalLink = new GMCDLink(gn1, gn2);
         graphicalLink.setText(Cardinality.DEFAULT_CARDINALITY.toString());
         this.links.add(graphicalLink);
 
         System.out.println(mcdGraph);
-    }
-
-    @Override
-    public void addNode(GMCDNode node) {
-        switch (node){
-            case GEntity GEntity -> addEntity(GEntity);
-            case GAssociation GAssociation -> addAssociation(GAssociation);
-            default -> throw new IllegalStateException("Unexpected value: " + node);
-        }
     }
 
     @Override
@@ -98,49 +117,50 @@ public class MCDGraphController extends GraphController<GMCDNode, GMCDLink> {
         System.out.println(mcdGraph);
     }
 
-    private void addEntity(GEntity entityGUI) {
-        int entityNo = mcdGraph.getEntities().size();
-        String entityName = "Entity "+entityNo;
-        Entity entity = new Entity(entityName);
-        entityGUI.setName(entityName);
+    @Override
+    public void addNode(GMCDNode node) {
+        String nodeName = node.getType().name();
         try {
-            mcdGraph.addEntity(entity);
-            this.nodes.add(entityGUI);
+            if (node.getType().equals(GMCDNodeType.ENTITY)) {
+                nodeName += " " + mcdGraph.getEntities().size();
+                Entity entity = new Entity(nodeName);
+                mcdGraph.addEntity(entity);
+            } else {
+                nodeName += " " + mcdGraph.getAssociations().size();
+                Association association = new Association(nodeName);
+                mcdGraph.addAssociation(association);
+            }
         } catch (DuplicateMeriseObject e) {
             throw new RuntimeException(e);
         }
+
+        node.setName(nodeName);
+        this.nodes.add(node);
+
         System.out.println(mcdGraph);
     }
 
     public void addProperty(String propertyName, GMCDNode mcdNodeView) {
 
 //        long currentTimeMillis = System.currentTimeMillis();
-        EntityObject entityObject;
-        if (mcdNodeView instanceof GEntity)
-            entityObject = mcdGraph.containsEntity(mcdNodeView.getName());
-        else
-            entityObject = mcdGraph.containsAssociation(mcdNodeView.getName());
+        EntityObject entityObject = mcdNodeView.getType().equals(GMCDNodeType.ENTITY)
+                ? mcdGraph.containsEntity(mcdNodeView.getName())
+                : mcdGraph.containsAssociation(mcdNodeView.getName());
 
         Map<String, String> map = DDPanel.getProperty(propertyName);
-        String name = map.get("name");
-        Property.Types type = Property.Types.valueOf(map.get("type"));
-        int length = Integer.parseInt(map.get("length"));
-
-        Property property =  new Property(name, type, length);
+        Property property = new Property(map.get("name"), Property.Types.valueOf(map.get("type")), Integer.parseInt(map.get("length")));
         entityObject.addProperty(property);
-
         mcdNodeView.getAttributes().add(property.getCode());
+
         System.out.println(mcdGraph);
 //        System.out.println(System.currentTimeMillis() - currentTimeMillis+" ms");
     }
 
     public void removeProperty(String name, GMCDNode mcdNodeView) {
 
-        EntityObject entityObject;
-        if (mcdNodeView instanceof GEntity)
-            entityObject = mcdGraph.containsEntity(mcdNodeView.getName());
-        else
-            entityObject = mcdGraph.containsAssociation(mcdNodeView.getName());
+        EntityObject entityObject = mcdNodeView.getType().equals(GMCDNodeType.ENTITY)
+                ? mcdGraph.containsEntity(mcdNodeView.getName())
+                : mcdGraph.containsAssociation(mcdNodeView.getName());
         Property property = entityObject.getPropertyList().stream().filter(p -> p.getName().equals(name)).findAny().orElse(null);
         if (property == null)
             return;
@@ -149,22 +169,7 @@ public class MCDGraphController extends GraphController<GMCDNode, GMCDLink> {
     }
 
     private void removeAttachedLinks(GMCDNode nodeUnderCursor) {
-        this.links.removeIf(e -> e.getNodeA().equals(nodeUnderCursor) || e.getNodeB().equals(nodeUnderCursor) );
-    }
-
-
-    private void addAssociation(GAssociation GAssociation) {
-        int AssociationNo = mcdGraph.getAssociations().size();
-        String associationName = "Association "+AssociationNo;
-        Association association = new Association(associationName);
-        GAssociation.setName(associationName);
-        try {
-            mcdGraph.addAssociation(association);
-            this.nodes.add(GAssociation);
-        } catch (DuplicateMeriseObject e) {
-            throw new RuntimeException(e);
-        }
-        System.out.println(mcdGraph);
+        this.links.removeIf(e -> e.getNodeA().equals(nodeUnderCursor) || e.getNodeB().equals(nodeUnderCursor));
     }
 
     public void editCard(GMCDLink linkUnderCursor, int cardIndex) {
@@ -179,5 +184,4 @@ public class MCDGraphController extends GraphController<GMCDNode, GMCDLink> {
 
         System.out.println(mcdGraph);
     }
-
 }

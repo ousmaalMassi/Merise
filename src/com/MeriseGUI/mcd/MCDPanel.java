@@ -159,7 +159,6 @@ public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> imp
         GMCDNode gmcdNode = new GMCDNode(x, y, "", type);
 
         nodeUnderCursor = gmcdNode;
-        assert gmcdNode != null;
         graphController.addNode(gmcdNode);
         setNodeAsSelected(gmcdNode);
         repaint();
@@ -187,10 +186,10 @@ public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> imp
     }
 
     private void editCard() {
-            JComboBox<Cardinality> card = new JComboBox<>(Cardinality.values());
-            JOptionPane.showMessageDialog(null, new JScrollPane(card));
-            graphController.editCard(linkUnderCursor, card.getSelectedIndex());
-            repaint();
+        JComboBox<Cardinality> card = new JComboBox<>(Cardinality.values());
+        JOptionPane.showMessageDialog(null, new JScrollPane(card));
+        graphController.editCard(linkUnderCursor, card.getSelectedIndex());
+        repaint();
     }
 
     @Override
@@ -262,5 +261,7 @@ public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> imp
 
     public void setGraph(MCDGraph gdfGraph) {
         this.graphController.setGraph(gdfGraph);
+        this.graphController.convertMCDGraph();
+        repaint();
     }
 }
