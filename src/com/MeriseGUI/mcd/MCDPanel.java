@@ -2,10 +2,9 @@ package com.MeriseGUI.mcd;
 
 import com.MeriseGUI.MPanel;
 import com.MeriseGUI.ddd.DDPanel;
-import com.graphics.mcd.GAssociation;
-import com.graphics.mcd.GEntity;
 import com.graphics.mcd.GMCDLink;
 import com.graphics.mcd.GMCDNode;
+import com.graphics.mcd.GMCDNodeType;
 import com.models.mcd.*;
 
 import javax.swing.*;
@@ -19,8 +18,8 @@ import java.util.Vector;
 
 public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> implements MouseListener, MouseMotionListener {
 
-    private GAssociation associationToLink;
-    private GEntity entityToLink;
+    private GMCDNode associationToLink;
+    private GMCDNode entityToLink;
     private boolean creatingLink;
     private Vector<String> dictionaryData;
     private final JList<Object> jListAttribute;
@@ -63,8 +62,8 @@ public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> imp
     }
 
     private void AddButtonActionListeners() {
-        btnEntity.addActionListener((ActionEvent e) -> createMcdObject("GEntity"));
-        btnAssociation.addActionListener((ActionEvent e) -> createMcdObject("GAssociation"));
+        btnEntity.addActionListener((ActionEvent e) -> createMcdObject(GMCDNodeType.ENTITY));
+        btnAssociation.addActionListener((ActionEvent e) -> createMcdObject(GMCDNodeType.ASSOCIATION));
         btnLink.addActionListener((ActionEvent e) -> creatingLink());
     }
 
@@ -136,11 +135,11 @@ public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> imp
 
         JMenuItem addEntityMenuItem = new JMenuItem("Ajouter une Entité");
         this.panelPopupMenu.add(addEntityMenuItem);
-        addEntityMenuItem.addActionListener((action) -> createMcdObject("GEntity"));
+        addEntityMenuItem.addActionListener((action) -> createMcdObject(GMCDNodeType.ENTITY));
 
         JMenuItem addAssociationMenuItem = new JMenuItem("Ajouter une Association");
         this.panelPopupMenu.add(addAssociationMenuItem);
-        addAssociationMenuItem.addActionListener((action) -> createMcdObject("GAssociation"));
+        addAssociationMenuItem.addActionListener((action) -> createMcdObject(GMCDNodeType.ASSOCIATION));
 
         JMenuItem addLinkMenuItem = new JMenuItem("Ajouter un lien");
         this.panelPopupMenu.add(addLinkMenuItem);
@@ -152,15 +151,13 @@ public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> imp
         this.creatingLink = true;
     }
 
-    public void createMcdObject(String type) {
+    public void createMcdObject(GMCDNodeType type) {
 
         int x = (int) this.getMousePosition().getX();
         int y = (int) this.getMousePosition().getY();
-        GMCDNode gmcdNode = null;
-        switch (type) {
-            case "GEntity" -> gmcdNode = new GEntity(x, y, "");
-            case "GAssociation" -> gmcdNode = new GAssociation(x, y, "");
-        }
+
+        GMCDNode gmcdNode = new GMCDNode(x, y, "", type);
+
         nodeUnderCursor = gmcdNode;
         assert gmcdNode != null;
         graphController.addNode(gmcdNode);
@@ -216,10 +213,10 @@ public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> imp
         }
 
         if (creatingLink) {
-            if (nodeUnderCursor instanceof GEntity GEntity)
-                entityToLink = GEntity;
-            else if (nodeUnderCursor instanceof GAssociation GAssociation)
-                associationToLink = GAssociation;
+            if (nodeUnderCursor.getType().equals(GMCDNodeType.ENTITY))
+                entityToLink = nodeUnderCursor;
+            else
+                associationToLink = nodeUnderCursor;
             if (entityToLink != null && associationToLink != null) {
                 graphController.addLink(entityToLink, associationToLink);
                 repaint();
