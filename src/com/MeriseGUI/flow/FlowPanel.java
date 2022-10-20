@@ -1,12 +1,11 @@
 package com.MeriseGUI.flow;
 
+import com.MeriseGUI.MPanel;
 import com.graphics.GArrow;
 import com.graphics.GNode;
-import com.MeriseGUI.MPanel;
 import com.graphics.flow.Actor;
+import com.graphics.flow.ActorType;
 import com.graphics.flow.Domain;
-import com.graphics.flow.ExternalActor;
-import com.graphics.flow.InternalActor;
 
 import javax.swing.*;
 import java.awt.*;
@@ -58,9 +57,9 @@ public class FlowPanel extends MPanel<FlowGraphController, GNode, GArrow> implem
     }
 
     private void AddButtonActionListeners() {
-        btnInternalActor.addActionListener((ActionEvent e) -> createActor("INTERNAL_ACTOR"));
-        btnExternalActor.addActionListener((ActionEvent e) -> createActor("EXTERNAL_ACTOR"));
-        btnDomain.addActionListener((ActionEvent e) -> createActor("DOMAIN"));
+        btnInternalActor.addActionListener((ActionEvent e) -> createActor(ActorType.INTERNAL_ACTOR));
+        btnExternalActor.addActionListener((ActionEvent e) -> createActor(ActorType.EXTERNAL_ACTOR));
+        btnDomain.addActionListener((ActionEvent e) -> createDomain());
         btnFlow.addActionListener((ActionEvent e) -> createFlow());
     }
 
@@ -91,35 +90,41 @@ public class FlowPanel extends MPanel<FlowGraphController, GNode, GArrow> implem
 
         JMenuItem addInternalActorMenuItem = new JMenuItem("Ajouter un acteur interne");
         this.panelPopupMenu.add(addInternalActorMenuItem);
-        addInternalActorMenuItem.addActionListener((action) -> createActor("INTERNAL_ACTOR"));
+        addInternalActorMenuItem.addActionListener((action) -> createActor(ActorType.INTERNAL_ACTOR));
 
         JMenuItem addExternalActorMenuItem = new JMenuItem("Ajouter un acteur externe");
         this.panelPopupMenu.add(addExternalActorMenuItem);
-        addExternalActorMenuItem.addActionListener((action) -> createActor("EXTERNAL_ACTOR"));
+        addExternalActorMenuItem.addActionListener((action) -> createActor(ActorType.EXTERNAL_ACTOR));
 
         JMenuItem addDomainMenuItem = new JMenuItem("Ajouter un domaine");
         this.panelPopupMenu.add(addDomainMenuItem);
-        addDomainMenuItem.addActionListener((action) -> createActor("DOMAIN"));
+        addDomainMenuItem.addActionListener((action) -> createDomain());
 
         JMenuItem addLinkMenuItem = new JMenuItem("Ajouter un lien");
         this.panelPopupMenu.add(addLinkMenuItem);
         addLinkMenuItem.addActionListener((action) -> createFlow());
     }
 
-    public void createActor(String type) {
-        int x = (int) this.getMousePosition().getX();
-        int y = (int) this.getMousePosition().getY();
-        GNode gNode = null;
-        switch (type) {
-            case "INTERNAL_ACTOR" -> gNode = new InternalActor(x, y, "InternalActor");
-            case "EXTERNAL_ACTOR" -> gNode = new ExternalActor(x, y, "ExternalActor");
-            case "DOMAIN" -> gNode = new Domain(x, y, "Domain");
-        }
+    public void createActor(ActorType type) {
+        Actor actor = new Actor(getMouseCoordinates().x, getMouseCoordinates().y, "Actor", type);
+        afterCreation(actor);
+    }
+
+    public void createDomain() {
+        Domain domain = new Domain(getMouseCoordinates().x, getMouseCoordinates().y, "Domain");
+        afterCreation(domain);
+    }
+
+    public void afterCreation(GNode gNode) {
         nodeUnderCursor = gNode;
         assert gNode != null;
         graphController.addNode(gNode);
         setNodeAsSelected(gNode);
         repaint();
+    }
+
+    public Point getMouseCoordinates() {
+        return new Point((int) this.getMousePosition().getX(), (int) this.getMousePosition().getY());
     }
 
     public void createFlow() {
@@ -153,7 +158,7 @@ public class FlowPanel extends MPanel<FlowGraphController, GNode, GArrow> implem
         if (sourceActor == null || targetActor == null)
             return;
 
-        if ((sourceActor.getClass() == targetActor.getClass()) && (targetActor instanceof ExternalActor)) {
+        if ((sourceActor.getType() == targetActor.getType()) && (targetActor.getType().equals(ActorType.EXTERNAL_ACTOR))) {
             JOptionPane.showMessageDialog(this, "Vous ne pouvez pas attacher deux acteurs externes entre eux");
         } else {
             graphController.addLink(sourceActor, targetActor);
@@ -184,12 +189,10 @@ public class FlowPanel extends MPanel<FlowGraphController, GNode, GArrow> implem
 
         if (nodeUnderCursor == null) {
             nodeUnderCursor = graphController.containsNode(e.getX(), e.getY());
-        }
-        else if (nodeUnderCursor instanceof Domain domain && domain.inCorner(e.getX(), e.getY())) {
+        } else if (nodeUnderCursor instanceof Domain domain && domain.inCorner(e.getX(), e.getY())) {
             domain.resize(e.getX(), e.getY());
             repaint();
-        }
-        else
+        } else
             this.moveNodeUnderCursor(e.getX(), e.getY());
 
         setNodeAsSelected(nodeUnderCursor);
@@ -201,7 +204,7 @@ public class FlowPanel extends MPanel<FlowGraphController, GNode, GArrow> implem
             nodeUnderCursor = graphController.containsNode(e.getX(), e.getY());
         }
         if (nodeUnderCursor instanceof Domain domain) {
-            if ( domain.inCorner(e.getX(), e.getY()))
+            if (domain.inCorner(e.getX(), e.getY()))
                 setCursor(Cursor.getPredefinedCursor(Cursor.SE_RESIZE_CURSOR));
             else
                 setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -209,6 +212,4 @@ public class FlowPanel extends MPanel<FlowGraphController, GNode, GArrow> implem
 
         nodeUnderCursor = null;
     }
-
-
 }

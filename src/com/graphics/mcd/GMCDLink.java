@@ -13,7 +13,7 @@ public class GMCDLink extends GLink implements GLinkText {
     private int cardX;
     private int cardY;
 
-    public GMCDLink(GEntity a, GAssociation b) {
+    public GMCDLink(GMCDNode a, GMCDNode b) {
         super(a, b);
     }
 

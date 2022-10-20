@@ -5,8 +5,6 @@ import com.graphics.GArrow;
 import com.graphics.GNode;
 import com.graphics.flow.Actor;
 import com.graphics.flow.Domain;
-import com.graphics.flow.ExternalActor;
-import com.graphics.flow.InternalActor;
 
 import java.awt.*;
 
@@ -56,19 +54,14 @@ public class FlowGraphController extends GraphController<GNode, GArrow> {
     @Override
     public void addNode(GNode gNode) {
         switch (gNode){
-            case InternalActor internalActor -> addInternalActor( internalActor);
-            case ExternalActor externalActor -> addExternalActor( externalActor);
+            case Actor actor -> addActor(actor);
             case Domain domain -> addDomain(domain);
             default -> throw new IllegalStateException("Unexpected value: " + gNode);
         }
     }
 
-    private void addInternalActor(InternalActor internalActor) {
-        this.nodes.add(internalActor);
-    }
-
-    private void addExternalActor(ExternalActor externalActor) {
-        this.nodes.add(externalActor);
+    private void addActor(Actor actor) {
+        this.nodes.add(actor);
     }
 
     private void addDomain(Domain domain) {

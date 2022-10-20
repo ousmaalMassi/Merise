@@ -1,5 +1,6 @@
 package com.MeriseGUI;
 
+import com.exceptions.DuplicateMeriseObject;
 import com.graphics.GLink;
 import com.graphics.GNode;
 
@@ -29,7 +30,7 @@ public abstract class GraphController<N extends GNode, L extends GLink> implemen
 
     public abstract void addLink(N node1, N node2);
 
-    public abstract void addNode(N node);
+    public abstract void addNode(N node) throws DuplicateMeriseObject;
 
     public abstract void removeLink(L link);
 
