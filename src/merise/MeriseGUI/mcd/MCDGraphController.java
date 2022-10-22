@@ -1,18 +1,18 @@
-package com.MeriseGUI.mcd;
+package merise.MeriseGUI.mcd;
 
-import com.MeriseGUI.GraphController;
-import com.MeriseGUI.ddd.DDPanel;
-import com.exceptions.DuplicateMeriseObject;
-import com.graphics.GNode;
-import com.graphics.mcd.GMCDLink;
-import com.graphics.mcd.GMCDNode;
-import com.graphics.mcd.GMCDNodeType;
-import com.models.EntityObject;
-import com.models.Property;
-import com.models.mcd.Association;
-import com.models.mcd.Cardinality;
-import com.models.mcd.Entity;
-import com.models.mcd.MCDGraph;
+import merise.MeriseGUI.GraphController;
+import merise.MeriseGUI.ddd.DDPanel;
+import merise.exceptions.DuplicateMeriseObject;
+import merise.graphics.GNode;
+import merise.graphics.mcd.GMCDLink;
+import merise.graphics.mcd.GMCDNode;
+import merise.graphics.mcd.GMCDNodeType;
+import merise.models.EntityObject;
+import merise.models.Property;
+import merise.models.mcd.Association;
+import merise.models.mcd.Cardinality;
+import merise.models.mcd.Entity;
+import merise.models.mcd.MCDGraph;
 
 import java.awt.*;
 import java.util.List;
@@ -34,6 +34,9 @@ public class MCDGraphController extends GraphController<GMCDNode, GMCDLink> {
     }
 
     public void convertMCDGraph() {
+        this.nodes.clear();
+        this.links.clear();
+
         this.mcdGraph.getEntities().forEach(entity -> this.nodes.add(this.convertEntity(entity)));
 
         this.mcdGraph.getAssociations().forEach(association -> {
@@ -41,9 +44,9 @@ public class MCDGraphController extends GraphController<GMCDNode, GMCDLink> {
             gAssociation.setAttributes(association.getPropertyList().stream().map(Property::getName).collect(Collectors.toList()));
             this.nodes.add(gAssociation);
             association.getLinks().forEach((entity, cardinality) -> {
-                GMCDNode gEntity = this.convertEntity(entity);
+                GMCDNode gEntity = this.nodes.stream().filter(gmcdNode -> gmcdNode.getName().equals(entity.getName())).findFirst().orElse(null);
                 GMCDLink gmcdLink = new GMCDLink(gEntity, gAssociation);
-                this.nodes.add(gEntity);
+                gmcdLink.setText(cardinality.toString());
                 this.links.add(gmcdLink);
             });
         });
