@@ -8,14 +8,14 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
-public abstract class MPanel<T extends GraphController, N extends GNode, L extends GLink>  extends JPanel {
+public abstract class MPanel<T extends GraphController, N extends GNode, L extends GLink> extends JPanel {
     protected JPopupMenu panelPopupMenu;
     protected JPopupMenu nodePopupMenu;
     protected JPopupMenu linkPopupMenu;
-    protected N nodeUnderCursor;
-    protected N lastSelectedNode;
-    protected L linkUnderCursor;
-    protected L lastSelectedLink;
+    protected transient N nodeUnderCursor;
+    protected transient N lastSelectedNode;
+    protected transient L linkUnderCursor;
+    protected transient L lastSelectedLink;
     protected T graphController;
 
     public MPanel(T graphController) {
@@ -53,8 +53,7 @@ public abstract class MPanel<T extends GraphController, N extends GNode, L exten
         if (e.getButton() == MouseEvent.BUTTON3 || e.getClickCount() == 2) {
             if (nodeUnderCursor != null) {
                 this.nodePopupMenu.show(e.getComponent(), e.getX(), e.getY());
-            }
-            else if (linkUnderCursor != null)
+            } else if (linkUnderCursor != null)
                 this.linkPopupMenu.show(e.getComponent(), e.getX(), e.getY());
             else
                 this.panelPopupMenu.show(e.getComponent(), e.getX(), e.getY());
@@ -106,12 +105,12 @@ public abstract class MPanel<T extends GraphController, N extends GNode, L exten
         return graphController.getNodes();
     }
 
-    public List<L> getLinks() {
-        return graphController.getLinks();
-    }
-
     public void setNodes(List<N> flowNodes) {
         this.graphController.setNodes(flowNodes);
+    }
+
+    public List<L> getLinks() {
+        return graphController.getLinks();
     }
 
     public void setLinks(List<L> flowLinks) {
