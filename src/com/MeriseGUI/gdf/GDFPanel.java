@@ -3,9 +3,9 @@ package com.MeriseGUI.gdf;
 import com.MeriseGUI.MPanel;
 import com.MeriseGUI.ddd.DDPanel;
 import com.graphics.GArrow;
+import com.graphics.gdf.GDFAttribute;
 import com.graphics.gdf.GNodeGDF;
 import com.graphics.gdf.GSimpleDF;
-import com.graphics.gdf.GDFAttribute;
 import com.models.gdf.GDFGraph;
 
 import javax.swing.*;
@@ -155,17 +155,19 @@ public class GDFPanel extends MPanel<GDFGraphController, GNodeGDF, GSimpleDF> im
     @Override
     public void mouseClicked(MouseEvent e) {
         super.mouseClicked(e);
+        if (gNodeGDF1 == null) gNodeGDF1 = nodeUnderCursor;
 
         if (creatingLink) {
-            tmpGDFAttribute = new GDFAttribute(e.getX(), e.getY(), "ddddd");
-            if (gNodeGDF1 == null) {
-                gNodeGDF1 = nodeUnderCursor;
-                this.gTmpArrow = new GArrow(gNodeGDF1, tmpGDFAttribute);
-            } else if (gNodeGDF2 == null) {
+            tmpGDFAttribute = new GDFAttribute(e.getX(), e.getY(), "");
+//            if (gNodeGDF1 == null) {
+//                gNodeGDF1 = nodeUnderCursor;
+//                this.gTmpArrow = new GArrow(gNodeGDF1, tmpGDFAttribute);
+//            } else
+//                if (gNodeGDF2 == null) {
                 gNodeGDF2 = nodeUnderCursor;
-                this.gTmpArrow = new GArrow(gNodeGDF2, tmpGDFAttribute);
-            }
-            if (gNodeGDF2 != null && gNodeGDF1 != null) {
+//                this.gTmpArrow = new GArrow(gNodeGDF2, tmpGDFAttribute);
+//            }
+            if (gNodeGDF2 != null && gNodeGDF1 != null && gNodeGDF2 != gNodeGDF1 && gNodeGDF1.getClass().getName().equals(gNodeGDF2.getClass().getName())) {
                 switch (dfType){
                     case "GSimpleDF" -> graphController.addLink(gNodeGDF1, gNodeGDF2);
                     case "GComposedTrivialDF" -> graphController.addComposedTrivialDF(gNodeGDF1, gNodeGDF2, "Trivial");
