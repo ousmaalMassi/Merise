@@ -5,8 +5,8 @@ import java.awt.geom.AffineTransform;
 
 public class GArrow extends GLink {
 
-    private int[] xHeadPoints = {0, -5, 5};
-    private int[] yHeadPoints = {0, -10, -10};
+    private final int[] xHeadPoints = {0, -5, 5};
+    private final int[] yHeadPoints = {0, -10, -10};
     public GArrow(GNode a, GNode b) {
         super(a, b);
     }
@@ -19,19 +19,11 @@ public class GArrow extends GLink {
 
     private void drawHeadArrow(Graphics2D g) {
 
-        int endX = nodeB.x;
-        int endY = nodeB.y;
-
-        int x = nodeA.x;
-        int y = nodeA.y;
-
-        double angle = Math.atan2(endY - y, endX - x);
-
         AffineTransform tx1 = g.getTransform();
 
         AffineTransform tx2 = (AffineTransform) tx1.clone();
 
-        tx2.translate(endX, endY);
+        tx2.translate(xb, yb);
         tx2.rotate(angle - Math.PI / 2);
 
         g.setTransform(tx2);

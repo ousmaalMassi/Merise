@@ -12,6 +12,7 @@ public class GLink extends GObject {
     protected int ya;
     protected int xb;
     protected int yb;
+    protected double angle;
 
     public GLink(GNode nodeA, GNode nodeB) {
         this.nodeA = nodeA;
@@ -55,6 +56,10 @@ public class GLink extends GObject {
 
         g.setColor(strokeColor);
 //        g.setStroke(stroke);
+        angle = Math.atan2(yb - ya, xb - xa );
+        xb += (int) (nodeB.width/2 * -Math.cos(angle));
+        yb += (int) (nodeB.height/2 * -Math.sin(angle));
+
         g.drawLine(xa, ya, xb, yb);
     }
 
