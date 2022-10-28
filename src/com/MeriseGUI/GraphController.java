@@ -5,7 +5,8 @@ import com.graphics.GLink;
 import com.graphics.GNode;
 
 import java.awt.*;
-import java.io.*;
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -38,11 +39,11 @@ public abstract class GraphController<N extends GNode, L extends GLink> implemen
         int lastIndex = this.nodes.size() - 1;
         for (int i = lastIndex; i >= 0; i--) {
             N graphicalNode = nodes.get(i);
-            if (graphicalNode.contains(x, y)) {
-                nodes.remove(graphicalNode);
-                nodes.add(graphicalNode);
-                return graphicalNode;
-            }
+            if (!graphicalNode.contains(x, y))
+                continue;
+            nodes.remove(graphicalNode);
+            nodes.add(graphicalNode);
+            return graphicalNode;
         }
         return null;
     }
@@ -53,17 +54,16 @@ public abstract class GraphController<N extends GNode, L extends GLink> implemen
                 .orElse(null);
     }
 
-
     public List<N> getNodes() {
         return this.nodes;
     }
 
-    public List<L> getLinks() {
-        return this.links;
-    }
-
     public void setNodes(List<N> flowNodes) {
         this.nodes = flowNodes;
+    }
+
+    public List<L> getLinks() {
+        return this.links;
     }
 
     public void setLinks(List<L> flowLinks) {
