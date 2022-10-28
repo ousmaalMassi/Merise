@@ -23,20 +23,15 @@ public class GLink extends GObject {
 
     public boolean contains(double mx, double my) {
 
-        int nodeAX = nodeA.x;
-        int nodeAY = nodeA.y;
-        int nodeBX = nodeB.x;
-        int nodeBY = nodeB.y;
-
-        if (mx < Math.min(nodeAX, nodeBX) ||
-                mx > Math.max(nodeAX, nodeBX)) {
+        if (mx < Math.min(xa, xb) ||
+                mx > Math.max(xa, xb)) {
             return false;
         }
 
-        int A = nodeBY - nodeAY;
-        int B = nodeBX - nodeAX;
+        int A = yb - ya;
+        int B = xb - xa;
 
-        return Math.abs(A * mx - B * my + nodeBX * nodeAY - nodeBY * nodeAX) / Math.sqrt(A * A + B * B) <= TOLERANCE;
+        return Math.abs(A * mx - B * my + xb * ya - yb * xa) / Math.sqrt(A * A + B * B) <= TOLERANCE;
     }
 
     public GNode getNodeA() {
