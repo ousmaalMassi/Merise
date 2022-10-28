@@ -5,7 +5,8 @@ import com.MeriseGUI.ddd.DDPanel;
 import com.graphics.mcd.GMCDLink;
 import com.graphics.mcd.GMCDNode;
 import com.graphics.mcd.GMCDNodeType;
-import com.models.mcd.*;
+import com.models.mcd.Cardinality;
+import com.models.mcd.MCDGraph;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,10 +18,6 @@ import java.util.List;
 import java.util.Vector;
 
 public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> implements MouseListener, MouseMotionListener {
-
-    private GMCDNode associationToLink;
-    private GMCDNode entityToLink;
-    private boolean creatingLink;
     private Vector<String> dictionaryData;
     private final JList<Object> jListAttribute;
     private JToolBar toolBar;
@@ -211,19 +208,29 @@ public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> imp
                 this.panelPopupMenu.show(e.getComponent(), e.getX(), e.getY());
         }
 
-        if (creatingLink) {
-            if (nodeUnderCursor.getType().equals(GMCDNodeType.ENTITY))
-                entityToLink = nodeUnderCursor;
-            else
-                associationToLink = nodeUnderCursor;
-            if (entityToLink != null && associationToLink != null) {
-                graphController.addLink(entityToLink, associationToLink);
-                repaint();
-                entityToLink = null;
-                associationToLink = null;
-                creatingLink = false;
-            }
+        if (!creatingLink)
+            return;
+
+        if (sourceNode == null) {
+            sourceNode = nodeUnderCursor;
+            tmpLink.setLine(sourceNode.getX(),sourceNode.getY(),e.getX(),e.getY());
+            linkCreationStarted = true;
+        } else if (targetNode == null) {
+            targetNode = nodeUnderCursor;
         }
+
+        if (sourceNode == null || targetNode == null)
+            return;
+        if (sourceNode.getType() == targetNode.getType())
+            this.reset();
+        else if (sourceNode.getType().equals(GMCDNodeType.ENTITY))
+            graphController.addLink(sourceNode, targetNode);
+        else
+            graphController.addLink(targetNode, sourceNode);
+
+        repaint();
+
+        this.reset();
     }
 
     @Override
@@ -243,16 +250,23 @@ public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> imp
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        if (nodeUnderCursor == null)
+        if (nodeUnderCursor == null) {
             nodeUnderCursor = graphController.containsNode(e.getX(), e.getY());
+            return;
+        }
         else
             this.moveNodeUnderCursor(e.getX(), e.getY());
-
-        setNodeAsSelected(nodeUnderCursor);
+        
+        draggingFinished();
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
+        if (linkCreationStarted) {
+            tmpLink.setLine(sourceNode.getX(),sourceNode.getY(),e.getX(),e.getY());
+            repaint();
+            return;
+        }
         nodeUnderCursor = graphController.containsNode(e.getX(), e.getY());
     }
 

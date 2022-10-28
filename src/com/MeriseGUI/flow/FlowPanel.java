@@ -15,9 +15,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
 public class FlowPanel extends MPanel<FlowGraphController, GNode, GArrow> implements MouseListener, MouseMotionListener {
-    private Actor sourceActor;
-    private Actor targetActor;
-    private boolean creatingLink;
     private JToolBar toolBar;
     private JButton btnInternalActor;
     private JButton btnExternalActor;
@@ -150,28 +147,30 @@ public class FlowPanel extends MPanel<FlowGraphController, GNode, GArrow> implem
         if (!creatingLink || nodeUnderCursor instanceof Domain)
             return;
 
-        if (sourceActor == null)
-            sourceActor = (Actor) nodeUnderCursor;
-        else if (targetActor == null)
-            targetActor = (Actor) nodeUnderCursor;
+        if (sourceNode == null) {
+            sourceNode = nodeUnderCursor;
+            tmpLink.setLine(sourceNode.getX(), sourceNode.getY(), e.getX(), e.getY());
+            linkCreationStarted = true;
+        } else if (targetNode == null)
+            targetNode = nodeUnderCursor;
 
-        if (sourceActor == null || targetActor == null)
+        if (sourceNode == null || targetNode == null)
             return;
 
-        if ((sourceActor.getType() == targetActor.getType()) && (targetActor.getType().equals(ActorType.EXTERNAL_ACTOR))) {
-            JOptionPane.showMessageDialog(this, "Vous ne pouvez pas attacher deux acteurs externes entre eux");
-        } else {
-            graphController.addLink(sourceActor, targetActor);
-            repaint();
-        }
-        targetActor = null;
-        sourceActor = null;
-        nodeUnderCursor = null;
-        creatingLink = false;
+        linkCreationStarted = false;
+
+//        if (((Actor) sourceNode.getType() == targetNode.getType()) && (targetNode.getType().equals(ActorType.EXTERNAL_ACTOR))) {
+//            JOptionPane.showMessageDialog(this, "Vous ne pouvez pas attacher deux acteurs externes entre eux");
+//        } else {
+        graphController.addLink(sourceNode, targetNode);
+        repaint();
+//        }
+        this.reset();
     }
 
     @Override
-    public void mousePressed(MouseEvent e) {}
+    public void mousePressed(MouseEvent e) {
+    }
 
     @Override
     public void mouseReleased(MouseEvent e) {
@@ -190,27 +189,30 @@ public class FlowPanel extends MPanel<FlowGraphController, GNode, GArrow> implem
 
         if (nodeUnderCursor == null) {
             nodeUnderCursor = graphController.containsNode(e.getX(), e.getY());
+            return;
         } else if (nodeUnderCursor instanceof Domain domain && domain.inCorner(e.getX(), e.getY())) {
             domain.resize(e.getX(), e.getY());
             repaint();
         } else
             this.moveNodeUnderCursor(e.getX(), e.getY());
-
-        setNodeAsSelected(nodeUnderCursor);
+        
+        draggingFinished();
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        if (nodeUnderCursor == null) {
-            nodeUnderCursor = graphController.containsNode(e.getX(), e.getY());
+        if (linkCreationStarted) {
+            tmpLink.setLine(sourceNode.getX(), sourceNode.getY(), e.getX(), e.getY());
+            repaint();
+            return;
         }
-        if (nodeUnderCursor instanceof Domain domain) {
-            if (domain.inCorner(e.getX(), e.getY()))
-                setCursor(Cursor.getPredefinedCursor(Cursor.SE_RESIZE_CURSOR));
-            else
-                setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+
+        if (graphController.containsNode(e.getX(), e.getY()) instanceof Domain domain && domain.inCorner(e.getX(), e.getY())) {
+            setCursor(Cursor.getPredefinedCursor(Cursor.SE_RESIZE_CURSOR));
+            return;
         }
 
         nodeUnderCursor = null;
+        setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
 }

@@ -2,7 +2,6 @@ package com.MeriseGUI.gdf;
 
 import com.MeriseGUI.MPanel;
 import com.MeriseGUI.ddd.DDPanel;
-import com.graphics.GArrow;
 import com.graphics.gdf.GDFAttribute;
 import com.graphics.gdf.GNodeGDF;
 import com.graphics.gdf.GSimpleDF;
@@ -19,15 +18,7 @@ import java.util.Vector;
 
 public class GDFPanel extends MPanel<GDFGraphController, GNodeGDF, GSimpleDF> implements MouseListener, MouseMotionListener {
     private final JList<Object> jListAttribute;
-    private GNodeGDF gNodeGDF1;
-    private GNodeGDF gNodeGDF2;
-    private boolean creatingLink;
-    private Vector<String> dictionaryData;
     private String dfType;
-
-    private GArrow gTmpArrow;
-
-    private GDFAttribute tmpGDFAttribute;
     private JToolBar toolBar;
     private JButton btnSimpleDF;
     private JButton btnTrivialDF;
@@ -118,7 +109,7 @@ public class GDFPanel extends MPanel<GDFGraphController, GNodeGDF, GSimpleDF> im
         double MousePositionX = this.getMousePosition().getX();
         double MousePositionY = this.getMousePosition().getY();
 
-        dictionaryData = DDPanel.getDataForGDF();
+        Vector<String> dictionaryData = DDPanel.getDataForGDF();
         jListAttribute.setListData(dictionaryData);
         JOptionPane.showMessageDialog(null, new JScrollPane(jListAttribute));
         List<Object> selectedValuesList = jListAttribute.getSelectedValuesList();
@@ -155,31 +146,27 @@ public class GDFPanel extends MPanel<GDFGraphController, GNodeGDF, GSimpleDF> im
     @Override
     public void mouseClicked(MouseEvent e) {
         super.mouseClicked(e);
-        if (gNodeGDF1 == null) gNodeGDF1 = nodeUnderCursor;
+//        if (gNodeGDF1 == null) gNodeGDF1 = nodeUnderCursor;
 
-        if (creatingLink) {
-            tmpGDFAttribute = new GDFAttribute(e.getX(), e.getY(), "");
-//            if (gNodeGDF1 == null) {
-//                gNodeGDF1 = nodeUnderCursor;
-//                this.gTmpArrow = new GArrow(gNodeGDF1, tmpGDFAttribute);
-//            } else
-//                if (gNodeGDF2 == null) {
-                gNodeGDF2 = nodeUnderCursor;
-//                this.gTmpArrow = new GArrow(gNodeGDF2, tmpGDFAttribute);
-//            }
-            if (gNodeGDF2 != null && gNodeGDF1 != null && gNodeGDF2 != gNodeGDF1 && gNodeGDF1.getClass().getName().equals(gNodeGDF2.getClass().getName())) {
-                switch (dfType){
-                    case "GSimpleDF" -> graphController.addLink(gNodeGDF1, gNodeGDF2);
-                    case "GComposedTrivialDF" -> graphController.addComposedTrivialDF(gNodeGDF1, gNodeGDF2, "Trivial");
-                    case "GComposedNonTrivialDF" -> graphController.addComposedTrivialDF(gNodeGDF1, gNodeGDF2, "Non_trivial");
-                }
-                repaint();
-                gNodeGDF2 = null;
-                gNodeGDF1 = null;
-                tmpGDFAttribute = null;
-                nodeUnderCursor = null;
-                creatingLink = false;
+        if (!creatingLink)
+            return;
+
+        if (sourceNode == null) {
+            sourceNode = nodeUnderCursor;
+            tmpLink.setLine(sourceNode.getX(), sourceNode.getY(), e.getX(), e.getY());
+            linkCreationStarted = true;
+        } else
+        if (targetNode == null) {
+            targetNode = nodeUnderCursor;
+        }
+        if (targetNode != null && sourceNode != null) {
+            switch (dfType){
+                case "GSimpleDF" -> graphController.addLink(sourceNode, targetNode);
+                case "GComposedTrivialDF" -> graphController.addComposedTrivialDF(sourceNode, targetNode, "Trivial");
+                case "GComposedNonTrivialDF" -> graphController.addComposedTrivialDF(sourceNode, targetNode, "Non_trivial");
             }
+            repaint();
+            this.reset();
         }
     }
 
@@ -206,18 +193,21 @@ public class GDFPanel extends MPanel<GDFGraphController, GNodeGDF, GSimpleDF> im
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        if (nodeUnderCursor == null)
-            nodeUnderCursor = graphController.containsNode(e.getX(), e.getY());
-        else
-            this.moveNodeUnderCursor(e.getX(), e.getY());
 
-        setNodeAsSelected(nodeUnderCursor);
+        if (nodeUnderCursor == null) {
+            nodeUnderCursor = graphController.containsNode(e.getX(), e.getY());
+            return;
+        } else
+            this.moveNodeUnderCursor(e.getX(), e.getY());
+        
+        draggingFinished();
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        if (tmpGDFAttribute != null) {
-            tmpGDFAttribute.move(e.getX(), e.getY());
+        if (linkCreationStarted) {
+            tmpLink.setLine(sourceNode.getX(),sourceNode.getY(),e.getX(),e.getY());
+            repaint();
         }
     }
 

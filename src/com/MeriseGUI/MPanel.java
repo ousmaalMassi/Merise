@@ -6,9 +6,13 @@ import com.graphics.GNode;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Line2D;
 import java.util.List;
 
 public abstract class MPanel<T extends GraphController, N extends GNode, L extends GLink> extends JPanel {
+
+    protected N sourceNode;
+    protected N targetNode;
     protected JPopupMenu panelPopupMenu;
     protected JPopupMenu nodePopupMenu;
     protected JPopupMenu linkPopupMenu;
@@ -17,6 +21,9 @@ public abstract class MPanel<T extends GraphController, N extends GNode, L exten
     protected transient L linkUnderCursor;
     protected transient L lastSelectedLink;
     protected T graphController;
+    protected Line2D tmpLink = new Line2D.Double(0, 0, 0, 0);
+    protected boolean linkCreationStarted = false;
+    protected boolean creatingLink;
 
     public MPanel(T graphController) {
         createPanelPopupMenu();
@@ -39,6 +46,9 @@ public abstract class MPanel<T extends GraphController, N extends GNode, L exten
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setStroke(new BasicStroke(1.2f));
 
+        if (linkCreationStarted)
+            g2d.draw(tmpLink);
+
         if (graphController != null)
             graphController.printGraph(g2d);
     }
@@ -60,9 +70,22 @@ public abstract class MPanel<T extends GraphController, N extends GNode, L exten
         }
     }
 
+    protected void reset () {
+        linkCreationStarted = false;
+        targetNode = null;
+        sourceNode = null;
+        nodeUnderCursor = null;
+        creatingLink = false;
+    }
+
     public void mouseReleased(MouseEvent e) {
         if (nodeUnderCursor != null)
             nodeUnderCursor.resetDiff();
+    }
+
+    public void draggingFinished() {
+        if (!nodeUnderCursor.isSelected())
+            setNodeAsSelected(nodeUnderCursor);
     }
 
     protected void moveNodeUnderCursor(int x, int y) {
@@ -75,17 +98,14 @@ public abstract class MPanel<T extends GraphController, N extends GNode, L exten
         if (nodeUnderCursor != null && lastSelectedNode == null) {
             lastSelectedNode = nodeUnderCursor;
             lastSelectedNode.setSelected(true);
-            repaint();
-        }
-        if (nodeUnderCursor == null && lastSelectedNode != null) {
+        } else if (nodeUnderCursor == null && lastSelectedNode != null) {
             lastSelectedNode.setSelected(false);
-            repaint();
         } else if (nodeUnderCursor != null) {
             lastSelectedNode.setSelected(false);
             lastSelectedNode = nodeUnderCursor;
             lastSelectedNode.setSelected(true);
-            repaint();
         }
+        repaint();
 
     }
 
@@ -93,17 +113,14 @@ public abstract class MPanel<T extends GraphController, N extends GNode, L exten
         if (linkUnderCursor != null && lastSelectedLink == null) {
             lastSelectedLink = linkUnderCursor;
             lastSelectedLink.setSelected(true);
-            repaint();
-        }
-        if (linkUnderCursor == null && lastSelectedLink != null) {
+        } else if (linkUnderCursor == null && lastSelectedLink != null) {
             lastSelectedLink.setSelected(false);
-            repaint();
         } else if (linkUnderCursor != null) {
             lastSelectedLink.setSelected(false);
             lastSelectedLink = linkUnderCursor;
             lastSelectedLink.setSelected(true);
-            repaint();
         }
+        repaint();
     }
 
     public List getNodes() {
