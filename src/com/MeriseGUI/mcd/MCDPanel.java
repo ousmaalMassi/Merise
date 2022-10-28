@@ -231,6 +231,7 @@ public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> imp
 
     @Override
     public void mouseReleased(MouseEvent e) {
+        super.mouseReleased(e);
         nodeUnderCursor = null;
     }
 

@@ -175,6 +175,7 @@ public class FlowPanel extends MPanel<FlowGraphController, GNode, GArrow> implem
 
     @Override
     public void mouseReleased(MouseEvent e) {
+        super.mouseReleased(e);
         nodeUnderCursor = null;
     }
 

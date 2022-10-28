@@ -190,6 +190,7 @@ public class GDFPanel extends MPanel<GDFGraphController, GNodeGDF, GSimpleDF> im
 
     @Override
     public void mouseReleased(MouseEvent e) {
+        super.mouseReleased(e);
         nodeUnderCursor = null;
     }
 

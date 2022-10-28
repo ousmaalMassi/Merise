@@ -60,6 +60,11 @@ public abstract class MPanel<T extends GraphController, N extends GNode, L exten
         }
     }
 
+    public void mouseReleased(MouseEvent e) {
+        if (nodeUnderCursor != null)
+            nodeUnderCursor.resetDiff();
+    }
+
     protected void moveNodeUnderCursor(int x, int y) {
         nodeUnderCursor.move(x, y);
         repaint();
