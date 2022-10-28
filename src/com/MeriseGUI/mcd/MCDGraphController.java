@@ -1,18 +1,18 @@
-package merise.MeriseGUI.mcd;
+package com.MeriseGUI.mcd;
 
-import merise.MeriseGUI.GraphController;
-import merise.MeriseGUI.ddd.DDPanel;
-import merise.exceptions.DuplicateMeriseObject;
-import merise.graphics.GNode;
-import merise.graphics.mcd.GMCDLink;
-import merise.graphics.mcd.GMCDNode;
-import merise.graphics.mcd.GMCDNodeType;
-import merise.models.EntityObject;
-import merise.models.Property;
-import merise.models.mcd.Association;
-import merise.models.mcd.Cardinality;
-import merise.models.mcd.Entity;
-import merise.models.mcd.MCDGraph;
+import com.MeriseGUI.GraphController;
+import com.MeriseGUI.ddd.DDPanel;
+import com.exceptions.DuplicateMeriseObject;
+import com.graphics.GNode;
+import com.graphics.mcd.GMCDLink;
+import com.graphics.mcd.GMCDNode;
+import com.graphics.mcd.GMCDNodeType;
+import com.models.EntityObject;
+import com.models.Property;
+import com.models.mcd.Association;
+import com.models.mcd.Cardinality;
+import com.models.mcd.Entity;
+import com.models.mcd.MCDGraph;
 
 import java.awt.*;
 import java.util.List;

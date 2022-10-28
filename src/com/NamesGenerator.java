@@ -1,6 +1,6 @@
-package merise;
+package com;
 
-import merise.models.EntityObject;
+import com.models.EntityObject;
 
 import java.util.List;
 
