@@ -6,7 +6,7 @@ import com.exceptions.DuplicateMeriseObject;
 import com.graphics.GNode;
 import com.graphics.mcd.GMCDLink;
 import com.graphics.mcd.GMCDNode;
-import com.graphics.mcd.GMCDNodeType;
+import com.graphics.mcd.MCDNodeType;
 import com.models.EntityObject;
 import com.models.Property;
 import com.models.mcd.Association;
@@ -40,7 +40,7 @@ public class MCDGraphController extends GraphController<GMCDNode, GMCDLink> {
         this.mcdGraph.getEntities().forEach(entity -> this.nodes.add(this.convertEntity(entity)));
 
         this.mcdGraph.getAssociations().forEach(association -> {
-            GMCDNode gAssociation = new GMCDNode(0, 0, association.getName(), GMCDNodeType.ASSOCIATION);
+            GMCDNode gAssociation = new GMCDNode(0, 0, association.getName(), MCDNodeType.ASSOCIATION);
             gAssociation.setAttributes(association.getPropertyList().stream().map(Property::getName).collect(Collectors.toList()));
             this.nodes.add(gAssociation);
             association.getLinks().forEach((entity, cardinality) -> {
@@ -53,7 +53,7 @@ public class MCDGraphController extends GraphController<GMCDNode, GMCDLink> {
     }
 
     public GMCDNode convertEntity(Entity entity) {
-        GMCDNode gEntity = new GMCDNode(0, 0, entity.getName(), GMCDNodeType.ENTITY);
+        GMCDNode gEntity = new GMCDNode(0, 0, entity.getName(), MCDNodeType.ENTITY);
         List<Property> propertyList = entity.getPropertyList();
         List<String> properties = propertyList.stream().map(Property::getName).collect(Collectors.toList());
         gEntity.setAttributes(properties);
@@ -70,7 +70,7 @@ public class MCDGraphController extends GraphController<GMCDNode, GMCDLink> {
     public void removeNode(GMCDNode graphicalNode) {
         if (graphicalNode == null)
             return;
-        if (graphicalNode.getType().equals(GMCDNodeType.ENTITY))
+        if (graphicalNode.getType().equals(MCDNodeType.ENTITY))
             mcdGraph.removeEntity(mcdGraph.containsEntity(graphicalNode.getName()));
         else
             mcdGraph.removeAssociation(mcdGraph.containsAssociation(graphicalNode.getName()));
@@ -84,7 +84,7 @@ public class MCDGraphController extends GraphController<GMCDNode, GMCDLink> {
         if (node == null)
             return;
         EntityObject entityObject;
-        if (node.getType().equals(GMCDNodeType.ENTITY))
+        if (node.getType().equals(MCDNodeType.ENTITY))
             entityObject = mcdGraph.containsEntity(node.getName());
         else
             entityObject = mcdGraph.containsAssociation(node.getName());
@@ -124,7 +124,7 @@ public class MCDGraphController extends GraphController<GMCDNode, GMCDLink> {
     public void addNode(GMCDNode node) {
         String nodeName = node.getType().name();
         try {
-            if (node.getType().equals(GMCDNodeType.ENTITY)) {
+            if (node.getType().equals(MCDNodeType.ENTITY)) {
                 nodeName += " " + mcdGraph.getEntities().size();
                 Entity entity = new Entity(nodeName);
                 mcdGraph.addEntity(entity);
@@ -146,7 +146,7 @@ public class MCDGraphController extends GraphController<GMCDNode, GMCDLink> {
     public void addProperty(String propertyName, GMCDNode mcdNodeView) {
 
 //        long currentTimeMillis = System.currentTimeMillis();
-        EntityObject entityObject = mcdNodeView.getType().equals(GMCDNodeType.ENTITY)
+        EntityObject entityObject = mcdNodeView.getType().equals(MCDNodeType.ENTITY)
                 ? mcdGraph.containsEntity(mcdNodeView.getName())
                 : mcdGraph.containsAssociation(mcdNodeView.getName());
 
@@ -161,7 +161,7 @@ public class MCDGraphController extends GraphController<GMCDNode, GMCDLink> {
 
     public void removeProperty(String name, GMCDNode mcdNodeView) {
 
-        EntityObject entityObject = mcdNodeView.getType().equals(GMCDNodeType.ENTITY)
+        EntityObject entityObject = mcdNodeView.getType().equals(MCDNodeType.ENTITY)
                 ? mcdGraph.containsEntity(mcdNodeView.getName())
                 : mcdGraph.containsAssociation(mcdNodeView.getName());
         Property property = entityObject.getPropertyList().stream().filter(p -> p.getName().equals(name)).findAny().orElse(null);

@@ -1,13 +1,12 @@
 package com;
 
-import com.models.EntityObject;
+import com.models.MeriseObject;
 
 import java.util.List;
 
 public class NamesGenerator {
 
-
-    public String generateName(List<? extends EntityObject> nodeList, String title) {
+    public static String generateName(List<? extends MeriseObject> nodeList, String title) {
         var ref = new Object() {
             int i = 0;
             String name = title + "_";
