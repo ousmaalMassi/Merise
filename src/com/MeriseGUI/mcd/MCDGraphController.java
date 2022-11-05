@@ -16,7 +16,6 @@ import com.models.mcd.MCDGraph;
 
 import java.awt.*;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MCDGraphController extends GraphController<GMCDNode, GMCDLink> {
@@ -150,8 +149,7 @@ public class MCDGraphController extends GraphController<GMCDNode, GMCDLink> {
                 ? mcdGraph.containsEntity(mcdNodeView.getName())
                 : mcdGraph.containsAssociation(mcdNodeView.getName());
 
-        Map<String, String> map = DDPanel.getProperty(propertyName);
-        Property property = new Property(map.get("name"), Property.Types.valueOf(map.get("type")), Integer.parseInt(map.get("length")));
+        Property property =DDPanel.getProperty(propertyName);
         entityObject.addProperty(property);
         mcdNodeView.getAttributes().add(property.getCode());
 

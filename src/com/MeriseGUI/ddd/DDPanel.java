@@ -8,8 +8,6 @@ import com.models.ddd.DDTableModel;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Vector;
 
 /**
@@ -144,22 +142,25 @@ public class DDPanel extends JPanel {
 
     /**************** end ****************/
 
-    public static Map<String, String> getProperty(String string) {
+    public static Property getProperty(String string) {
         int nRow = tableModel.getRowCount();
-        Map<String, String> prop = new HashMap<>();
+        Property property = null;
         for (int i = 0; i < nRow; i++) {
             if (tableModel.getValueAt(i, NAME_COL_INDEX).toString().equals(string)) {
-                prop.put("name", tableModel.getValueAt(i, NAME_COL_INDEX).toString());
-                prop.put("type", tableModel.getValueAt(i, TYPE_COL_INDEX).toString());
-                prop.put("length", tableModel.getValueAt(i, LENGTH_COL_INDEX).toString());
+                property = new Property(
+                        tableModel.getValueAt(i, NAME_COL_INDEX).toString(),
+                        Property.Types.valueOf(tableModel.getValueAt(i, TYPE_COL_INDEX).toString()),
+                        Integer.parseInt(tableModel.getValueAt(i, LENGTH_COL_INDEX).toString())
+                );
                 break;
             }
         }
-        return prop;
+        return property;
     }
 
+
     private void addData() {
-        String name = JOptionPane.showInputDialog(this, "Veuillez entrer le nom de la donnée", "fgjhgjh");
+        String name = JOptionPane.showInputDialog(this, "Veuillez entrer le nom de la donnée", "attribut");
         if (name == null)
             return;
         String code = normalize(name);

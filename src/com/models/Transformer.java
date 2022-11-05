@@ -1,5 +1,6 @@
 package com.models;
 
+import com.MeriseGUI.ddd.DDPanel;
 import com.NamesGenerator;
 import com.exceptions.DuplicateMeriseObject;
 import com.graphics.mcd.MCDNodeType;
@@ -53,14 +54,14 @@ public class Transformer {
             case ENTITY -> {
                 entityObject = new Entity(NamesGenerator.generateName(mcdGraph.getEntities(), MCDNodeType.ENTITY.toString()));
                 excludedAttribute.add(gdfNode.getName());
-                entityObject.addProperty(new Property(gdfNode.getName(), Property.Types.ALPHABETICAL, 11));
+                entityObject.addProperty(DDPanel.getProperty(gdfNode.getName()));
             }
             default -> {
                 return null;
             }
         }
         gdfNode.getTargets().forEach(a -> {
-            entityObject.addProperty(new Property(a, Property.Types.ALPHABETICAL, 11));
+            entityObject.addProperty(DDPanel.getProperty(a));
             excludedAttribute.add(a);
         });
         try {
