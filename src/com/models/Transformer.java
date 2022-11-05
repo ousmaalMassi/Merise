@@ -1,7 +1,10 @@
 package com.models;
 
+import com.NamesGenerator;
 import com.exceptions.DuplicateMeriseObject;
+import com.graphics.mcd.MCDNodeType;
 import com.models.gdf.GDFGraph;
+import com.models.gdf.GDFNode;
 import com.models.mcd.Association;
 import com.models.mcd.Cardinality;
 import com.models.mcd.Entity;
@@ -13,7 +16,6 @@ import com.models.mpd.MPDGraph;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class Transformer {
 
@@ -25,20 +27,53 @@ public class Transformer {
 
     public MCDGraph gdfToMcd(GDFGraph gdfGraph) {
         MCDGraph mcdGraph = new MCDGraph();
-        AtomicInteger num = new AtomicInteger();
-        gdfGraph.getDfNodes().stream().filter(gdfNode -> !gdfNode.getTargets().isEmpty()).forEach(gdfNode -> {
-            num.getAndIncrement();
-            Entity entity = new Entity("entity " + num);
-            entity.addProperty(new Property(gdfNode.getName(), Property.Types.ALPHABETICAL, 11));
-            gdfNode.getTargets().forEach(s ->
-                    entity.addProperty(new Property(s, Property.Types.ALPHABETICAL, 11)));
-            try {
-                mcdGraph.addEntity(entity);
-            } catch (DuplicateMeriseObject e) {
-                throw new RuntimeException(e);
+        List<String> excludedAttribute = new ArrayList<>();
+
+        gdfGraph.getComposedNodes().forEach(cn -> {
+            Association association = (Association) makeEntity(mcdGraph, cn, MCDNodeType.ASSOCIATION, excludedAttribute);
+            cn.getSources().forEach(a -> {
+                Entity entity = (Entity) makeEntity(mcdGraph, gdfGraph.containsAttribute(a), MCDNodeType.ENTITY, excludedAttribute);
+                association.getLinks().put(entity, Cardinality.DEFAULT_CARDINALITY);
+            });
+        });
+
+        gdfGraph.getDfNodes().forEach(a -> {
+            if (!excludedAttribute.contains(a.getName())) {
+                makeEntity(mcdGraph, a, MCDNodeType.ENTITY, excludedAttribute);
             }
         });
         return mcdGraph;
+    }
+
+    public EntityObject makeEntity(MCDGraph mcdGraph, GDFNode gdfNode, MCDNodeType type, List<String> excludedAttribute) {
+        EntityObject entityObject;
+        switch (type) {
+            case ASSOCIATION ->
+                    entityObject = new Association(NamesGenerator.generateName(mcdGraph.getAssociations(), MCDNodeType.ASSOCIATION.toString()));
+            case ENTITY -> {
+                entityObject = new Entity(NamesGenerator.generateName(mcdGraph.getEntities(), MCDNodeType.ENTITY.toString()));
+                excludedAttribute.add(gdfNode.getName());
+                entityObject.addProperty(new Property(gdfNode.getName(), Property.Types.ALPHABETICAL, 11));
+            }
+            default -> {
+                return null;
+            }
+        }
+        gdfNode.getTargets().forEach(a -> {
+            entityObject.addProperty(new Property(a, Property.Types.ALPHABETICAL, 11));
+            excludedAttribute.add(a);
+        });
+        try {
+            switch (entityObject) {
+                case Association association -> mcdGraph.addAssociation(association);
+                case Entity entity -> mcdGraph.addEntity(entity);
+                default -> throw new IllegalStateException("Unexpected value: " + entityObject);
+            }
+        } catch (DuplicateMeriseObject e) {
+            throw new RuntimeException(e);
+        }
+
+        return entityObject;
     }
 
     public MLDGraph mcdToMld(MCDGraph mcdGraph) {
@@ -177,6 +212,7 @@ public class Transformer {
         return String.join(",\n", list);
     }
 
+    //TODO remove "PRIMARY KEY" from association tables
     private String createPrimaryKey(List<Property> primaryKeys) {
         List<String> list = new ArrayList<>();
         primaryKeys.forEach(primaryKey ->
@@ -185,6 +221,8 @@ public class Transformer {
         return String.join(",\n", list);
     }
 
+    //TODO add ";" at the end of "ALTER TABLE..."
+    //TODO add "ADD CONSTRAINT fk_attr_name FOREIGN KEY..."
     private String createForeignKeyColumn(String tableName, Map<Property, MLDTable> foreignKeys) {
         List<String> list = new ArrayList<>();
         foreignKeys.forEach((property, tableRef) -> list.add(

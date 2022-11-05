@@ -184,20 +184,23 @@ public class Merise extends JFrame {
         btnSaveAs.addActionListener((ActionEvent e) -> saveFile(SAVE_AS));
 
         btnGdfToMcd.addActionListener((ActionEvent e) -> {
-            GDFGraph gdfGraph = gdfPanel.getGraph();
-            MCDGraph mcdGraph = transformer.gdfToMcd(gdfGraph);
-            mcdPanel.setGraph(mcdGraph);
-            System.out.println(mcdGraph);
+            mcdPanel.setGraph(transformer.gdfToMcd(gdfPanel.getGraph()));
+            System.out.println(mcdPanel.getGraph());
             JOptionPane.showMessageDialog(this, "Terminé!");
         });
 
         btnGenerate.addActionListener((ActionEvent e) -> {
-            MLDGraph mldGraph = transformer.mcdToMld(mcdPanel.getGraph());
-            MPDGraph mpdGraph = transformer.mldToMpd(mldGraph);
-            mldPanel.setMldGraph(mldGraph);
-            mpdPanel.setMpdGraph(mpdGraph);
-            sqlPanel.setSQLScript(transformer.mpdToSQL(mpdGraph));
-            JOptionPane.showMessageDialog(this, "Terminé!");
+            try {
+                MLDGraph mldGraph = transformer.mcdToMld(mcdPanel.getGraph());
+                MPDGraph mpdGraph = transformer.mldToMpd(mldGraph);
+                mldPanel.setMldGraph(mldGraph);
+                mpdPanel.setMpdGraph(mpdGraph);
+                sqlPanel.setSQLScript(transformer.mpdToSQL(mpdGraph));
+                JOptionPane.showMessageDialog(this, "Terminé!");
+            } catch (Exception exception) {
+                JOptionPane.showMessageDialog(this, "MCD invalide!", exception.getMessage(), JOptionPane.ERROR_MESSAGE);
+            }
+
         });
 
         btnSave.addActionListener((ActionEvent e) -> saveFile(DEFAULT_SAVE));
@@ -273,7 +276,6 @@ public class Merise extends JFrame {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        System.out.println("File Saved as: " + fileName);
     }
 
     private @NotNull String normalizeFileName(String fileName) {
@@ -334,6 +336,7 @@ public class Merise extends JFrame {
         ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(fileName)));
         oos.writeObject(meriseData);
         oos.close();
+        System.out.println("File Saved as: " + fileName);
     }
 
     @SuppressWarnings("unchecked")

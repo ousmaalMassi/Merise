@@ -10,18 +10,20 @@ public class GDFGraph implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private List<GDFNode> dfNodes;
+    private final List<GDFNode> dfNodes;
+    private final List<ComposedNode> composedNodes;
 
     public GDFGraph() {
         this.dfNodes = new ArrayList<>();
+        this.composedNodes = new ArrayList<>();
     }
 
     public List<GDFNode> getDfNodes() {
         return dfNodes;
     }
 
-    public void setDfNodes(List<GDFNode> dfNodes) {
-        this.dfNodes = dfNodes;
+    public List<ComposedNode> getComposedNodes() {
+        return composedNodes;
     }
 
     public void addDfNode(GDFNode dfNode) {
@@ -32,9 +34,24 @@ public class GDFGraph implements Serializable {
         this.dfNodes.remove(dfNode);
     }
 
-    public GDFNode contains(String string) {
+    public void addComposedNode(ComposedNode dfNode) {
+        this.composedNodes.add(dfNode);
+    }
+
+    public void removeComposedNode(ComposedNode dfNode) {
+        this.composedNodes.remove(dfNode);
+    }
+
+    public GDFNode containsAttribute(String string) {
         return this.dfNodes.stream()
                 .filter(dfNode -> dfNode.getName().equals(string))
+                .findAny()
+                .orElse(null);
+    }
+
+    public ComposedNode containsComposedNode(String string) {
+        return this.composedNodes.stream()
+                .filter(composedNode -> composedNode.getName().equals(string))
                 .findAny()
                 .orElse(null);
     }
