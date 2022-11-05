@@ -2,6 +2,7 @@ package com.MeriseGUI.gdf;
 
 import com.MeriseGUI.MPanel;
 import com.MeriseGUI.ddd.DDPanel;
+import com.graphics.gdf.DFType;
 import com.graphics.gdf.GDFAttribute;
 import com.graphics.gdf.GNodeGDF;
 import com.graphics.gdf.GSimpleDF;
@@ -18,7 +19,7 @@ import java.util.Vector;
 
 public class GDFPanel extends MPanel<GDFGraphController, GNodeGDF, GSimpleDF> implements MouseListener, MouseMotionListener {
     private final JList<Object> jListAttribute;
-    private String dfType;
+    private DFType dfType;
     private JToolBar toolBar;
     private JButton btnSimpleDF;
     private JButton btnTrivialDF;
@@ -60,10 +61,24 @@ public class GDFPanel extends MPanel<GDFGraphController, GNodeGDF, GSimpleDF> im
     }
 
     private void AddButtonActionListeners() {
-        btnSimpleDF.addActionListener((ActionEvent e) -> createLink("GSimpleDF"));
-        btnTrivialDF.addActionListener((ActionEvent e) -> createLink("GComposedTrivialDF"));
-        btnNonTrivialDF.addActionListener((ActionEvent e) -> createLink("GComposedNonTrivialDF"));
-        btnAttribute.addActionListener((ActionEvent e) -> addAttribute());
+        btnSimpleDF.addActionListener((ActionEvent e) -> {
+            createLink(DFType.SIMPLE);
+            toggleButtonSelection(e);
+        });
+        btnTrivialDF.addActionListener((ActionEvent e) -> {
+            createLink(DFType.TRIVIAL);
+            toggleButtonSelection(e);
+        });
+        btnNonTrivialDF.addActionListener((ActionEvent e) -> {
+            createLink(DFType.NON_TRIVIAL);
+            toggleButtonSelection(e);
+        });
+        btnAttribute.addActionListener((ActionEvent e) -> addAttributes(false));
+    }
+
+    private void toggleButtonSelection(ActionEvent e) {
+        if (e.getSource() instanceof JButton jButton)
+            jButton.setSelected(!jButton.isSelected());
     }
 
     @Override
@@ -80,18 +95,18 @@ public class GDFPanel extends MPanel<GDFGraphController, GNodeGDF, GSimpleDF> im
 
         JMenuItem addSimpleDFMenuItem = new JMenuItem("Ajouter une DF simple");
         this.nodePopupMenu.add(addSimpleDFMenuItem);
-        addSimpleDFMenuItem.addActionListener((action) -> createLink("GSimpleDF"));
+        addSimpleDFMenuItem.addActionListener((action) -> createLink(DFType.SIMPLE));
 
         JMenuItem addTrivialDFMenuItem = new JMenuItem("Ajouter une DF composée trivial");
         this.nodePopupMenu.add(addTrivialDFMenuItem);
-        addTrivialDFMenuItem.addActionListener((action) -> createLink("GComposedTrivialDF"));
+        addTrivialDFMenuItem.addActionListener((action) -> createLink(DFType.TRIVIAL));
 
         JMenuItem addNonTrivialDFMenuItem = new JMenuItem("Ajouter une DF composée non-trivial");
         this.nodePopupMenu.add(addNonTrivialDFMenuItem);
-        addNonTrivialDFMenuItem.addActionListener((action) -> createLink("GComposedNonTrivialDF"));
+        addNonTrivialDFMenuItem.addActionListener((action) -> createLink(DFType.NON_TRIVIAL));
     }
 
-    public void createLink(String type) {
+    public void createLink(DFType type) {
         this.dfType = type;
         this.creatingLink = true;
     }
@@ -102,12 +117,19 @@ public class GDFPanel extends MPanel<GDFGraphController, GNodeGDF, GSimpleDF> im
 
         JMenuItem addAttributeMenuItem = new JMenuItem("Ajouter un attribut");
         this.panelPopupMenu.add(addAttributeMenuItem);
-        addAttributeMenuItem.addActionListener((action) -> addAttribute());
+        addAttributeMenuItem.addActionListener((action) -> addAttributes(true));
     }
 
-    private void addAttribute() {
-        double MousePositionX = this.getMousePosition().getX();
-        double MousePositionY = this.getMousePosition().getY();
+    private void addAttributes(boolean fromPopupMenu) {
+        double MousePositionX;
+        double MousePositionY;
+        if (fromPopupMenu) {
+            MousePositionX = this.getMousePosition().getX();
+            MousePositionY = this.getMousePosition().getY();
+        } else {
+            MousePositionX = this.getWidth() >> 1;
+            MousePositionY = this.getHeight() >> 1;
+        }
 
         Vector<String> dictionaryData = DDPanel.getDataForGDF();
         jListAttribute.setListData(dictionaryData);
@@ -120,8 +142,8 @@ public class GDFPanel extends MPanel<GDFGraphController, GNodeGDF, GSimpleDF> im
             GDFAttribute gdfAttribute = createAttribute(MousePositionX, MousePositionY, attributeName);
             graphController.addNode(gdfAttribute);
             setNodeAsSelected(gdfAttribute);
-
         }
+
         repaint();
     }
 
@@ -146,28 +168,35 @@ public class GDFPanel extends MPanel<GDFGraphController, GNodeGDF, GSimpleDF> im
     @Override
     public void mouseClicked(MouseEvent e) {
         super.mouseClicked(e);
-//        if (gNodeGDF1 == null) gNodeGDF1 = nodeUnderCursor;
 
-        if (!creatingLink)
+        if (!creatingLink || nodeUnderCursor == null)
             return;
 
         if (sourceNode == null) {
             sourceNode = nodeUnderCursor;
             tmpLink.setLine(sourceNode.getX(), sourceNode.getY(), e.getX(), e.getY());
             linkCreationStarted = true;
-        } else
-        if (targetNode == null) {
-            targetNode = nodeUnderCursor;
+            return;
         }
-        if (targetNode != null && sourceNode != null) {
-            switch (dfType){
-                case "GSimpleDF" -> graphController.addLink(sourceNode, targetNode);
-                case "GComposedTrivialDF" -> graphController.addComposedTrivialDF(sourceNode, targetNode, "Trivial");
-                case "GComposedNonTrivialDF" -> graphController.addComposedTrivialDF(sourceNode, targetNode, "Non_trivial");
+        targetNode = nodeUnderCursor;
+        switch (dfType) {
+            case SIMPLE -> {
+                System.out.println(sourceNode.getName());
+                graphController.addLink(sourceNode, targetNode);
+                sourceNode = null;
+                this.reset();
             }
-            repaint();
-            this.reset();
+            case TRIVIAL -> {
+                graphController.addComposedDF(sourceNode, targetNode, dfType);
+                this.reset();
+            }
+            case NON_TRIVIAL -> {
+                sourceNode = graphController.addComposedDF(sourceNode, targetNode, dfType);
+                dfType = DFType.SIMPLE;
+                targetNode = null;
+            }
         }
+        repaint();
     }
 
     @Override
@@ -183,12 +212,10 @@ public class GDFPanel extends MPanel<GDFGraphController, GNodeGDF, GSimpleDF> im
 
     @Override
     public void mouseEntered(MouseEvent e) {
-
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
-
     }
 
     @Override
@@ -199,14 +226,14 @@ public class GDFPanel extends MPanel<GDFGraphController, GNodeGDF, GSimpleDF> im
             return;
         } else
             this.moveNodeUnderCursor(e.getX(), e.getY());
-        
+
         draggingFinished();
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
         if (linkCreationStarted) {
-            tmpLink.setLine(sourceNode.getX(),sourceNode.getY(),e.getX(),e.getY());
+            tmpLink.setLine(sourceNode.getX(), sourceNode.getY(), e.getX(), e.getY());
             repaint();
         }
     }
