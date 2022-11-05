@@ -59,8 +59,8 @@ public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> imp
     }
 
     private void AddButtonActionListeners() {
-        btnEntity.addActionListener((ActionEvent e) -> createMcdObject(MCDNodeType.ENTITY));
-        btnAssociation.addActionListener((ActionEvent e) -> createMcdObject(MCDNodeType.ASSOCIATION));
+        btnEntity.addActionListener((ActionEvent e) -> createMcdObject(MCDNodeType.ENTITY, false));
+        btnAssociation.addActionListener((ActionEvent e) -> createMcdObject(MCDNodeType.ASSOCIATION, false));
         btnLink.addActionListener((ActionEvent e) -> creatingLink());
     }
 
@@ -132,11 +132,11 @@ public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> imp
 
         JMenuItem addEntityMenuItem = new JMenuItem("Ajouter une Entité");
         this.panelPopupMenu.add(addEntityMenuItem);
-        addEntityMenuItem.addActionListener((action) -> createMcdObject(MCDNodeType.ENTITY));
+        addEntityMenuItem.addActionListener((action) -> createMcdObject(MCDNodeType.ENTITY, true));
 
         JMenuItem addAssociationMenuItem = new JMenuItem("Ajouter une Association");
         this.panelPopupMenu.add(addAssociationMenuItem);
-        addAssociationMenuItem.addActionListener((action) -> createMcdObject(MCDNodeType.ASSOCIATION));
+        addAssociationMenuItem.addActionListener((action) -> createMcdObject(MCDNodeType.ASSOCIATION, true));
 
         JMenuItem addLinkMenuItem = new JMenuItem("Ajouter un lien");
         this.panelPopupMenu.add(addLinkMenuItem);
@@ -148,10 +148,16 @@ public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> imp
         this.creatingLink = true;
     }
 
-    public void createMcdObject(MCDNodeType type) {
-
-        int x = (int) this.getMousePosition().getX();
-        int y = (int) this.getMousePosition().getY();
+    public void createMcdObject(MCDNodeType type, boolean fromPopupMenu) {
+        int x;
+        int y;
+        if (fromPopupMenu) {
+            x = (int) this.getMousePosition().getX();
+            y = (int) this.getMousePosition().getY();
+        } else {
+            x = this.getWidth() >> 1;
+            y = this.getHeight() >> 1;
+        }
 
         GMCDNode gmcdNode = new GMCDNode(x, y, "", type);
 
@@ -276,7 +282,7 @@ public class MCDPanel extends MPanel<MCDGraphController, GMCDNode, GMCDLink> imp
 
     public void setGraph(MCDGraph gdfGraph) {
         this.graphController.setGraph(gdfGraph);
-        this.graphController.convertMCDGraph();
+        this.graphController.convertMCDGraph(this.getWidth() >> 1, this.getHeight() >> 1);
         repaint();
     }
 }

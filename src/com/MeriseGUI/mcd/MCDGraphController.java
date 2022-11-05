@@ -2,6 +2,7 @@ package com.MeriseGUI.mcd;
 
 import com.MeriseGUI.GraphController;
 import com.MeriseGUI.ddd.DDPanel;
+import com.NamesGenerator;
 import com.exceptions.DuplicateMeriseObject;
 import com.graphics.GNode;
 import com.graphics.mcd.GMCDLink;
@@ -32,14 +33,14 @@ public class MCDGraphController extends GraphController<GMCDNode, GMCDLink> {
         this.mcdGraph = mcdGraph;
     }
 
-    public void convertMCDGraph() {
+    public void convertMCDGraph(int centerX, int centerY) {
         this.nodes.clear();
         this.links.clear();
 
-        this.mcdGraph.getEntities().forEach(entity -> this.nodes.add(this.convertEntity(entity)));
+        this.mcdGraph.getEntities().forEach(entity -> this.nodes.add(this.convertEntity(entity, centerX, centerY)));
 
         this.mcdGraph.getAssociations().forEach(association -> {
-            GMCDNode gAssociation = new GMCDNode(0, 0, association.getName(), MCDNodeType.ASSOCIATION);
+            GMCDNode gAssociation = new GMCDNode(centerX, centerY, association.getName(), MCDNodeType.ASSOCIATION);
             gAssociation.setAttributes(association.getPropertyList().stream().map(Property::getName).collect(Collectors.toList()));
             this.nodes.add(gAssociation);
             association.getLinks().forEach((entity, cardinality) -> {
@@ -51,8 +52,8 @@ public class MCDGraphController extends GraphController<GMCDNode, GMCDLink> {
         });
     }
 
-    public GMCDNode convertEntity(Entity entity) {
-        GMCDNode gEntity = new GMCDNode(0, 0, entity.getName(), MCDNodeType.ENTITY);
+    public GMCDNode convertEntity(Entity entity, int centerX, int centerY) {
+        GMCDNode gEntity = new GMCDNode(centerX, centerY, entity.getName(), MCDNodeType.ENTITY);
         List<Property> propertyList = entity.getPropertyList();
         List<String> properties = propertyList.stream().map(Property::getName).collect(Collectors.toList());
         gEntity.setAttributes(properties);
@@ -121,14 +122,14 @@ public class MCDGraphController extends GraphController<GMCDNode, GMCDLink> {
 
     @Override
     public void addNode(GMCDNode node) {
-        String nodeName = node.getType().name();
+        String nodeName;
         try {
             if (node.getType().equals(MCDNodeType.ENTITY)) {
-                nodeName += " " + mcdGraph.getEntities().size();
+                nodeName = NamesGenerator.generateName(mcdGraph.getEntities(), "Entity");
                 Entity entity = new Entity(nodeName);
                 mcdGraph.addEntity(entity);
             } else {
-                nodeName += " " + mcdGraph.getAssociations().size();
+                nodeName = NamesGenerator.generateName(mcdGraph.getEntities(), "Association");
                 Association association = new Association(nodeName);
                 mcdGraph.addAssociation(association);
             }
